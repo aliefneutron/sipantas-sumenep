@@ -3,12 +3,24 @@ const fs = require('fs');
 try {
   const data = JSON.parse(fs.readFileSync('kriteria_2025_with_scale.json', 'utf8'));
 
+  const tatananNames = [
+    'Sehat Mandiri',
+    'Perkim',
+    'Pendidikan',
+    'Pasar',
+    'Perkantoran Perindustrian',
+    'Pariwisata',
+    'Lalu Lintas',
+    'Perlindungan Sosial',
+    'Penanggulangan Bencana'
+  ];
+
   let tsContent = 'export const INITIAL_TATANAN_STRUCTURE = [\n';
 
   data.forEach((sheetData, index) => {
     tsContent += `  {\n`;
     tsContent += `    id: 'tatanan-${index + 1}',\n`;
-    tsContent += `    name: ${JSON.stringify(sheetData.tatanan)},\n`;
+    tsContent += `    name: ${JSON.stringify(tatananNames[index])},\n`;
     tsContent += `    indicators: [\n`;
     
     sheetData.indicators.forEach((ind, iIndex) => {

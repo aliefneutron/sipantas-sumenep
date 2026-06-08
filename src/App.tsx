@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   Award, ShieldCheck, Settings, Users, BookOpen, AlertTriangle, 
   Bell, Clock, Calendar, RefreshCw, FileText, Sparkles, Building, Lock, Info, CheckCircle,
-  Menu, ChevronDown, ChevronRight, Database
+  Menu, ChevronDown, ChevronRight, Database,
+  User, LayoutGrid, ShoppingBag, Briefcase, MapPin, Truck, Shield, Globe
 } from 'lucide-react';
 import { KabupatenProposal, SystemConfig, NotificationMsg, INITIAL_TATANAN_STRUCTURE } from './types';
 import { INITIAL_PROPOSALS, INITIAL_SYSTEM_CONFIG, NOTIFICATIONS_MOCK } from './data';
@@ -201,16 +202,20 @@ export default function App() {
             </button>
             {isTatananMenuOpen && (
               <div className="mt-1 ml-4 border-l-2 border-slate-100 pl-2 space-y-1">
-                {(userProposal?.tatanan || []).map(t => (
-                  <button
-                    key={t.id}
-                    onClick={() => setActiveMenu(`tatanan-${t.id}`)}
-                    className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg text-[11px] font-medium transition cursor-pointer ${activeMenu === `tatanan-${t.id}` ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
-                  >
-                    <Award className={`w-3.5 h-3.5 shrink-0 ${activeMenu === `tatanan-${t.id}` ? 'opacity-100' : 'opacity-60'}`} /> 
-                    <span>{t.name.replace('Tatanan ', '')}</span>
-                  </button>
-                ))}
+                {(userProposal?.tatanan || []).map((t, idx) => {
+                  const TatananIcons = [User, LayoutGrid, BookOpen, ShoppingBag, Briefcase, MapPin, Truck, Shield, Globe];
+                  const Icon = TatananIcons[idx] || Award;
+                  return (
+                    <button
+                      key={t.id}
+                      onClick={() => setActiveMenu(`tatanan-${t.id}`)}
+                      className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg text-[11px] font-medium transition cursor-pointer ${activeMenu === `tatanan-${t.id}` ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+                    >
+                      <Icon className={`w-3.5 h-3.5 shrink-0 ${activeMenu === `tatanan-${t.id}` ? 'opacity-100' : 'opacity-60'}`} /> 
+                      <span>{t.name.replace('Tatanan ', '')}</span>
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
