@@ -31,7 +31,7 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
             tatananId: t.id,
             tatananName: t.name,
             indicatorId: ind.id,
-            indicatorText: ind.pertanyaan,
+            indicatorText: ind.question,
             ...ind.score
           });
         }
