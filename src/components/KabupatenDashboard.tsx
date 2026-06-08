@@ -519,7 +519,7 @@ export function KabupatenDashboard({
                     Batal
                   </button>
                   <button
-                    onClick={() => setEditingIndicatorId(null)}
+                    onClick={saveTatananAssess}
                     className="px-6 py-2 rounded text-sm font-medium text-white bg-[#5C6BC0] hover:bg-[#3F51B5] transition shadow-sm cursor-pointer"
                   >
                     Simpan
