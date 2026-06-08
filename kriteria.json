@@ -1,0 +1,644 @@
+[
+  {
+    "sheet": "1 Sehat Mandiri",
+    "tatanan": "TATANAN  KEHIDUPAN MASYARAKAT SEHAT MANDIRI",
+    "indicators": [
+      {
+        "no": 1,
+        "name": "Jumlah Kematian Ibu"
+      },
+      {
+        "no": 2,
+        "name": "Jumlah Kematian Neonatus"
+      },
+      {
+        "no": 3,
+        "name": "Prevalensi Stunting pada Balita"
+      },
+      {
+        "no": 4,
+        "name": "Cakupan Penemuan Kasus TBC mencapai 90%"
+      },
+      {
+        "no": 5,
+        "name": "Persentase orang terduga tuberkulosis yang mendapatkan pelayanan kesehatan sesuai standar"
+      },
+      {
+        "no": 6,
+        "name": "Persentase merokok penduduk usia 10-18 tahun (Indikator RPJMN)"
+      },
+      {
+        "no": 7,
+        "name": "Angka kesakitan Dengue"
+      },
+      {
+        "no": 8,
+        "name": "Persentase pangan segar yang memenuhi syarat keamanan pangan"
+      },
+      {
+        "no": 9,
+        "name": "Kabupaten/Kota yang menerapkan kebijakan GERMAS dengan kriteria : memiliki kebijakan GERMAS dan melaksanakan penggerakan masyarakat dalam mendukung 5 klaster GERMAS minimal 3 kali dalam setahun"
+      },
+      {
+        "no": 10,
+        "name": "Persentase penderita Diabetes Melitus yang mendapatkan pelayanan kesehatan sesuai standar"
+      },
+      {
+        "no": 11,
+        "name": "Persentase penderita Hipertensi yang mendapatkan pelayanan kesehatan sesuai standar"
+      },
+      {
+        "no": 12,
+        "name": "Persentase Orang Dengan Gangguan Jiwa Berat  yang mendapatkan pelayanan sesuai standar dan eliminasi pasung"
+      },
+      {
+        "no": 13,
+        "name": "Persentase Bayi usia 0-11 bulan yang mendapatkan Imunisasi Lengkap"
+      },
+      {
+        "no": 14,
+        "name": "Pesentase penduduk sesuai kelompok usia yang dilakukan skrining PTM"
+      },
+      {
+        "no": 15,
+        "name": "Persentase orang dengan HIV (ODHIV ) baru ditemukan yang mendapatkan pengobatan ARV"
+      },
+      {
+        "no": 16,
+        "name": "Kabupaten/Kota yang telah eliminasi malaria"
+      },
+      {
+        "no": 17,
+        "name": "Persentase Fasilitas Pelayanan Kesehatan Terakreditasi"
+      },
+      {
+        "no": 18,
+        "name": "Rasio ketersediaan tempat tidur rumah sakit terhadap jumlah penduduk yang dilayani"
+      },
+      {
+        "no": 19,
+        "name": "Persentase Puskesmas yang menyelenggarakan pelayanan kesehatan remaja"
+      },
+      {
+        "no": 20,
+        "name": "Persentase puskesmas yang menyelenggarakan pelayanan kesehatan SANTUN LANSIA (UPL)"
+      },
+      {
+        "no": 21,
+        "name": "Persentase ibu hamil KEK (Gizi KIA)"
+      },
+      {
+        "no": 22,
+        "name": "Prevalensi Obesitas pada  Anak Usia Sekolah"
+      },
+      {
+        "no": 23,
+        "name": "Persentase Puskesmas yang melaksanakan pelayanan kesehatan lingkungan dan ditindaklanjuti"
+      },
+      {
+        "no": 24,
+        "name": "Rumah Sakit dan Puskesmas telah mengelola limbah medis sesuai standar"
+      },
+      {
+        "no": 25,
+        "name": "Prevalensi Diare pada balita dalam 2 tahun terakhir"
+      },
+      {
+        "no": 26,
+        "name": "Persentase Puskesmas yang melaksanakan deteksi dini penyalahgunaan Napza"
+      },
+      {
+        "no": 27,
+        "name": "Jumlah Penduduk usia ≥ 15 tahun yang memiliki risiko kesehatan jiwa yang mendapatkan skrining"
+      },
+      {
+        "no": 28,
+        "name": "Persentase posyandu aktif di Kabupaten/Kota"
+      },
+      {
+        "no": 29,
+        "name": "Adanya kebijakan Kawasan Tanpa Rokok (KTR) di setiap tatanan Kab/Kota Sehat dan menerapkan indikator prinsip 100% kepatuhan KTR"
+      },
+      {
+        "no": 30,
+        "name": "Angka Bebas Jentik"
+      },
+      {
+        "no": 31,
+        "name": "Indeks Habitat Vektor Malaria atau Filariasis"
+      },
+      {
+        "no": 32,
+        "name": "Success trap tikus"
+      },
+      {
+        "no": 33,
+        "name": "Persentase Puskesmas yang melaksanakan pelayanan ramah anak (PRAP)"
+      }
+    ]
+  },
+  {
+    "sheet": "2 Perkim dan Fasum",
+    "tatanan": "TATANAN PERMUKIMAN DAN FASILITAS UMUM",
+    "indicators": [
+      {
+        "no": 1,
+        "name": "Nilai Indeks Kualitas Lingkungan Hidup (IKLH)"
+      },
+      {
+        "no": 2,
+        "name": "Akses Air Minum Aman di Kabupaten/Kota"
+      },
+      {
+        "no": 3,
+        "name": "Rumah tangga memiliki akses sanitasi aman"
+      },
+      {
+        "no": 4,
+        "name": "Rumah tangga yang melakukan pengelolaan sampah berupa pengurangan dan penanganan sampah"
+      },
+      {
+        "no": 5,
+        "name": "Luas kawasan permukiman kumuh kewenangan pemerintah kota/kabupaten yang tertangani (luasan di bawah 10 hektar):"
+      },
+      {
+        "no": 6,
+        "name": "Persentase rumah ibadat yang menerapkan Kawasan Tanpa Rokok (KTR)"
+      },
+      {
+        "no": 7,
+        "name": "Persentase taman bermain yang menerapkan Kawasan Tanpa Rokok (KTR)"
+      },
+      {
+        "no": 8,
+        "name": "Akses terhadap air minum yang layak melalui Sistem Penyediaan Air Minum (SPAM) jaringan perpipaan dan non perpipaan"
+      },
+      {
+        "no": 9,
+        "name": "Persentase Tempat Fasilitas Umum (TFU) yang dilakukan inspeksi kesehatan lingkungan"
+      },
+      {
+        "no": 10,
+        "name": "Adanya implementasi program langit biru"
+      },
+      {
+        "no": 11,
+        "name": "Pelaksanaan car free day"
+      },
+      {
+        "no": 12,
+        "name": "Peningkatan pengelolaan sungai dan keterlibatan masyarakat melalui Program Kali Bersih (PROKASIH)"
+      },
+      {
+        "no": 13,
+        "name": "Adanya Tim Koordinasi yang menangani Pengelolaan Sumber Daya Air di tingkat Kabupaten/Kota"
+      },
+      {
+        "no": 14,
+        "name": "Adanya Penyelenggara SPAM (BUMD/UPTD/BUMDES/POKMAS/BUKS/Swasta)  dan memiliki dokumen RISPAM"
+      },
+      {
+        "no": 15,
+        "name": "Adanya regulasi/kebijakan terkait Air Limbah Domestik (ALD) (Perda dan/atau Perkada terkait Pengelolaan ALD ) dan  Dokumen Perencanaan Sistem Pengelolaan ALD (Strategi Sanitasi Perkotaan dan/atau Rencana Induk Sistem Pengelolaan ALD)"
+      },
+      {
+        "no": 16,
+        "name": "Adanya Pemisahan Peran Operator dan Regulator dalam Kelembagaan Pengelola Persampahan"
+      },
+      {
+        "no": 17,
+        "name": "Terdapat Instalasi Pengolahan Lumpur Tinja (IPLT), dengan layanan penyedotan lumpur tinja serta truk tinja yang beroperasi"
+      },
+      {
+        "no": 18,
+        "name": "Terdapat instalasi pengolahan air limbah domestik (IPALD) serta tersambung ke rumah tangga"
+      },
+      {
+        "no": 19,
+        "name": "Adanya regulasi/kebijakan terkait persampahan (Perda atau Perkada) dan Dokumen Perencanaan Sistem Pengelolaan Sampah (Strategi Sanitasi Kabupaten/Kota dan/atau Rencana Induk Sistem Pengelolaan Sampah)"
+      },
+      {
+        "no": 20,
+        "name": "Adanya  pelaksanaan pemilahan sampah oleh kelompok masyarakat dan program pengelolaan sampah tingkat desa yang meliputi pemrosesan awal di tingkat rumah tangga sebelum diangkut ke TPS, adanya upaya pengolahan sampah organik menjadi kompos, memfungsikan TPS menjadi tempat daur ulang sampah rumah tangga, dan pengangkutan sampah dari TPS ke TPA secara rutin"
+      },
+      {
+        "no": 21,
+        "name": "Persentase infrastruktur pengolahan sampah berbasis masyarakat (TPS 3R dan/atau bank sampah) terbangun serta sarana pengangkutan sampah sesuai standar dan beroperasi"
+      },
+      {
+        "no": 22,
+        "name": "Adanya penutupan sampah secara berkala dan tempat pemrosesan akhir  sampah (TPA) dilengkapi dengan Instalasi Pengolahan Lindi (IPL) di TPA"
+      },
+      {
+        "no": 23,
+        "name": "Persentase korban kebakaran atau terdampak kebakaran yang mendapatkan pelayanan  penyelamatan dan evakuasi kebakaran"
+      },
+      {
+        "no": 24,
+        "name": "Keberadaan fasilitas dan sarana di kawasan pertamanan yang ramah anak, ramah lansia dan ramah difable"
+      },
+      {
+        "no": 25,
+        "name": "Implementasi ketersediaan/akses tempat pengumpulan limbah B3 yang memenuhi syarat di tingkat Kabupaten/Kota"
+      },
+      {
+        "no": 26,
+        "name": "Akses rumah tangga yang memenuhi kriteria rumah layak huni"
+      }
+    ]
+  },
+  {
+    "sheet": "3 Satuan Pendidikan",
+    "tatanan": "TATANAN SATUAN PENDIDIKAN",
+    "indicators": [
+      {
+        "no": 1,
+        "name": "Keberadaan regulasi daerah tentang pelaksanaan program Usaha Kesehatan Sekolah/Madrasah (UKS/M)"
+      },
+      {
+        "no": 2,
+        "name": "Keberadaan program Usaha Kesehatan Sekolah/Madrasah (UKS/M) dalam  perencanaan daerah (RPJMD, RKPD, Renstra PD dan Renja PD)"
+      },
+      {
+        "no": 3,
+        "name": "Persentase Sekolah/Madrasah/Pondok Pesantren yang menerapkan Satuan Pendidikan Ramah Anak"
+      },
+      {
+        "no": 4,
+        "name": "Persentase sekolah/madrasah yang minimal mencapai stratifikasi standar Usaha Kesehatan Sekolah/Madrasah (UKS/M) atau yg mengimplementasikan Gerakan Sekolah Sehat secara berkelanjutan."
+      },
+      {
+        "no": 5,
+        "name": "Adanya penerapan Kawasan Tanpa Rokok di satuan pendidikan usia dini, dasar dan menengah pertama atau sederajat"
+      },
+      {
+        "no": 6,
+        "name": "Persentase Sekolah/Madrasah yang telah dilakukan Inspeksi Kesehatan Lingkungan (IKL)"
+      },
+      {
+        "no": 7,
+        "name": "Keberadaan Tim Pembina UKS/M tingkat Kabupaten/Kota dan tingkat Kecamatan"
+      },
+      {
+        "no": 8,
+        "name": "Presentase Sekolah/Madrasah yang memiliki tim pelaksana UKS/M dibuktikan dengan SK, Rencana Kerja dan Realisasi"
+      },
+      {
+        "no": 9,
+        "name": "Persentase sekolah/madrasah yang melakukan pengawasan internal"
+      },
+      {
+        "no": 10,
+        "name": "Presentase Sekolah/Madrasah yang menerapkan dan mengajukan konsep sekolah Adiwiyata secara berkelanjutan."
+      },
+      {
+        "no": 11,
+        "name": "Presentase Sekolah/Madrasah  yang menyelenggarakan  skrining kesehatan siswa SD dan SMP."
+      },
+      {
+        "no": 12,
+        "name": "Persentase anak usia sekolah dasar dan sederajat yang mendapatkan Imunisasi Sekolah Lengkap (ISL)"
+      }
+    ]
+  },
+  {
+    "sheet": "4 Pasar",
+    "tatanan": "TATANAN PASAR",
+    "indicators": [
+      {
+        "no": 1,
+        "name": "Adanya regulasi daerah tentang pasar sehat"
+      },
+      {
+        "no": 2,
+        "name": "Adanya regulasi penanganan Pedagang Kaki Lima (PKL)"
+      },
+      {
+        "no": 3,
+        "name": "Adanya penerapan Kawasan Tanpa Rokok"
+      },
+      {
+        "no": 4,
+        "name": "Persentase pasar yang menerapkan Kesehatan dan Keselamatan Kerja (K3)"
+      },
+      {
+        "no": 5,
+        "name": "Persentase Pasar yang menyediakan air bersih/air minum"
+      },
+      {
+        "no": 6,
+        "name": "Persentase pasar yang melakukan pengawasan internal dan memenuhi syarat"
+      },
+      {
+        "no": 7,
+        "name": "Persentase pasar yang melaksanakan Komunikasi, Informasi dan Edukasi (KIE) kesehatan  masyarakat bekerjasama dengan sektor terkait  kepada masyarakat pasar"
+      },
+      {
+        "no": 8,
+        "name": "Persentase pasar yang memiliki fasilitas ruang ASI"
+      },
+      {
+        "no": 9,
+        "name": "Persentase pasar  yang menjual daging berasal dari RPH/distributor yang memiliki Nomor Kontrol Veteriner (NKV) dan bersertifikat Halal"
+      },
+      {
+        "no": 10,
+        "name": "Persentase pasar  yang menjual daging unggas berasal dari Rumah Potong Ayam (RPA)/ Rumah Potong Unggas (RPU) yang memiliki Nomor Kontrol Veteriner (NKV) dan bersertifikat Halal"
+      },
+      {
+        "no": 11,
+        "name": "Persentase pasar yang melakukan pengelolaan sampah dengan prinsip 3 R (reduce, reuse, dan recyle)"
+      },
+      {
+        "no": 12,
+        "name": "Persentase pasar yang melakukan pengelolaan air limbah"
+      }
+    ]
+  },
+  {
+    "sheet": "5 Perkantoran dan Perindustrian",
+    "tatanan": "TATANAN  PERKANTORAN DAN PERINDUSTRIAN",
+    "indicators": [
+      {
+        "no": 1,
+        "name": "Persentase industri kecil dan menengah yang memenuhi standar kegiatan usaha dan/atau standar produk sesuai persyaratan dan/atau kewajiban perizinan berusaha pada sektor perindustrian"
+      },
+      {
+        "no": 2,
+        "name": "Persentase tempat kerja/ perusahaan yang menerapkan Kawasan Tanpa Rokok (KTR)"
+      },
+      {
+        "no": 3,
+        "name": "Jumlah/Persentase tempat kerja atau perusahaan yang memiliki unit (Panitia Pembina Keselamatan dan Kesehatan Kerja (P2K3)"
+      },
+      {
+        "no": 4,
+        "name": "Persentase tempat kerja yang telah memfasilitasi pemeriksaan kesehatan berkala (deteksi dini) pada pegawainya minimal 1 tahun sekali"
+      },
+      {
+        "no": 5,
+        "name": "Angka kecelakaan kerja di tempat kerja setahun terakhir"
+      },
+      {
+        "no": 6,
+        "name": "Jumlah perusahaan yang mendapatkan penghargaan dibidang kesehatan yang diberikan oleh pemerintah pusat atau daerah, seperti:                                                       Penghargaan HIV/AIDS, TBC di tempat kerja, GP2SP, K3 Perkantoran"
+      },
+      {
+        "no": 7,
+        "name": "Persentase jumlah puskesmas membina Pos UKK"
+      },
+      {
+        "no": 8,
+        "name": "Jumlah  perusahaan menerapkan Gerakan Pekerja Perempuan Sehat Produktif (GP2SP)"
+      },
+      {
+        "no": 9,
+        "name": "Adanya kasus pencemaran lingkungan akibat industri dalam setahun terakhir"
+      },
+      {
+        "no": 10,
+        "name": "Persentase perusahaan menyampaikan laporan Rencana Pengelolaan Lingkungan (RKL)/ Rencana Pemantauan Lingkungan (RPL) / Upaya Pengelolaan Lingkungan (UKL)/ Upaya Pemantauan Lingkungan (UPL)  secara berkala 6 bulan sekali"
+      },
+      {
+        "no": 11,
+        "name": "Persentase usaha mikro sektor makanan, minuman, industri pengolahan yang memiliki Sertifikat PIRT, MD BPOM/Izin Edar"
+      }
+    ]
+  },
+  {
+    "sheet": "6 Pariwisata",
+    "tatanan": "TATANAN PARIWISATA",
+    "indicators": [
+      {
+        "no": 1,
+        "name": "Keberadaan regulasi daerah tentang Pariwisata Sehat"
+      },
+      {
+        "no": 2,
+        "name": "Rencana Induk Pembangunan Pariwisata Daerah (RIPPARDA) masuk dalam dokumen perencanaan daerah (RPJMD/Renstra/RKPD)"
+      },
+      {
+        "no": 3,
+        "name": "Jumlah Usaha Daya Tarik Wisata  yang mengimplementasi kawasan tanpa rokok (KTR)"
+      },
+      {
+        "no": 4,
+        "name": "Persentase sarana akomodasi pariwisata yang laik sehat"
+      },
+      {
+        "no": 5,
+        "name": "Persentase restoran yang memiliki sertifikat laik hygiene sanitasi (SLHS)"
+      },
+      {
+        "no": 6,
+        "name": "Keberadaan Daya Tarik Wisata (DTW) yang menyediakan fasilitas pelayanan kesehatan atau bekerjasama dengan fasilitas pelayanan kesehatan terdekat"
+      },
+      {
+        "no": 7,
+        "name": "Jumlah Daya Tarik Wisata (DTW) yang memiliki sertifikat laik sehat (SLS)"
+      },
+      {
+        "no": 8,
+        "name": "Persentase Daya Tarik Wisata (DTW) yang menerapkan pariwisata inklusif"
+      },
+      {
+        "no": 9,
+        "name": "Daya Tarik Wisata (DTW) menyediakan asuransi keselamatan bagi wisatawan"
+      },
+      {
+        "no": 10,
+        "name": "Tersedianya Daya Tarik Wisata (DTW) yang kondusif"
+      },
+      {
+        "no": 11,
+        "name": "Kabupaten/Kota memiliki Desa/Kampung Wisata"
+      },
+      {
+        "no": 12,
+        "name": "Tedapat Kelompok Sadar Wisata (Pokdarwis) di setiap Desa/Kampung Wisata"
+      },
+      {
+        "no": 13,
+        "name": "Persentase Tempat Pengolahan Pangan (TPP) Sertifikat dan Non Sertifikat Laik higiene Sanitasi (SLHS) yang dilakukan pembinaan/pengawasan dengan pemberian label"
+      },
+      {
+        "no": 14,
+        "name": "Persentase Usaha Daya Tarik Wisata yang memiliki upaya pengelolaan sampah secara mandiri"
+      }
+    ]
+  },
+  {
+    "sheet": "7 Transportasi dan Tertib Lalin",
+    "tatanan": "TATANAN TRANSPORTASI DAN  TERTIB LALU LINTAS JALAN",
+    "indicators": [
+      {
+        "no": 1,
+        "name": "Adanya regulasi terkait penyediaan layanan transportasi jalan, kawasan tertib lalu lintas, sistem manajemen keselamatan lalu lintas dan angkutan jalan"
+      },
+      {
+        "no": 2,
+        "name": "Persentase kendaraan umum yang laik jalan"
+      },
+      {
+        "no": 3,
+        "name": "Persentase penurunan tingkat fatalitas akibat kecelakaan dalam tahun berjalan"
+      },
+      {
+        "no": 4,
+        "name": "Adanya penerapan Kawasan Tanpa Rokok di Terminal"
+      },
+      {
+        "no": 5,
+        "name": "Keberadaan sistem layanan pertolongan kecelakaan yang cepat dan terintegrasi Kesiapsiagaan dalam penanganan korban kecelakaan"
+      },
+      {
+        "no": 6,
+        "name": "Adanya program atau kegiatan pemeriksaan NAPZA atau narkoba terhadap pengemudi yang dilakukan"
+      },
+      {
+        "no": 7,
+        "name": "Terminal yang memenuhi syarat kesehatan"
+      },
+      {
+        "no": 8,
+        "name": "Persentase angkutan umum yang memiliki BLUe (Bukti Lulus Uji Elektronik)"
+      },
+      {
+        "no": 9,
+        "name": "Keberadaan fasilitas jalur pejalan kaki (trotoar) bagi masyarakat umum dan penyandang disabilitas"
+      },
+      {
+        "no": 10,
+        "name": "Jumlah titik fasilitas jalur sepeda"
+      },
+      {
+        "no": 11,
+        "name": "Adanya zona selamat sekolah"
+      },
+      {
+        "no": 12,
+        "name": "Pengawasan dan penindakan terhadap emisi gas buang kendaraan"
+      }
+    ]
+  },
+  {
+    "sheet": "8 Sosial",
+    "tatanan": "TATANAN PERLINDUNGAN SOSIAL",
+    "indicators": [
+      {
+        "no": 1,
+        "name": "Penerima Pelayanan Dasar yang diberikan layanan SPM Bidang Sosial"
+      },
+      {
+        "no": 2,
+        "name": "Tersedianya data DTKS yang terverifikasi dan tervalidisasi"
+      },
+      {
+        "no": 3,
+        "name": "Monitoring dan evaluasi program jaminan perlindungan sosial yang dilakukan daerah"
+      },
+      {
+        "no": 4,
+        "name": "Persentase pelayanan komprehensif yang diberikan kepada perempuan dan anak korban kekerasan"
+      },
+      {
+        "no": 5,
+        "name": "Persentase pemerlu pelayanan kesejahteraan sosial (PPKS) yang memperoleh program perlindungan dan jaminan sosial, rehabilitasi sosial dan pemberdayaan sosial"
+      },
+      {
+        "no": 6,
+        "name": "Adanya peraturan mengenai Penyelenggaraan Kesejahteraan Sosial di daerah"
+      },
+      {
+        "no": 7,
+        "name": "Adanya layanan pengaduan terkait permasalahan sosial"
+      },
+      {
+        "no": 8,
+        "name": "Adanya kebijakan/program peningkatan kesejahteraan sosial dalam Rencana Pembangunan jangka Menengah Daerah/RPJMD"
+      },
+      {
+        "no": 9,
+        "name": "Keberadaan peran Lembaga Kesejahteraan Sosial (LKS) yang memberikan penanganan kepada pemerlu pelayanan kesejahteraan sosial (PPKS) yang berbadan hukum/ terdaftar di dinas sosial"
+      },
+      {
+        "no": 10,
+        "name": "Adanya regulasi daerah tentang penanganan kekerasan anak, perempuan dan lansia"
+      },
+      {
+        "no": 11,
+        "name": "Adanya penyelenggaraan penanganan kekerasan anak, perempuan dan lansia  dalam Rencana Pembangunan Jangka Menengah Daerah/RPJMD"
+      },
+      {
+        "no": 12,
+        "name": "Adanya upaya pencegahan untuk menurunkan angka perkawinan pada usia anak"
+      },
+      {
+        "no": 13,
+        "name": "Adanya penggiat penanganan kekerasan terhadap anak, perempuan dan lansia baik secara individu/kelompok"
+      }
+    ]
+  },
+  {
+    "sheet": "9 Penanggulangan Bencana",
+    "tatanan": "TATANAN  PENANGGULANGAN BENCANA",
+    "indicators": [
+      {
+        "no": 1,
+        "name": "Adanya dokumen Kajian Risiko Bencana (KRB)  yang telah disahkan oleh Kepala Daerah"
+      },
+      {
+        "no": 2,
+        "name": "Adanya dokumen Rencana Penanggulangan Bencana Daerah yang telah disahkan oleh Kepala Daerah"
+      },
+      {
+        "no": 3,
+        "name": "Adanya dokumen rencana kontingensi daerah yang telah disahkan oleh Kepala Daerah"
+      },
+      {
+        "no": 4,
+        "name": "Adanya kebijakan dan regulasi penanggulangan bencana di daerah"
+      },
+      {
+        "no": 5,
+        "name": "Adanya integrasi Kajian Resiko Bencana (KRB) dan Rencana Penanggulangan Bencana ke dalam dokumen perencanaan daerah ((RPJMD/RKPD/Renstra PD/ Renja PD)"
+      },
+      {
+        "no": 6,
+        "name": "Adanya sistem peringatan dini yang berfungsi dengan baik sesuai potensi ancaman bencana wilayahnya (EWS longsor, EWS banjir, EWS tsunami, SKDR, EWS Karlahut, EWS Bencana Nuklir, Biologi, Kimia, dll)."
+      },
+      {
+        "no": 7,
+        "name": "Adanya Tim Reaksi Cepat (TRC) dengan SK Kepala BPBD"
+      },
+      {
+        "no": 8,
+        "name": "Adanya Tim Koordinasi Daerah dalam Pencegahan dan Pengendalian Zoonosis dan Penyakit Infeksius Baru di Daerah"
+      },
+      {
+        "no": 9,
+        "name": "Adanya alokasi pendanaan BTT untuk penyediaan logistik kebutuhan dasar yang mencukupi di masing-masing di Kabupaten/Kota dalam kesiapsiagaan bencana"
+      },
+      {
+        "no": 10,
+        "name": "Persentase wilayah tangguh bencana (Destana/Kampung Siaga Bencana) yang aktif melakukan upaya pengelolaan risiko bencana di daerah rawan bencana."
+      },
+      {
+        "no": 11,
+        "name": "Adanya Forum Pengurangan Risiko Bencana (FPRB) sebagai upaya pemberdayaan masyarakat dalam penanggulangan bencana di Kawasan Rawan Bencana (KRB)"
+      },
+      {
+        "no": 12,
+        "name": "Adanya kerjasama antar daerah yang berbatasan secara langsung, kerjasama daerah dengan pihak ketiga dalam upaya penanggulangan bencana"
+      },
+      {
+        "no": 13,
+        "name": "Kabupaten/Kota yang melaksanakan respon terhadap sinyal SKDR kurang dari 24 jam"
+      },
+      {
+        "no": 14,
+        "name": "Kabupaten/Kota memiliki dokumen Rencana Kontingensi penyakit potensi wabah"
+      }
+    ]
+  }
+]

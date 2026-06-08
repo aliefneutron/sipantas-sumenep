@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300..900;1,300..900&family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --color-brand-primary: #2d3e33; /* Deep Forest Green */
+  --color-brand-accent: #a2c3a4; /* Pale Sage Green */
+  --color-brand-forest: #4b6e5b; /* Medium Natural Green */
+  --color-brand-border: #e2e8df;
+  --color-brand-bg: #f2f5f0;
+}
+
+@layer base {
+  body {
+    background-color: #f2f5f0;
+    color: #2d3e33;
+    font-family: var(--font-sans);
+  }
+}
+
+/* Custom styled classes mimicking the natural tones utility framework */
+.card-natural {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8df;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.text-natural-dark {
+  color: #2d3e33;
+}
+
+.bg-natural-dark {
+  background-color: #2d3e33;
+}
+
+.border-natural-muted {
+  border-color: #e2e8df;
+}
+
+.bg-natural-sage {
+  background-color: #a2c3a4;
+}
+
+.text-natural-sage {
+  color: #a2c3a4;
+}
+
+.bg-natural-forest {
+  background-color: #4b6e5b;
+}
+
+.text-natural-forest {
+  color: #4b6e5b;
+}
+
+.progress-bar-natural {
+  height: 8px;
+  border-radius: 4px;
+  background: #e8ede5;
+  overflow: hidden;
+}
+
+.progress-fill-natural {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease-in-out;
+}
+

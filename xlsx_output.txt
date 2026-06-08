@@ -1,0 +1,333 @@
+
+=== Sheet: 1 Sehat Mandiri ===
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+NO,TATANAN  KEHIDUPAN MASYARAKAT SEHAT MANDIRI,SKALA,NILAI SELF-ASSESMENT,LINK BUKTI DUKUNG,NILAI VERIFIKASI PROVINSI,CATATAN TIM PEMBINA PROVINSI,DEFINISI OPERASIONAL,KETERSEDIAAN DATA,BUKTI DATA PENDUKUNG
+1,Jumlah Kematian Ibu ,,,https://drive.google.com/open?id=1PVjiItEUDkvnzfdSO1gyDRXzDJXpxQ7a,,mohon lengkapi data dokumen dan bukti resmi (tanda tangan stempel),"Jumlah kematian perempuan selama kehamilan atau dalam periode 42 hari setelah berakhirnya kehamilan (tanpa memandang usia gestasi), akibat semua sebab yang terkait dengan atau diperberat oleh kehamilan atau penanganannya, tetapi bukan disebabkan oleh kecelakaan/cidera atau kejadian insidental
+
+Peraturan Menteri Kesehatan Nomor 21 Tahun 2021 tentang Pelayanan Kesehatan Masa Sebelum Hamil, Masa Hamil, Persalinan, dan Masa Sesudah Melahirkan, Penyelenggaraan Pelayanan Kontrasepsi, serta Pelayanan Kesehatan Seksual
+","1. Dinkes Kab/Kota melalui Aplikasi Matern
+
+=== Sheet: 2 Perkim dan Fasum ===
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+NO,TATANAN PERMUKIMAN DAN FASILITAS UMUM,SKALA,NILAI SELF-ASSESMENT,LINK BUKTI DUKUNG,NILAI VERIFIKASI PROVINSI,CATATAN TIM PEMBINA PROVINSI,DEFINISI OPERASIONAL,KETERSEDIAAN DATA,BUKTI DATA PENDUKUNG
+1,Nilai Indeks Kualitas Lingkungan Hidup (IKLH),,,https://drive.google.com/open?id=1bGkNvalrbXlotb0PgaWlpfGdkOCaRW1t,,Lampiran agar dijadikan satu folder setiap 1 indikator dan menuliskan link bukti dukung berupa link foldernya saja atau seluruh file digabung dalam 1 file,"PermenLHK Nomor 27 Tahun 2021, yaitu nilai yang menggambarkan kualitas lingkungan hidup dalam suatu wilayah pada waktu tertentu, yang merupakan nilai komposit dari indeks kualitas air, indeks kualitas udara, indeks kualitas lahan dan indeks kualitas air laut.","Data dari Dinas LH kabupaten/kota tentang laporan perhitungan indeks kualitas lingkungan hidup
+",Laporan indeks kualitas lingkungan hidup
+,a. 100 - 50,100,100,https://drive.google.com/open?id=1
+
+=== Sheet: 3 Satuan Pendidikan ===
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+NO,TATANAN SATUAN PENDIDIKAN,SKALA,NILAI SELF-ASSESMENT,LINK BUKTI DUKUNG,NILAI VERIFIKASI PROVINSI,CATATAN TIM PEMBINA PROVINSI,DEFINISI OPERASIONAL,KETERSEDIAAN DATA,BUKTI DATA PENDUKUNG
+1,Keberadaan regulasi daerah tentang pelaksanaan program Usaha Kesehatan Sekolah/Madrasah (UKS/M),,,,,,Pemda mengeluarkan Perda/Perbub/Perwali/Kebijakan Kadis  Pendidikan/Kesehatan terkait dengan program Usaha Kesehatan Sekolah/Madrasah (UKS/M),Perda/Perbub/Perwali/Kebijakan Kadis Pendidikan/ Kesehatan terkait dengan program Usaha Kesehatan Sekolah/Madrasah (UKS/M) diperoleh dari Dinas Pendidikan/Kesehatan,"Dokumen Perda/Perbub/Perwali/Kebijakan Kadis Pendidikan/Kesehatan terkait dengan program Usaha Kesehatan Sekolah/Madrasah (UKS/M)
+Data dari Dinas Pendidikan dan Kemenag, Ada surat Edaran Dirjen PDM ttg Gerakan Sekolah Sehat ke Dinas Pendidikan di 514 Kab/Kota, 38 Provinsi. "
+,a. Ada ,100,100,https://drive.google.com/open?id=17z0
+
+=== Sheet: 4 Pasar ===
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+NO,TATANAN PASAR ,SKALA,NILAI SELF-ASSESMENT,LINK BUKTI DUKUNG,NILAI VERIFIKASI PROVINSI,CATATAN TIM PEMBINA PROVINSI,DEFINISI OPERASIONAL,KETERSEDIAAN DATA,BUKTI DATA PENDUKUNG
+1,Adanya regulasi daerah tentang pasar sehat,,,https://drive.google.com/open?id=12GzmU5-0RYkDjesZNuVbBIpmBHHtLlT0,,,Tersedianya regulasi daerah tentang pasar sehat dengan satuan ukur dokumen,Biro Hukum Pemerintah Daerah,"Perda, Perwali/Perbup, atau SE Kepala Daerah"
+,a. Ada ,100,100,https://drive.google.com/open?id=1gocB1BqJBu-yQCoPCRr4ybEwTDubxQ_M,100,,,,
+,b. Tidak  ,0,,https://drive.google.com/open?id=1bJVq58l-pkkQP776ICjLiGZT9n3TL8UP,,,,,
+2,Adanya regulasi penanganan Pedagang Kaki Lima (PKL),,,https://drive.google.com/open?id=1LHEqxsbdHhk8HKLW9dY90LSWbaiMcdwi,,,Tersedianya regulasi daerah tentang penanganan PKL dengan satuan ukur dokumen,Biro Hukum Pemerintah Daerah,"Perda, Perwali/Perbup, atau SE Kepala Daerah"
+,a. Ada ,100,100,
+
+=== Sheet: 5 Perkantoran dan Perindustrian ===
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+NO,TATANAN  PERKANTORAN DAN PERINDUSTRIAN,SKALA,NILAI SELF-ASSESMENT,LINK BUKTI DUKUNG,NILAI VERIFIKASI PROVINSI,CATATAN TIM PEMBINA PROVINSI,DEFINISI OPERASIONAL,KETERSEDIAAN DATA,BUKTI DATA PENDUKUNG
+1,"Persentase industri kecil dan menengah yang memenuhi standar kegiatan usaha dan/atau standar produk sesuai persyaratan dan/atau kewajiban perizinan berusaha pada sektor perindustrian
+",,,,,data tidak dapat dibuka,"- Merujuk pada Permenperin No. 9 tahun 2021 tentang Standar Kegiatan Usaha dan/atau Produk pada Penyelenggaraan Perizinan Berusaha Berbasis Risiko Sektor Perindustrian.
+
+","- Sistem Informasi Industri Nasional (SIINAS)
+- Laporan Dinas Kesehatan Kabupaten/Kota/Provinsi","Sistem Informasi Industri Nasional (SIINAS)
+"
+,a. > 80% ,100,100,,,,,,
+,b. > 60 sd < 80% ,50,,https://drive.google.com/open?id=12MPktb7q5cZ5BbCL5yNaWuqhLBx9KuNz,,,,,
+,c. > 30 sd < 60% ,25,,https://drive.google.com/open?id=1fPkOWLT
+
+=== Sheet: 6 Pariwisata ===
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+NO,TATANAN PARIWISATA ,SKALA,NILAI SELF-ASSESMENT,LINK BUKTI DUKUNG,NILAI VERIFIKASI PROVINSI,CATATAN TIM PEMBINA PROVINSI,DEFINISI OPERASIONAL,KETERSEDIAAN DATA,BUKTI DATA PENDUKUNG
+1,Keberadaan regulasi daerah tentang Pariwisata Sehat ,,,,,,"Pemerintah daerah menyusun Regulasi terkait Penyelenggaraan Kepariwisataan dalam bentuk PerDa, dimana didalam pasal terdapat substansi yang berupa: pembangunan dan penguatan kepariwisataan ; Destinasi, SDM, dan industri pariwisata yang bertatanan pariwisata sehat, CHSE, berkelanjutan dan ramah wisatawan; sapta pesona;",data dapat diperoleh pada Dinas Pariwisata / Bappeda,"Peraturan Daerah (Tentang penyelenggaraan Kepariwisataan), Perwali/Perbup"
+,a. Ada ,100,100,https://drive.google.com/open?id=1ETFF445Q4i0NyZXVoVrUFyJmQpBXG5Vf,100,,,,
+,b. Tidak,0,,https://drive.google.com/open?id=1IvKb-9SlG9fSqd1Q6TMszKgrNPvDKgDn,,,,,
+2,Rencana Induk Pembangunan Pariwisata Daerah (RIPPARDA) ma
+
+=== Sheet: 7 Transportasi dan Tertib Lalin ===
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+NO,TATANAN TRANSPORTASI DAN  TERTIB LALU LINTAS JALAN,SKALA,NILAI SELF-ASSESMENT,LINK BUKTI DUKUNG,NILAI VERIFIKASI PROVINSI,CATATAN TIM PEMBINA PROVINSI,DEFINISI OPERASIONAL,KETERSEDIAAN DATA,BUKTI DATA PENDUKUNG
+1,"Adanya regulasi terkait penyediaan layanan transportasi jalan, kawasan tertib lalu lintas, sistem manajemen keselamatan lalu lintas dan angkutan jalan",,,https://drive.google.com/open?id=16HuWzCAPsx0Nf9tDw3NBFQXVbDw7QdH4,,,"Sesuai UU No 23 tahun 2014 tentang pembagian kewenangan dan UU No 22 tahun 2009 tentang LLAJ, ada Pembagian kewenangan pembinaan antara pemerintah pusat dan daerah, dimaksudkan agar tugas dan tanggung jawab setiap pembina bidang Lalu Lintas dan Angkutan Jalan terlihat lebih jelas dan transparan sehingga penyelenggaraan Lalu Lintas dan Angkutan Jalan dapat terlaksana dengan selamat, aman, tertib, lancar, dan efisien, serta dapat dipertanggungjawabkan","
+Perda/Perbub/Perwali tentang Tra
+
+=== Sheet: 8 Sosial ===
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+NO,TATANAN PERLINDUNGAN SOSIAL,SKALA,NILAI SELF-ASSESMENT,LINK BUKTI DUKUNG,NILAI VERIFIKASI PROVINSI,CATATAN TIM PEMBINA PROVINSI,DEFINISI OPERASIONAL,KETERSEDIAAN DATA,BUKTI DATA PENDUKUNG
+1,Penerima Pelayanan Dasar yang diberikan layanan SPM Bidang Sosial,,,https://drive.google.com/open?id=1eQwIfWA-MoePpiYgcPNev-juQ9u8ZDDL,,,"Penyandang Disabilitas Terlantar, Anak Terlantar, Lanjut Usia Terlantar, Gelandangan dan Pengemis mendapatkan layanan rehabilitasi sosial serta korban bencana yang mendapatkan perlindungan dan jaminan sosial sesuai SPM Bidang Sosial
+
+(Permensos 9 Tahun 2018 dan Permengdari 59 Tahun 2021 Tentang Penerapan SPM )",Dinas Sosial Kabupaten/Kota,Capaian Penerapan SPM Bidang Sosial
+,a. Memenuhi capaian SPM Bidang Sosial bernilai 100,100,100,https://drive.google.com/open?id=1K6FBHRKgw05pk8uDI2fisvYX2Dv0cECv,100,,,,
+,b. Tidak memenuhi capaian SPM,0,,https://drive.google.com/open?id=1qhSqkx_UL
+
+=== Sheet: 9 Penanggulangan Bencana ===
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+NO,TATANAN  PENANGGULANGAN BENCANA,SKALA,NILAI SELF-ASSESMENT,LINK BUKTI DUKUNG,NILAI VERIFIKASI PROVINSI,CATATAN TIM PEMBINA PROVINSI,DEFINISI OPERASIONAL,KETERSEDIAAN DATA,BUKTI DATA PENDUKUNG
+1,Adanya dokumen Kajian Risiko Bencana (KRB)  yang telah disahkan oleh Kepala Daerah,,,,75,"Dokumen bukti dukung sudah sesuai, kedepannya dokumen untuk disahkan oleh Kepala Daerah setempat, dokumen dapat diupload berupa 1 dokumen lengkap","Kajian Risiko Bencana (KRB) adalah Dokumen wajib yang berisi pedoman umum yang digunakan daerah dalam Penanggulangan Bencana. KRB meliputi: Peta Risiko Bencana yang meliputi Peta Ancaman, Peta Kerentanan, dan Peta Kapasitas sebagai landasan penentuan tingkat risiko bencana dan kebijakan minimum Penanggulangan Bencana daerah yang ditujukan untuk mengurangi jumlah jiwa terpapar, kerugian harta benda dan kerusakan lingkungan. KRB merupakan layanan pokok yang memberikan layanan dasar 
+
+=== Sheet: Dataumum ===
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+1,Provinsi,:,Provinsi jawa Timur
+2,Kabupaten/kota,:,Sumenep
+3,Nama forum ,:,Forum Sumenep Sehat
+4,Nama ketua forum,:,"Drs. Koesman Hadi, M.Si"
+5,Alamat ,:,Komplek Kantor Pemda Sumenep
+,,,
+6,Nama Walikota/Bupati,:,"Dr. H. Achmad  Fauzi, Wongsojudo S.H, M.H."
+7,Alamat kantor ,:,Jl. Dr. Cipto No 1 Kolor Sumenep
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,
+
+=== Sheet: Kelembagaan ===
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+NO,Variabel kegiatan,Keterangan ,,,CATATAN TIM PEMBINA PROVINSI
+,,Ada (√),Tidak Ada (-),Lampirkan Bukti,
+A,FORUM KABUPATEN/KOTA ,,,,
+1,Sekretariat  ,,,https://drive.google.com/file/d/1LPMJox8z4IH8-qPE3jiuAFw_DY1dWofQ/view?usp=drive_link,"Dokumentasi sektap hanya berupa bener saja, tanpa melampirkan kelengkapan kantor sektapnya"
+,"Adanya kantor sekretariat dengan perabotan, papan nama yang jelas, display data  ",,,,
+2,Legal Aspek,,,https://drive.google.com/file/d/147BFtCk38KGRsmQg_icg2Rnx6h0TyeM9/view?usp=sharing,SK Forum tahun 2021 ada
+,Adanya Forum dengan SK ,,,,
+3,Rencana kerja/kegiatan forum,,,https://drive.google.com/file/d/1u3A_8tcuzx-FS8MpxBaOk0Z4RDliFamb/view?usp=sharing,Rencana Kerja forum 2021 ada
+,Adanya dokumen rencana kegiatan/kerja forum berkaitan dengan tatanan  dan terdokumentasi dengan baik.  ,,,,
+4,Kegiatan forum (khusus forum) ,,,https://drive.google.com/drive/folders/1Ts_sO8UlCJXr5H4EcWdYs-aO0obzPfey?usp=sharing,Dokumen

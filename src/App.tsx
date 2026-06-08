@@ -1,0 +1,346 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Award, ShieldCheck, Settings, Users, BookOpen, AlertTriangle, 
+  Bell, Clock, Calendar, RefreshCw, FileText, Sparkles, Building, Lock, Info, CheckCircle,
+  Menu, ChevronDown, ChevronRight, Database
+} from 'lucide-react';
+import { KabupatenProposal, SystemConfig, NotificationMsg, INITIAL_TATANAN_STRUCTURE } from './types';
+import { INITIAL_PROPOSALS, INITIAL_SYSTEM_CONFIG, NOTIFICATIONS_MOCK } from './data';
+import { KabupatenDashboard } from './components/KabupatenDashboard';
+import { ProvinsiDashboard } from './components/ProvinsiDashboard';
+import { PusatDashboard } from './components/PusatDashboard';
+import { RekapitulasiData } from './components/RekapitulasiData';
+import { collection, onSnapshot, doc, setDoc } from "firebase/firestore";
+import { db } from "./lib/firebase";
+
+export default function App() {
+  // App state persistent storage
+  const [proposals, setProposals] = useState<KabupatenProposal[]>(INITIAL_PROPOSALS);
+
+  const [systemConfig, setSystemConfig] = useState<SystemConfig>(() => {
+    const stored = localStorage.getItem('sipantas_config_v1');
+    if (stored) {
+      try { return JSON.parse(stored); } catch (e) { return INITIAL_SYSTEM_CONFIG; }
+    }
+    return INITIAL_SYSTEM_CONFIG;
+  });
+
+  const [notifications, setNotifications] = useState<NotificationMsg[]>(() => {
+    const stored = localStorage.getItem('sipantas_notifs_v1');
+    if (stored) {
+      try { return JSON.parse(stored); } catch (e) { return NOTIFICATIONS_MOCK; }
+    }
+    return NOTIFICATIONS_MOCK;
+  });
+
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [resetKey, setResetKey] = useState(0); // Trigger clean state resets
+  const [activeMenu, setActiveMenu] = useState<string>('dashboard');
+  const [isTatananMenuOpen, setIsTatananMenuOpen] = useState(true);
+
+  // Sync state to local storage when resetKey changes (for full reset)
+  useEffect(() => {
+    if (resetKey > 0) {
+      setSystemConfig(INITIAL_SYSTEM_CONFIG);
+      setNotifications(NOTIFICATIONS_MOCK);
+      localStorage.setItem('sipantas_config_v1', JSON.stringify(INITIAL_SYSTEM_CONFIG));
+      localStorage.setItem('sipantas_notifs_v1', JSON.stringify(NOTIFICATIONS_MOCK));
+      
+      // Also reset Firestore
+      INITIAL_PROPOSALS.forEach(async (p) => {
+        try { await setDoc(doc(db, "proposals", p.id), p); } catch(e) {}
+      });
+    }
+  }, [resetKey]);
+
+  // Listen to Firestore real-time updates for proposals
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "proposals"), (snapshot) => {
+      if (snapshot.empty) {
+        // Seed database if empty
+        INITIAL_PROPOSALS.forEach(async (p) => {
+          try {
+            await setDoc(doc(db, "proposals", p.id), p);
+          } catch (error) {
+            console.error("Error seeding initial proposals:", error);
+          }
+        });
+      } else {
+        const loaded: KabupatenProposal[] = [];
+        snapshot.forEach((docSnapshot) => {
+          loaded.push(docSnapshot.data() as KabupatenProposal);
+        });
+        setProposals(loaded);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Persist alterations
+  const updateSingleProposal = async (updated: KabupatenProposal) => {
+    // Update local state optimistically
+    const updatedList = proposals.map(p => p.id === updated.id ? updated : p);
+    setProposals(updatedList);
+    
+    // Save to Firestore
+    try {
+      await setDoc(doc(db, "proposals", updated.id), updated);
+    } catch (error) {
+      console.error("Error saving proposal to Firestore:", error);
+      triggerNotification("System Error", "Gagal menyimpan data ke cloud Firebase.");
+    }
+  };
+
+  const updateSystemConfig = (newConfig: SystemConfig) => {
+    setSystemConfig(newConfig);
+    localStorage.setItem('sipantas_config_v1', JSON.stringify(newConfig));
+  };
+
+  // Trigger app notifications
+  const triggerNotification = (sender: string, message: string) => {
+    const newNotif: NotificationMsg = {
+      id: `dynamic-n-${Date.now()}`,
+      sender,
+      message,
+      timestamp: new Date().toISOString(),
+      read: false
+    };
+    const updatedNotifs = [newNotif, ...notifications];
+    setNotifications(updatedNotifs);
+    localStorage.setItem('sipantas_notifs_v1', JSON.stringify(updatedNotifs));
+  };
+
+  const markAllNotifsRead = () => {
+    const readList = notifications.map(n => ({ ...n, read: true }));
+    setNotifications(readList);
+    localStorage.setItem('sipantas_notifs_v1', JSON.stringify(readList));
+  };
+
+  // Full reset to play again
+  const handleFullReset = () => {
+    if (window.confirm("Apakah Anda yakin ingin mengatur ulang data draf SIPANTAS Kabupaten ke pengaturan bawaan? Semua inputan Anda akan diset ulang.")) {
+      localStorage.removeItem('sipantas_proposals_v1');
+      localStorage.removeItem('sipantas_config_v1');
+      localStorage.removeItem('sipantas_notifs_v1');
+      setResetKey(prev => prev + 1);
+    }
+  };
+
+  // Find User's Kabupaten pointer (Default is Kabupaten Sumenep)
+  const userProposal = proposals.find(p => p.id === 'kab-sumenep') || proposals[0];
+
+  return (
+    <div className="min-h-screen bg-[#F0FDF4] text-[#166534] flex flex-col md:flex-row" id="sipantas-app-root">
+      
+      {/* Sidebar */}
+      <aside className="w-full md:w-64 bg-white border-r border-[#BBF7D0] flex flex-col h-screen sticky top-0 shrink-0 z-50">
+        <div className="p-4 border-b border-[#BBF7D0] flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1">
+              <ShieldCheck className="w-6 h-6 text-[#16A34A]" />
+              <Award className="w-6 h-6 text-amber-500" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-black text-[#166534] leading-none tracking-tighter text-lg">SIPANTAS</span>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={handleFullReset} className="hidden md:flex text-[10px] items-center text-red-600 bg-red-50 hover:bg-red-100 px-2 py-1 rounded cursor-pointer font-semibold">
+              Reset
+            </button>
+            <button className="md:hidden p-1 text-slate-400 cursor-pointer hover:bg-slate-100 rounded">
+              <Menu className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+        
+        {/* Profile */}
+        <div className="p-5 flex flex-col items-center justify-center border-b border-[#BBF7D0] text-center">
+          <div className="w-16 h-16 rounded-full bg-slate-200 mb-3 overflow-hidden border-2 border-white shadow-sm">
+            <img src="https://images.unsplash.com/photo-1596395828695-037326df047b?auto=format&fit=crop&q=80&w=200&h=200" alt="Profile" className="w-full h-full object-cover" />
+          </div>
+          <span className="text-[11px] uppercase font-bold text-[#166534]">{userProposal?.name || 'Loading...'}</span>
+          <span className="text-[10px] text-slate-500 mt-0.5">( Admin Kabupaten/Kota )</span>
+        </div>
+
+        {/* Menu */}
+        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+          <div className="text-[10px] font-bold text-slate-400 mb-2 px-2 uppercase tracking-widest">MENU</div>
+          
+          <button 
+            onClick={() => setActiveMenu('dashboard')}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'dashboard' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+          >
+            <Settings className="w-4 h-4" /> Dashboard
+          </button>
+          
+          <button 
+            onClick={() => setActiveMenu('odf')}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'odf' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+          >
+            <CheckCircle className="w-4 h-4" /> Open Defecation Free
+          </button>
+
+          {/* Kelembagaan */}
+          <button 
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition text-slate-600 hover:bg-slate-100 cursor-pointer`}
+          >
+            <div className="flex items-center gap-3"><Building className="w-4 h-4" /> Kelembagaan</div>
+            <ChevronRight className="w-4 h-4" />
+          </button>
+
+          {/* Tatanan Accordion */}
+          <div>
+            <button 
+              onClick={() => setIsTatananMenuOpen(!isTatananMenuOpen)}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu.startsWith('tatanan-') ? 'bg-[#F0FDF4] text-[#166534]' : 'text-slate-600 hover:bg-slate-100'}`}
+            >
+              <div className="flex items-center gap-3"><FileText className="w-4 h-4" /> Tatanan</div>
+              {isTatananMenuOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+            </button>
+            {isTatananMenuOpen && (
+              <div className="mt-1 ml-4 border-l-2 border-slate-100 pl-2 space-y-1">
+                {(userProposal?.tatanan || []).map(t => (
+                  <button
+                    key={t.id}
+                    onClick={() => setActiveMenu(`tatanan-${t.id}`)}
+                    className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg text-[11px] font-medium transition cursor-pointer ${activeMenu === `tatanan-${t.id}` ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+                  >
+                    <Award className={`w-3.5 h-3.5 shrink-0 ${activeMenu === `tatanan-${t.id}` ? 'opacity-100' : 'opacity-60'}`} /> 
+                    <span>{t.name.replace('Tatanan ', '')}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <button 
+            onClick={() => setActiveMenu('penghargaan')}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'penghargaan' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+          >
+            <Award className="w-4 h-4" /> Penghargaan
+          </button>
+
+          <button 
+            onClick={() => setActiveMenu('rekapitulasi')}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'rekapitulasi' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+          >
+            <Database className="w-4 h-4" /> Rekapitulasi & Backup
+          </button>
+
+          <button 
+            onClick={() => setActiveMenu('user-opd')}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'user-opd' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+          >
+            <Users className="w-4 h-4" /> User OPD
+          </button>
+        </nav>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
+        
+        {/* Top Navbar */}
+        <header className="bg-[#166534] text-white h-14 flex items-center justify-between px-4 shrink-0 shadow-sm z-40">
+          <div className="flex items-center gap-4">
+            {/* Year Dropdown */}
+            <select className="bg-white/10 border border-white/20 text-white rounded px-2 py-1 text-xs outline-none cursor-pointer hover:bg-white/20 transition">
+              <option value="2025" className="text-slate-800">2025</option>
+            </select>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex gap-2 opacity-80">
+              {/* Dummy icons representing ministeries */}
+              <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-[8px] font-bold">K</div>
+              <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-[8px] font-bold">D</div>
+              <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-[8px] font-bold">P</div>
+            </div>
+            <div className="flex items-center gap-3 border-l border-white/20 pl-4 relative">
+              <button onClick={() => setShowNotifications(!showNotifications)} className="relative hover:bg-white/10 p-1.5 rounded-full transition cursor-pointer">
+                <Bell className="w-4 h-4" />
+                {notifications.some(n => !n.read) && (
+                  <span className="absolute top-1 right-1 h-2 w-2 bg-rose-500 rounded-full animate-ping" />
+                )}
+              </button>
+              <div className="w-7 h-7 rounded-full bg-white/20 overflow-hidden border border-white/30">
+                <img src="https://images.unsplash.com/photo-1596395828695-037326df047b?auto=format&fit=crop&q=80&w=100&h=100" className="w-full h-full object-cover" />
+              </div>
+
+              {/* Notification Overlay Panel */}
+              {showNotifications && (
+                <div className="absolute top-10 right-0 mt-2 w-80 bg-white border border-[#BBF7D0] shadow-xl rounded-2xl p-4 z-50 text-left border-t-2 border-t-[#16A34A] animate-scaleUp text-[#166534]">
+                  <div className="flex items-center justify-between border-b border-[#BBF7D0] pb-2 mb-2">
+                    <span className="text-xs font-bold text-[#166534] font-display uppercase tracking-wide">Pemberitahuan Daerah</span>
+                    <button 
+                      onClick={() => setShowNotifications(false)}
+                      className="text-slate-400 hover:text-slate-600 text-xs font-semibold cursor-pointer"
+                    >
+                      Tutup
+                    </button>
+                  </div>
+                  <div className="space-y-3.5 max-h-60 overflow-y-auto w-full">
+                    {notifications.length === 0 ? (
+                      <p className="text-xs text-slate-400 py-4 text-center">Tidak ada pemberitahuan baru.</p>
+                    ) : (
+                      notifications.map(n => (
+                        <div key={n.id} className="border-b border-[#F0FDF4] pb-2 last:border-0">
+                          <div className="flex justify-between items-center text-[10px] font-bold text-[#16A34A]">
+                            <span>{n.sender}</span>
+                            <span>{new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                          </div>
+                          <p className="text-[11px] text-slate-600 mt-1 leading-relaxed">
+                            {n.message}
+                          </p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* Scrollable Main View */}
+        <main className="flex-1 overflow-y-auto bg-[#F0FDF4] p-4 md:p-6 lg:p-8 relative">
+          
+          <div className="max-w-7xl mx-auto space-y-6">
+            {/* Dynamic Announcement Banner */}
+            <div className="bg-[#166534] text-[#F0FDF4] text-xs font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow-sm">
+              <Clock className="w-4.5 h-4.5 shrink-0 text-[#86EFAC]" />
+              <span>BATAS WAKTU PENGUSULAN: Batas akhir upload e-Monev mandiri Kabupaten/Kota ditutup pada {systemConfig.deadline}. Harap lengkapi semua indikator & dokumen bukti fisik.</span>
+            </div>
+
+            {/* Dynamic Context Render - Kabupaten Portal directly */}
+            {userProposal && (
+              <div id="active-context-area" className="transition-all duration-300">
+                {activeMenu === 'rekapitulasi' ? (
+                  <RekapitulasiData 
+                    proposal={userProposal}
+                    onUpdateProposal={updateSingleProposal}
+                  />
+                ) : (
+                  <KabupatenDashboard 
+                    proposal={userProposal} 
+                    onUpdateProposal={updateSingleProposal}
+                    isLockedByDeadline={systemConfig.isTimelockActive}
+                    activeMenu={activeMenu}
+                  />
+                )}
+              </div>
+            )}
+            
+            {/* Standardized Administrative Policy footer */}
+            <footer className="pt-6 text-center text-xs text-[#166534]/60 font-medium font-sans border-t border-slate-200 mt-8">
+              <p>
+                ©2026 Sistem Informasi Pantau Kabupaten/Kota Sehat | SIPANTAS
+              </p>
+            </footer>
+          </div>
+        </main>
+      </div>
+
+    </div>
+  );
+}

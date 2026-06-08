@@ -1,0 +1,6 @@
+{
+  "name": "SIPANTAS Kabupaten",
+  "description": "Sistem Informasi Pantau Kabupaten/Kota Sehat (SIPANTAS) - Pengisian Capaian Indikator KKS dan Bukti Pendukung Tingkat Kabupaten",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
