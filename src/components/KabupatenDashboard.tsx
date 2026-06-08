@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { 
   FileText, UploadCloud, CheckCircle2, AlertTriangle, 
   ChevronRight, Save, Send, Award, Activity, 
-  HelpCircle, ClipboardList, Info, Trash2, X, ChevronDown, ChevronUp, User
+  HelpCircle, ClipboardList, Info, Trash2, X, ChevronDown, ChevronUp, User, Loader2
 } from 'lucide-react';
 import { KabupatenProposal, TatananAssessment } from '../types';
 import { getProposalStats } from '../utils';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../lib/firebase';
 
 interface KabupatenDashboardProps {
   proposal: KabupatenProposal;
@@ -62,6 +64,35 @@ export function KabupatenDashboard({
   const [editingIndicatorId, setEditingIndicatorId] = useState<string | null>(null);
   const [isIndicatorInfoOpen, setIsIndicatorInfoOpen] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [uploadingIndicatorFiles, setUploadingIndicatorFiles] = useState<Record<string, boolean>>({});
+
+  const handleIndicatorFileUpload = async (indicatorId: string, year: '2024' | '2025', file: File | null) => {
+    if (!file) return;
+    
+    const uploadKey = `${indicatorId}-${year}`;
+    setUploadingIndicatorFiles(prev => ({ ...prev, [uploadKey]: true }));
+    
+    try {
+      const tatananId = activeTatanan?.id || 'unknown';
+      const storageRef = ref(storage, `proposals/${proposal.id}/${tatananId}/${indicatorId}/${year}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`);
+      
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      
+      if (year === '2024') {
+        setEvidenceLink2024(prev => ({ ...prev, [indicatorId]: downloadURL }));
+      } else {
+        setIndicatorLinks(prev => ({ ...prev, [indicatorId]: downloadURL }));
+      }
+      
+      alert(`File ${year} berhasil diunggah! Link telah tersimpan.`);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      alert(`Gagal mengunggah file ${year}. Pastikan File berukuran di bawah 10MB dan aturan Firebase Storage sudah diset.`);
+    } finally {
+      setUploadingIndicatorFiles(prev => ({ ...prev, [uploadKey]: false }));
+    }
+  };
 
   // Trigger editing a legal aspect
   const startEditDoc = (type: 'skTim' | 'skForum' | 'renja') => {
@@ -480,19 +511,47 @@ export function KabupatenDashboard({
                     <div className="space-y-6">
                       <div className="space-y-1.5">
                         <label className="block text-sm font-medium text-slate-700">File 2024 <span className="text-red-500">*</span></label>
-                        <input 
-                          type="file"
-                          className="w-full text-sm border border-slate-300 p-1.5 rounded bg-white file:mr-4 file:py-1 file:px-3 file:rounded file:border file:border-slate-300 file:bg-slate-100 file:text-sm hover:file:bg-slate-200 cursor-pointer"
-                        />
+                        <div className="relative">
+                          <input 
+                            type="file"
+                            onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, '2024', e.target.files?.[0] || null)}
+                            disabled={uploadingIndicatorFiles[`${editingIndicatorId}-2024`]}
+                            className="w-full text-sm border border-slate-300 p-1.5 rounded bg-white file:mr-4 file:py-1 file:px-3 file:rounded file:border file:border-slate-300 file:bg-slate-100 file:text-sm hover:file:bg-slate-200 cursor-pointer disabled:opacity-50"
+                          />
+                          {uploadingIndicatorFiles[`${editingIndicatorId}-2024`] && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                              <Loader2 className="w-4 h-4 animate-spin text-[#16A34A]" />
+                            </div>
+                          )}
+                        </div>
+                        {evidenceLink2024[editingIndicatorId] && (
+                          <a href={evidenceLink2024[editingIndicatorId]} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline block mt-1">
+                            Lihat File 2024 yang Tersimpan
+                          </a>
+                        )}
                         <p className="text-[11px] text-red-500 mt-1">Maksimal Ukuran file 10 MB dan Ekstensi file .pdf, .docx, .doc, .xls, .xlsx</p>
                       </div>
 
                       <div className="space-y-1.5">
                         <label className="block text-sm font-medium text-slate-700">File 2025 <span className="text-red-500">*</span></label>
-                        <input 
-                          type="file"
-                          className="w-full text-sm border border-slate-300 p-1.5 rounded bg-white file:mr-4 file:py-1 file:px-3 file:rounded file:border file:border-slate-300 file:bg-slate-100 file:text-sm hover:file:bg-slate-200 cursor-pointer"
-                        />
+                        <div className="relative">
+                          <input 
+                            type="file"
+                            onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, '2025', e.target.files?.[0] || null)}
+                            disabled={uploadingIndicatorFiles[`${editingIndicatorId}-2025`]}
+                            className="w-full text-sm border border-slate-300 p-1.5 rounded bg-white file:mr-4 file:py-1 file:px-3 file:rounded file:border file:border-slate-300 file:bg-slate-100 file:text-sm hover:file:bg-slate-200 cursor-pointer disabled:opacity-50"
+                          />
+                          {uploadingIndicatorFiles[`${editingIndicatorId}-2025`] && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                              <Loader2 className="w-4 h-4 animate-spin text-[#16A34A]" />
+                            </div>
+                          )}
+                        </div>
+                        {indicatorLinks[editingIndicatorId] && (
+                          <a href={indicatorLinks[editingIndicatorId]} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline block mt-1">
+                            Lihat File 2025 yang Tersimpan
+                          </a>
+                        )}
                         <p className="text-[11px] text-red-500 mt-1">Maksimal Ukuran file 10 MB dan Ekstensi file .pdf, .docx, .doc, .xls, .xlsx</p>
                       </div>
 
