@@ -165,9 +165,6 @@ export default function App() {
             </div>
           </div>
           <div className="flex gap-2">
-            <button onClick={handleFullReset} className="hidden md:flex text-[10px] items-center text-red-600 bg-red-50 hover:bg-red-100 px-2 py-1 rounded cursor-pointer font-semibold">
-              Reset
-            </button>
             <button className="md:hidden p-1 text-slate-400 cursor-pointer hover:bg-slate-100 rounded">
               <Menu className="w-5 h-5" />
             </button>
@@ -258,7 +255,7 @@ export default function App() {
               onClick={() => setActiveMenu('user-opd')}
               className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'user-opd' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
             >
-              <Users className="w-4 h-4" /> Manajemen Akun
+              <Settings className="w-4 h-4" /> Pengaturan Sistem
             </button>
           )}
 
@@ -357,7 +354,7 @@ export default function App() {
                     onUpdateProposal={updateSingleProposal}
                   />
                 ) : activeMenu === 'user-opd' && userSession?.role === 'superadmin' ? (
-                  <UserManagement />
+                  <UserManagement onResetDatabase={handleFullReset} />
                 ) : (
                   <KabupatenDashboard 
                     proposal={userProposal} 

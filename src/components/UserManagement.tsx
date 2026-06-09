@@ -12,7 +12,11 @@ interface UserData {
   role: 'admin' | 'opd' | 'superadmin';
 }
 
-export function UserManagement() {
+interface UserManagementProps {
+  onResetDatabase?: () => void;
+}
+
+export function UserManagement({ onResetDatabase }: UserManagementProps) {
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -122,10 +126,10 @@ export function UserManagement() {
             Menu Super Admin
           </span>
           <h3 className="text-xl font-bold text-[#166534] mt-2">
-            Manajemen Pengguna (Akun)
+            Pengaturan Sistem & Akun
           </h3>
           <p className="text-xs text-slate-500 mt-1">
-            Tambah, edit, atau hapus akun Admin Bappeda dan OPD Pengampu.
+            Tambah, edit, hapus akun pengguna dan kelola pengaturan tingkat tinggi.
           </p>
         </div>
         <button 
@@ -191,6 +195,28 @@ export function UserManagement() {
           </tbody>
         </table>
       </div>
+
+      {/* Danger Zone */}
+      {onResetDatabase && (
+        <div className="mt-12 pt-6 border-t border-red-100 animate-fadeIn">
+          <div className="bg-red-50 rounded-2xl border border-red-200 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <h4 className="text-red-700 font-bold text-lg flex items-center gap-2">
+                <Trash2 className="w-5 h-5" /> Zona Berbahaya (Danger Zone)
+              </h4>
+              <p className="text-xs text-red-600/80 mt-1 font-medium leading-relaxed max-w-lg">
+                Tindakan ini akan <b>menghapus seluruh draf capaian dan bukti file</b> dari seluruh tatanan yang sudah diisi, serta mengembalikan aplikasi ke kondisi kosong dari pabrik. <b>Hanya lakukan jika Anda sedang dalam tahap uji coba (Testing).</b>
+              </p>
+            </div>
+            <button 
+              onClick={onResetDatabase}
+              className="w-full md:w-auto px-5 py-3 bg-white text-red-600 hover:bg-red-600 hover:text-white font-bold text-sm rounded-xl border-2 border-red-200 hover:border-red-600 transition-all shadow-sm"
+            >
+              Reset Total Database
+            </button>
+          </div>
+        </div>
+      )}
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
