@@ -403,17 +403,6 @@ export function KabupatenDashboard({
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 pt-6 mt-4 border-t border-slate-100">
-          <button
-            onClick={saveTatananAssess}
-            disabled={isFormDisabled}
-            className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition flex items-center gap-2 shadow-sm ${
-              isFormDisabled ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-[#16A34A] hover:bg-[#166534] text-white cursor-pointer active:scale-95'
-            }`}
-          >
-            <Save className="w-4 h-4" /> Simpan Data
-          </button>
-        </div>
 
         {/* Inner Overlaid Editing Form for Specific Selected Indicator */}
         {editingIndicatorId && (() => {
