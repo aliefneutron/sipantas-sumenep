@@ -8,6 +8,7 @@ export interface UserSession {
   username: string;
   name: string;
   role: 'admin' | 'opd' | 'superadmin';
+  avatarUrl?: string;
 }
 
 interface LoginProps {
@@ -56,7 +57,8 @@ export function Login({ onLoginSuccess }: LoginProps) {
             id: doc.id,
             username: data.username,
             name: data.name,
-            role: data.role
+            role: data.role,
+            avatarUrl: data.avatarUrl
           });
         }
       });

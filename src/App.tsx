@@ -3,7 +3,7 @@ import {
   Award, ShieldCheck, Settings, Users, BookOpen, AlertTriangle, 
   Bell, Clock, Calendar, RefreshCw, FileText, Sparkles, Building, Lock, Info, CheckCircle,
   Menu, ChevronDown, ChevronRight, Database,
-  User, LayoutGrid, ShoppingBag, Briefcase, MapPin, Truck, Shield, Globe
+  User, LayoutGrid, ShoppingBag, Briefcase, MapPin, Truck, Shield, Globe, Edit2
 } from 'lucide-react';
 import { KabupatenProposal, SystemConfig, NotificationMsg, INITIAL_TATANAN_STRUCTURE } from './types';
 import { INITIAL_PROPOSALS, INITIAL_SYSTEM_CONFIG, NOTIFICATIONS_MOCK } from './data';
@@ -11,6 +11,7 @@ import { KabupatenDashboard } from './components/KabupatenDashboard';
 import { RekapitulasiData } from './components/RekapitulasiData';
 import { Login, UserSession } from './components/Login';
 import { UserManagement } from './components/UserManagement';
+import { ProfileEdit } from './components/ProfileEdit';
 import { collection, onSnapshot, doc, setDoc } from "firebase/firestore";
 import { db } from "./lib/firebase";
 
@@ -38,6 +39,7 @@ export default function App() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string>('dashboard');
   const [isTatananMenuOpen, setIsTatananMenuOpen] = useState(true);
+  const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
   const [userSession, setUserSession] = useState<UserSession | null>(() => {
     const saved = localStorage.getItem('sipantas_session');
     return saved ? JSON.parse(saved) : null;
@@ -172,11 +174,29 @@ export default function App() {
         </div>
         
         <div className="p-5 flex flex-col items-center justify-center border-b border-[#BBF7D0] text-center">
-          <div className="w-16 h-16 rounded-full bg-slate-200 mb-3 overflow-hidden border-2 border-white shadow-sm">
-            <img src="https://images.unsplash.com/photo-1596395828695-037326df047b?auto=format&fit=crop&q=80&w=200&h=200" alt="Profile" className="w-full h-full object-cover" />
+          <div 
+            className="relative group cursor-pointer w-16 h-16 rounded-full mb-3 overflow-hidden border-2 border-white shadow-sm bg-slate-200"
+            onClick={() => setIsProfileEditOpen(true)}
+            title="Edit Profil"
+          >
+            {userSession?.avatarUrl ? (
+              <img src={userSession.avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-[#DCFCE7] text-[#16A34A] flex items-center justify-center text-2xl font-bold uppercase">
+                {userSession?.name?.charAt(0) || 'U'}
+              </div>
+            )}
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <Edit2 className="w-5 h-5 text-white" />
+            </div>
           </div>
-          <span className="text-[11px] uppercase font-bold text-[#166534]">{userSession?.name || 'Loading...'}</span>
-          <span className="text-[10px] text-slate-500 mt-0.5">( {userSession?.role === 'superadmin' ? 'Super Admin' : userSession?.role === 'admin' ? 'Admin Bappeda' : 'OPD Pengampu'} )</span>
+          <button 
+            onClick={() => setIsProfileEditOpen(true)}
+            className="text-[11px] uppercase font-bold text-[#166534] hover:text-[#16A34A] flex items-center gap-1.5 transition cursor-pointer"
+          >
+            {userSession?.name || 'Loading...'} <Edit2 className="w-3 h-3" />
+          </button>
+          <span className="text-[10px] text-slate-500 mt-1">( {userSession?.role === 'superadmin' ? 'Super Admin' : userSession?.role === 'admin' ? 'Admin Bappeda' : 'OPD Pengampu'} )</span>
         </div>
 
         {/* Menu */}
@@ -376,6 +396,14 @@ export default function App() {
           </div>
         </main>
       </div>
+
+      {isProfileEditOpen && userSession && (
+        <ProfileEdit 
+          userSession={userSession} 
+          onClose={() => setIsProfileEditOpen(false)} 
+          onUpdateSession={handleLoginSuccess}
+        />
+      )}
 
     </div>
   );
