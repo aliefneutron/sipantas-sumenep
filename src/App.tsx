@@ -355,12 +355,6 @@ export default function App() {
             </select>
           </div>
           <div className="flex items-center gap-4">
-            <div className="hidden md:flex gap-2 opacity-80">
-              {/* Dummy icons representing ministeries */}
-              <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-[8px] font-bold">K</div>
-              <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-[8px] font-bold">D</div>
-              <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-[8px] font-bold">P</div>
-            </div>
             <div className="flex items-center gap-3 border-l border-white/20 pl-4 relative">
               <button onClick={() => setShowNotifications(!showNotifications)} className="relative hover:bg-white/10 p-1.5 rounded-full transition cursor-pointer">
                 <Bell className="w-4 h-4" />
