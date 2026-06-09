@@ -27,6 +27,9 @@ try {
       tsContent += `      { \n`;
       tsContent += `        id: 't${index + 1}-i${iIndex + 1}', \n`;
       tsContent += `        question: ${JSON.stringify(ind.name)}, \n`;
+      tsContent += `        definisiOperasional: ${JSON.stringify(ind.definisiOperasional || '')}, \n`;
+      tsContent += `        sumberData: ${JSON.stringify(ind.sumberData || '')}, \n`;
+      tsContent += `        buktiDukung: ${JSON.stringify(ind.buktiDukung || '')}, \n`;
       tsContent += `        skala: ${JSON.stringify(ind.skala || [])} \n`;
       tsContent += `      }${iIndex === sheetData.indicators.length - 1 ? '' : ','}\n`;
     });
@@ -44,8 +47,8 @@ try {
   typesFile = typesFile.replace(regex, tsContent);
   
   // Need to also update the TatananAssessment type to include skala
-  const typeRegex = /indicators:\s*\{\s*id:\s*string;\s*question:\s*string;\s*score:\s*IndicatorScore;\s*\}\[\];/;
-  typesFile = typesFile.replace(typeRegex, 'indicators: {\n    id: string;\n    question: string;\n    skala?: { nilai: number, deskripsi: string }[];\n    score: IndicatorScore;\n  }[];');
+  const typeRegex = /indicators:\s*\{\s*id:\s*string;\s*question:\s*string;[\s\S]*?score:\s*IndicatorScore;\s*\}\[\];/;
+  typesFile = typesFile.replace(typeRegex, 'indicators: {\n    id: string;\n    question: string;\n    definisiOperasional?: string;\n    sumberData?: string;\n    buktiDukung?: string;\n    skala?: { nilai: number, deskripsi: string }[];\n    score: IndicatorScore;\n  }[];');
 
   fs.writeFileSync('src/types.ts', typesFile);
   console.log('Successfully updated src/types.ts with skala info');

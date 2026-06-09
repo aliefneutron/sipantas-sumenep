@@ -4,7 +4,7 @@ import {
   ChevronRight, Save, Send, Award, Activity, 
   HelpCircle, ClipboardList, Info, Trash2, X, ChevronDown, ChevronUp, User, Loader2
 } from 'lucide-react';
-import { KabupatenProposal, TatananAssessment } from '../types';
+import { KabupatenProposal, TatananAssessment, INITIAL_TATANAN_STRUCTURE } from '../types';
 import { getProposalStats } from '../utils';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../lib/firebase';
@@ -68,6 +68,10 @@ export function KabupatenDashboard({
 
   const handleIndicatorFileUpload = async (indicatorId: string, year: '2024' | '2025', file: File | null) => {
     if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Gagal mengunggah: Ukuran file melebihi batas maksimal 5 MB!");
+      return;
+    }
     
     const uploadKey = `${indicatorId}-${year}`;
     setUploadingIndicatorFiles(prev => ({ ...prev, [uploadKey]: true }));
@@ -88,7 +92,7 @@ export function KabupatenDashboard({
       alert(`File ${year} berhasil diunggah! Link telah tersimpan.`);
     } catch (error) {
       console.error("Error uploading file:", error);
-      alert(`Gagal mengunggah file ${year}. Pastikan File berukuran di bawah 10MB dan aturan Firebase Storage sudah diset.`);
+      alert(`Gagal mengunggah file ${year}. Pastikan File berukuran di bawah 5MB dan aturan Firebase Storage sudah diset.`);
     } finally {
       setUploadingIndicatorFiles(prev => ({ ...prev, [uploadKey]: false }));
     }
@@ -423,7 +427,11 @@ export function KabupatenDashboard({
                       {isIndicatorInfoOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                     </button>
                     
-                    {isIndicatorInfoOpen && (
+                    {isIndicatorInfoOpen && (() => {
+                      const referenceTatanan = INITIAL_TATANAN_STRUCTURE.find(t => t.id === selectedTatananId);
+                      const referenceInd = referenceTatanan?.indicators.find(i => i.id === ind?.id);
+                      
+                      return (
                       <div className="p-4 bg-white text-[13px] text-slate-700">
                         <table className="w-full text-left border-collapse">
                           <tbody>
@@ -431,21 +439,21 @@ export function KabupatenDashboard({
                               <td className="py-3 pr-4 font-medium align-top w-1/4">Definisi Operasional</td>
                               <td className="py-3 px-2 align-top w-4 text-center">:</td>
                               <td className="py-3 pl-2 align-top">
-                                Jumlah kasus kematian perempuan yang diakibatkan oleh proses yang berhubungan dengan kehamilan, persalinan, abortus, dan masa dalam kurun waktu 42 hari setelah berakhirnya kehamilan tanpa melihat usia gestasi, dan tidak termasuk di dalamnya sebab kematian akibat kecelakaan atau kejadian insidental di suatu wilayah pada kurun waktu tertentu. (sumber : Dokumen Indikator Program Kesehatan Masyarakat dalam RPJMN Kementerian Kesehatan 2020-2024)
+                                {referenceInd?.definisiOperasional || ind?.definisiOperasional || '-'}
                               </td>
                             </tr>
                             <tr className="border-b border-slate-100 last:border-0 bg-slate-50">
                               <td className="py-3 pr-4 font-medium align-top w-1/4">Sumber Data</td>
                               <td className="py-3 px-2 align-top w-4 text-center">:</td>
                               <td className="py-3 pl-2 align-top">
-                                Perangkat daerah yang membidangi urusan kesehatan
+                                {referenceInd?.sumberData || ind?.sumberData || '-'}
                               </td>
                             </tr>
                             <tr className="border-b border-slate-100 last:border-0">
                               <td className="py-3 pr-4 font-medium align-top w-1/4">Bukti Dukung</td>
                               <td className="py-3 px-2 align-top w-4 text-center">:</td>
                               <td className="py-3 pl-2 align-top">
-                                Laporan capaian pada Aplikasi MPDN tahun 2023 dan 2024 dari Fasyankes / Dinkes kabupaten/kota dilengkapi dengan tangkapan layar (screenshot) yang divalidasi oleh Kepala OPD terkait.
+                                {referenceInd?.buktiDukung || ind?.buktiDukung || '-'}
                               </td>
                             </tr>
                             <tr className="last:border-0">
@@ -453,7 +461,7 @@ export function KabupatenDashboard({
                               <td className="py-3 px-2 align-top w-4 text-center">:</td>
                               <td className="py-3 pl-2 align-top">
                                 <ul className="space-y-1">
-                                  {ind?.skala?.map((s, idx) => (
+                                  {(referenceInd?.skala || ind?.skala)?.map((s, idx) => (
                                     <li key={idx}>{idx + 1}. Nilai {s.nilai} jika {s.deskripsi.replace(/^[a-z]\.\s*/, '')}</li>
                                   ))}
                                 </ul>
@@ -462,7 +470,8 @@ export function KabupatenDashboard({
                           </tbody>
                         </table>
                       </div>
-                    )}
+                      );
+                    })()}
                   </div>
 
                   {/* Grid Forms */}
@@ -529,7 +538,7 @@ export function KabupatenDashboard({
                             Lihat File 2024 yang Tersimpan
                           </a>
                         )}
-                        <p className="text-[11px] text-red-500 mt-1">Maksimal Ukuran file 10 MB dan Ekstensi file .pdf, .docx, .doc, .xls, .xlsx</p>
+                        <p className="text-[11px] text-red-500 mt-1">Maksimal Ukuran file 5 MB dan Ekstensi file .pdf, .docx, .doc, .xls, .xlsx</p>
                       </div>
 
                       <div className="space-y-1.5">
@@ -552,7 +561,7 @@ export function KabupatenDashboard({
                             Lihat File 2025 yang Tersimpan
                           </a>
                         )}
-                        <p className="text-[11px] text-red-500 mt-1">Maksimal Ukuran file 10 MB dan Ekstensi file .pdf, .docx, .doc, .xls, .xlsx</p>
+                        <p className="text-[11px] text-red-500 mt-1">Maksimal Ukuran file 5 MB dan Ekstensi file .pdf, .docx, .doc, .xls, .xlsx</p>
                       </div>
 
                       <div className="space-y-1.5">

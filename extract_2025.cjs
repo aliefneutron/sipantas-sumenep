@@ -50,6 +50,9 @@ try {
           currentIndicator = {
             no: parseInt(no),
             name: cleanText,
+            definisiOperasional: row[2] ? String(row[2]).replace(/\r?\n|\r/g, ' ').trim() : undefined,
+            sumberData: row[3] ? String(row[3]).replace(/\r?\n|\r/g, ' ').trim() : undefined,
+            buktiDukung: row[4] ? String(row[4]).replace(/\r?\n|\r/g, ' ').trim() : undefined,
             skala: []
           };
           
