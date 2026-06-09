@@ -27,22 +27,30 @@ export function Login({ onLoginSuccess }: LoginProps) {
     setLoading(true);
 
     try {
-      // Emergency Superadmin bypass (in case db is empty)
-      if (username === 'superadmin' && password === 'admin123') {
-        onLoginSuccess({
-          id: 'superadmin-bypass',
-          username: 'superadmin',
-          name: 'Super Admin Sistem',
-          role: 'superadmin'
-        });
-        return;
-      }
-
       const usersRef = collection(db, 'users');
       const q = query(usersRef, where('username', '==', username));
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
+        // Auto-seed superadmin to database if using emergency credentials
+        if (username === 'superadmin' && password === 'admin123') {
+          import('firebase/firestore').then(async ({ addDoc }) => {
+            const newDocRef = await addDoc(usersRef, {
+              username: 'superadmin',
+              password: 'admin123',
+              name: 'Super Admin Sistem',
+              role: 'superadmin'
+            });
+            onLoginSuccess({
+              id: newDocRef.id,
+              username: 'superadmin',
+              name: 'Super Admin Sistem',
+              role: 'superadmin'
+            });
+          });
+          return;
+        }
+
         setError('Username tidak ditemukan.');
         setLoading(false);
         return;
