@@ -14,13 +14,15 @@ interface KabupatenDashboardProps {
   onUpdateProposal: (updated: KabupatenProposal) => void;
   isLockedByDeadline: boolean;
   activeMenu?: string;
+  onNavigateMenu?: (menuId: string) => void;
 }
 
 export function KabupatenDashboard({ 
   proposal, 
   onUpdateProposal, 
   isLockedByDeadline,
-  activeMenu = 'dashboard'
+  activeMenu = 'dashboard',
+  onNavigateMenu
 }: KabupatenDashboardProps) {
   
   const stats = getProposalStats(proposal);
@@ -160,6 +162,15 @@ export function KabupatenDashboard({
       setPenjelasan(penjel);
     }
   }, [activeTatanan?.id]);
+
+  const openTatananAssess = (t: TatananAssessment) => {
+    if (onNavigateMenu) {
+      onNavigateMenu(`tatanan-${t.id}`);
+    } else {
+      setSelectedTatananId(t.id);
+    }
+    window.scrollTo(0, 0);
+  };
 
   const saveTatananAssess = () => {
     if (!selectedTatananId) return;

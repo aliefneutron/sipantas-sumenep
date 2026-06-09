@@ -331,6 +331,7 @@ export default function App() {
                     onUpdateProposal={updateSingleProposal}
                     isLockedByDeadline={systemConfig.isTimelockActive}
                     activeMenu={activeMenu}
+                    onNavigateMenu={setActiveMenu}
                   />
                 )}
               </div>
