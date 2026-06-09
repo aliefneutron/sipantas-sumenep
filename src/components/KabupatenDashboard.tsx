@@ -100,6 +100,19 @@ export function KabupatenDashboard({
     }
   };
 
+  const getFilenameFromUrl = (url: string, year: '2024'|'2025') => {
+    if (!url) return '';
+    try {
+      const decoded = decodeURIComponent(url);
+      const filenameWithParams = decoded.split('/').pop() || '';
+      const filename = filenameWithParams.split('?')[0];
+      const cleanName = filename.replace(new RegExp(`^${year}_`), '');
+      return cleanName.toUpperCase();
+    } catch {
+      return 'DOKUMEN_TERSIMPAN.PDF';
+    }
+  };
+
   // Trigger editing a legal aspect
   const startEditDoc = (type: 'skTim' | 'skForum' | 'renja') => {
     const docField = type === 'skTim' ? proposal.skTimPembina 
@@ -528,46 +541,84 @@ export function KabupatenDashboard({
                     <div className="space-y-6">
                       <div className="space-y-1.5">
                         <label className="block text-sm font-medium text-slate-700">File 2024 <span className="text-red-500">*</span></label>
-                        <div className="relative">
-                          <input 
-                            type="file"
-                            onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, '2024', e.target.files?.[0] || null)}
-                            disabled={uploadingIndicatorFiles[`${editingIndicatorId}-2024`]}
-                            className="w-full text-sm border border-slate-300 p-1.5 rounded bg-white file:mr-4 file:py-1 file:px-3 file:rounded file:border file:border-slate-300 file:bg-slate-100 file:text-sm hover:file:bg-slate-200 cursor-pointer disabled:opacity-50"
-                          />
-                          {uploadingIndicatorFiles[`${editingIndicatorId}-2024`] && (
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                              <Loader2 className="w-4 h-4 animate-spin text-[#16A34A]" />
-                            </div>
-                          )}
-                        </div>
-                        {evidenceLink2024[editingIndicatorId] && (
-                          <a href={evidenceLink2024[editingIndicatorId]} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline block mt-1">
-                            Lihat File 2024 yang Tersimpan
-                          </a>
+                        {evidenceLink2024[editingIndicatorId] ? (
+                          <div className="flex flex-col gap-2">
+                            <a 
+                              href={evidenceLink2024[editingIndicatorId]} 
+                              target="_blank" 
+                              rel="noreferrer" 
+                              className="flex items-center justify-between p-3 border-2 border-[#16A34A] bg-green-50 rounded-xl hover:bg-green-100 transition group"
+                            >
+                              <span className="text-sm font-bold text-[#16A34A] truncate mr-2">
+                                {getFilenameFromUrl(evidenceLink2024[editingIndicatorId], '2024')}
+                              </span>
+                              <Download className="w-4 h-4 text-[#16A34A] group-hover:scale-110 transition shrink-0" />
+                            </a>
+                            <label className="text-xs text-slate-500 hover:text-slate-800 cursor-pointer underline w-fit">
+                              Ganti File 2024
+                              <input 
+                                type="file"
+                                className="hidden"
+                                onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, '2024', e.target.files?.[0] || null)}
+                              />
+                            </label>
+                          </div>
+                        ) : (
+                          <div className="relative">
+                            <input 
+                              type="file"
+                              onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, '2024', e.target.files?.[0] || null)}
+                              disabled={uploadingIndicatorFiles[`${editingIndicatorId}-2024`]}
+                              className="w-full text-sm border border-slate-300 p-1.5 rounded bg-white file:mr-4 file:py-1 file:px-3 file:rounded file:border file:border-slate-300 file:bg-[#16A34A] file:text-white file:font-semibold hover:file:bg-[#15803D] cursor-pointer disabled:opacity-50 transition"
+                            />
+                            {uploadingIndicatorFiles[`${editingIndicatorId}-2024`] && (
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                <Loader2 className="w-4 h-4 animate-spin text-[#16A34A]" />
+                              </div>
+                            )}
+                          </div>
                         )}
                         <p className="text-[11px] text-red-500 mt-1">Maksimal Ukuran file 5 MB dan Ekstensi file .pdf, .docx, .doc, .xls, .xlsx</p>
                       </div>
 
                       <div className="space-y-1.5">
                         <label className="block text-sm font-medium text-slate-700">File 2025 <span className="text-red-500">*</span></label>
-                        <div className="relative">
-                          <input 
-                            type="file"
-                            onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, '2025', e.target.files?.[0] || null)}
-                            disabled={uploadingIndicatorFiles[`${editingIndicatorId}-2025`]}
-                            className="w-full text-sm border border-slate-300 p-1.5 rounded bg-white file:mr-4 file:py-1 file:px-3 file:rounded file:border file:border-slate-300 file:bg-slate-100 file:text-sm hover:file:bg-slate-200 cursor-pointer disabled:opacity-50"
-                          />
-                          {uploadingIndicatorFiles[`${editingIndicatorId}-2025`] && (
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                              <Loader2 className="w-4 h-4 animate-spin text-[#16A34A]" />
-                            </div>
-                          )}
-                        </div>
-                        {indicatorLinks[editingIndicatorId] && (
-                          <a href={indicatorLinks[editingIndicatorId]} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline block mt-1">
-                            Lihat File 2025 yang Tersimpan
-                          </a>
+                        {indicatorLinks[editingIndicatorId] ? (
+                          <div className="flex flex-col gap-2">
+                            <a 
+                              href={indicatorLinks[editingIndicatorId]} 
+                              target="_blank" 
+                              rel="noreferrer" 
+                              className="flex items-center justify-between p-3 border-2 border-[#16A34A] bg-green-50 rounded-xl hover:bg-green-100 transition group"
+                            >
+                              <span className="text-sm font-bold text-[#16A34A] truncate mr-2">
+                                {getFilenameFromUrl(indicatorLinks[editingIndicatorId], '2025')}
+                              </span>
+                              <Download className="w-4 h-4 text-[#16A34A] group-hover:scale-110 transition shrink-0" />
+                            </a>
+                            <label className="text-xs text-slate-500 hover:text-slate-800 cursor-pointer underline w-fit">
+                              Ganti File 2025
+                              <input 
+                                type="file"
+                                className="hidden"
+                                onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, '2025', e.target.files?.[0] || null)}
+                              />
+                            </label>
+                          </div>
+                        ) : (
+                          <div className="relative">
+                            <input 
+                              type="file"
+                              onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, '2025', e.target.files?.[0] || null)}
+                              disabled={uploadingIndicatorFiles[`${editingIndicatorId}-2025`]}
+                              className="w-full text-sm border border-slate-300 p-1.5 rounded bg-white file:mr-4 file:py-1 file:px-3 file:rounded file:border file:border-slate-300 file:bg-[#16A34A] file:text-white file:font-semibold hover:file:bg-[#15803D] cursor-pointer disabled:opacity-50 transition"
+                            />
+                            {uploadingIndicatorFiles[`${editingIndicatorId}-2025`] && (
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                <Loader2 className="w-4 h-4 animate-spin text-[#16A34A]" />
+                              </div>
+                            )}
+                          </div>
                         )}
                         <p className="text-[11px] text-red-500 mt-1">Maksimal Ukuran file 5 MB dan Ekstensi file .pdf, .docx, .doc, .xls, .xlsx</p>
                       </div>
