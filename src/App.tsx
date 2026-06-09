@@ -261,12 +261,13 @@ export default function App() {
             <Settings className="w-4 h-4" /> Dashboard
           </button>
           
-          {/* <button 
-            onClick={() => setActiveMenu('odf')}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'odf' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+          <button 
+            disabled
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-not-allowed opacity-50 text-slate-600`}
+            title="Menu ini sedang dinonaktifkan"
           >
             <CheckCircle className="w-4 h-4" /> Open Defecation Free
-          </button> */}
+          </button>
 
           {/* Kelembagaan */}
           <button 
@@ -305,12 +306,13 @@ export default function App() {
             )}
           </div>
 
-          {/* <button 
-            onClick={() => setActiveMenu('penghargaan')}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'penghargaan' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+          <button 
+            disabled
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-not-allowed opacity-50 text-slate-600`}
+            title="Menu ini sedang dinonaktifkan"
           >
             <Award className="w-4 h-4" /> Penghargaan
-          </button> */}
+          </button>
 
           {(userSession?.role === 'admin' || userSession?.role === 'superadmin') && (
             <>
