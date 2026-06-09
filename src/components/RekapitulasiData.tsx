@@ -10,6 +10,7 @@ interface RekapitulasiDataProps {
 
 export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDataProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterTatananId, setFilterTatananId] = useState('all');
   
   // States for Editing
   const [editingRow, setEditingRow] = useState<any>(null);
@@ -40,11 +41,12 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
     return data;
   }, [proposal]);
 
-  // Filter based on search term
-  const filteredData = allData.filter(d => 
-    d.indicatorText.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    d.tatananName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter based on search term and tatanan
+  const filteredData = allData.filter(d => {
+    const matchesSearch = d.indicatorText.toLowerCase().includes(searchTerm.toLowerCase()) || d.tatananName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTatanan = filterTatananId === 'all' || d.tatananId === filterTatananId;
+    return matchesSearch && matchesTatanan;
+  });
 
   const handleBackup = (year: '2024' | '2025') => {
     // Prepare data for export
@@ -184,15 +186,29 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
         </div>
       </div>
 
-      <div className="flex items-center bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
-        <Search className="w-4 h-4 text-slate-400 mr-2" />
-        <input 
-          type="text" 
-          placeholder="Cari indikator atau tatanan..." 
-          className="bg-transparent text-sm w-full outline-none text-slate-700"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+      <div className="flex flex-col md:flex-row gap-3">
+        <div className="flex items-center bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 flex-1">
+          <Search className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
+          <input 
+            type="text" 
+            placeholder="Cari indikator atau tatanan..." 
+            className="bg-transparent text-sm w-full outline-none text-slate-700"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="flex items-center bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 md:w-64">
+          <select 
+            value={filterTatananId}
+            onChange={(e) => setFilterTatananId(e.target.value)}
+            className="bg-transparent text-sm w-full outline-none text-slate-700 cursor-pointer"
+          >
+            <option value="all">Semua Tatanan</option>
+            {proposal.tatanan.map(t => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-slate-200">
