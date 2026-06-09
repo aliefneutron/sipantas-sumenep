@@ -461,6 +461,7 @@ export default function App() {
                     isLockedByDeadline={systemConfig.isTimelockActive}
                     activeMenu={activeMenu}
                     onNavigateMenu={setActiveMenu}
+                    userRole={userSession?.role}
                   />
                 )}
               </div>

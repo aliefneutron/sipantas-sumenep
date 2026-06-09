@@ -15,6 +15,7 @@ interface KabupatenDashboardProps {
   isLockedByDeadline: boolean;
   activeMenu?: string;
   onNavigateMenu?: (menuId: string) => void;
+  userRole?: string;
 }
 
 export function KabupatenDashboard({ 
@@ -22,7 +23,8 @@ export function KabupatenDashboard({
   onUpdateProposal, 
   isLockedByDeadline,
   activeMenu = 'dashboard',
-  onNavigateMenu
+  onNavigateMenu,
+  userRole
 }: KabupatenDashboardProps) {
   
   const stats = getProposalStats(proposal);
@@ -67,6 +69,11 @@ export function KabupatenDashboard({
   const [isIndicatorInfoOpen, setIsIndicatorInfoOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [uploadingIndicatorFiles, setUploadingIndicatorFiles] = useState<Record<string, boolean>>({});
+
+  // Tim Penilai states
+  const [nilaiKab, setNilaiKab] = useState<Record<string, number>>({});
+  const [statusKab, setStatusKab] = useState<Record<string, 'Draft' | 'Menunggu Verifikasi' | 'Valid' | 'Revisi'>>({});
+  const [catatanKab, setCatatanKab] = useState<Record<string, string>>({});
 
   const handleIndicatorFileUpload = async (indicatorId: string, year: '2024' | '2025', file: File | null) => {
     if (!file) return;
@@ -157,6 +164,9 @@ export function KabupatenDashboard({
       const cap25: Record<string, string> = {};
       const ev24: Record<string, string> = {};
       const penjel: Record<string, string> = {};
+      const nk: Record<string, number> = {};
+      const sk: Record<string, 'Draft' | 'Menunggu Verifikasi' | 'Valid' | 'Revisi'> = {};
+      const ck: Record<string, string> = {};
       
       activeTatanan.indicators.forEach(ind => {
         scores[ind.id] = ind.score.capaian || 0;
@@ -165,6 +175,9 @@ export function KabupatenDashboard({
         cap25[ind.id] = ind.score.capaian2025 || '';
         ev24[ind.id] = ind.score.evidenceLink2024 || '';
         penjel[ind.id] = ind.score.penjelasan || '';
+        nk[ind.id] = ind.score.nilaiKabupaten || 0;
+        sk[ind.id] = ind.score.statusKabupaten || 'Draft';
+        ck[ind.id] = ind.score.catatanKabupaten || '';
       });
       
       setIndicatorScores(scores);
@@ -173,6 +186,9 @@ export function KabupatenDashboard({
       setCapaian2025(cap25);
       setEvidenceLink2024(ev24);
       setPenjelasan(penjel);
+      setNilaiKab(nk);
+      setStatusKab(sk);
+      setCatatanKab(ck);
     }
   }, [activeTatanan?.id]);
 
@@ -194,18 +210,33 @@ export function KabupatenDashboard({
         return {
           ...t,
           status: 'Ditinjau' as const, // Changes to under-evaluation
-          indicators: t.indicators.map(ind => ({
-            ...ind,
-            score: {
-              ...ind.score,
-              capaian: indicatorScores[ind.id] !== undefined ? indicatorScores[ind.id] : 0,
-              evidenceLink: indicatorLinks[ind.id] || '',
-              capaian2024: capaian2024[ind.id] || '',
-              capaian2025: capaian2025[ind.id] || '',
-              evidenceLink2024: evidenceLink2024[ind.id] || '',
-              penjelasan: penjelasan[ind.id] || ''
+          indicators: t.indicators.map(ind => {
+            const isEditing = ind.id === editingIndicatorId;
+            let autoStatusKab = statusKab[ind.id] || ind.score.statusKabupaten || 'Draft';
+            
+            // Auto update status if OPD edited it and it was Draft or Revisi
+            if (isEditing && userRole === 'opd') {
+              if (autoStatusKab === 'Draft' || autoStatusKab === 'Revisi') {
+                autoStatusKab = 'Menunggu Verifikasi';
+              }
             }
-          }))
+
+            return {
+              ...ind,
+              score: {
+                ...ind.score,
+                capaian: indicatorScores[ind.id] !== undefined ? indicatorScores[ind.id] : 0,
+                evidenceLink: indicatorLinks[ind.id] || '',
+                capaian2024: capaian2024[ind.id] || '',
+                capaian2025: capaian2025[ind.id] || '',
+                evidenceLink2024: evidenceLink2024[ind.id] || '',
+                penjelasan: penjelasan[ind.id] || '',
+                nilaiKabupaten: isEditing && (userRole === 'admin' || userRole === 'superadmin') ? (nilaiKab[ind.id] || 0) : ind.score.nilaiKabupaten,
+                statusKabupaten: isEditing && (userRole === 'admin' || userRole === 'superadmin') ? (statusKab[ind.id] || 'Draft') : autoStatusKab,
+                catatanKabupaten: isEditing && (userRole === 'admin' || userRole === 'superadmin') ? (catatanKab[ind.id] || '') : ind.score.catatanKabupaten,
+              }
+            };
+          })
         };
       }
       return t;
@@ -312,8 +343,9 @@ export function KabupatenDashboard({
                 const link2024 = evidenceLink2024[ind.id] || '';
                 const link2025 = indicatorLinks[ind.id] || '';
                 const explanation = penjelasan[ind.id] || '';
-                const statusProv = ind.score.statusProvinsi || 'Draft';
-                const feedbackProv = ind.score.penjelasanProvinsi || '-';
+                const stKab = ind.score.statusKabupaten || 'Draft';
+                const feedKab = ind.score.catatanKabupaten || '-';
+                const nkKab = ind.score.nilaiKabupaten !== undefined ? ind.score.nilaiKabupaten : '-';
 
                 return (
                   <tr key={ind.id} className={i % 2 === 0 ? "bg-white" : "bg-[#F8F9FA]"}>
@@ -348,10 +380,23 @@ export function KabupatenDashboard({
                       {explanation || '-'}
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
-                      {statusProv === 'Draft' ? '-' : statusProv} | {feedbackProv}
+                      {nkKab !== '-' ? <span className="font-bold text-[#16A34A] block mb-1">Nilai: {nkKab}</span> : null}
+                      {feedKab}
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs">
-                      {score === 0 && !c2024 && !c2025 ? (
+                      {stKab === 'Valid' ? (
+                        <span className="bg-[#16A34A] text-white px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide">
+                          Valid
+                        </span>
+                      ) : stKab === 'Revisi' ? (
+                        <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide">
+                          Revisi
+                        </span>
+                      ) : stKab === 'Menunggu Verifikasi' ? (
+                        <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide block whitespace-nowrap">
+                          Menunggu Verifikasi
+                        </span>
+                      ) : score === 0 && !c2024 && !c2025 ? (
                         <span className="bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide">
                           Kosong
                         </span>
@@ -635,6 +680,56 @@ export function KabupatenDashboard({
                       </div>
                     </div>
 
+                    {/* Area Tim Penilai - Hanya tampil bagi Admin & Superadmin */}
+                    {(userRole === 'admin' || userRole === 'superadmin') && (
+                      <div className="col-span-1 md:col-span-2 mt-6 border-t-2 border-[#BBF7D0] pt-6 animate-fadeIn">
+                        <div className="bg-[#F0FDF4] border border-[#16A34A] rounded-xl p-5 space-y-4">
+                          <h4 className="font-bold text-[#166534] flex items-center gap-2">
+                            <CheckCircle2 className="w-5 h-5" /> Area Tim Penilai Kabupaten
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-4">
+                              <div className="space-y-1.5">
+                                <label className="block text-sm font-medium text-slate-700">Nilai Verifikasi <span className="text-red-500">*</span></label>
+                                <select
+                                  value={nilaiKab[editingIndicatorId] === undefined ? '' : nilaiKab[editingIndicatorId]}
+                                  onChange={(e) => setNilaiKab({ ...nilaiKab, [editingIndicatorId]: Number(e.target.value) })}
+                                  className="w-full text-sm p-2.5 border border-slate-300 rounded focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] outline-none transition bg-white"
+                                >
+                                  <option value="" disabled>Pilih Nilai Verifikasi</option>
+                                  {ind?.skala?.map((s, idx) => (
+                                    <option key={idx} value={s.nilai}>Nilai {s.nilai}</option>
+                                  ))}
+                                </select>
+                              </div>
+                              <div className="space-y-1.5">
+                                <label className="block text-sm font-medium text-slate-700">Status Kelayakan <span className="text-red-500">*</span></label>
+                                <select
+                                  value={statusKab[editingIndicatorId] || 'Draft'}
+                                  onChange={(e) => setStatusKab({ ...statusKab, [editingIndicatorId]: e.target.value as any })}
+                                  className="w-full text-sm p-2.5 border border-slate-300 rounded focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] outline-none transition bg-white font-medium"
+                                >
+                                  <option value="Draft">Draft</option>
+                                  <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
+                                  <option value="Valid">Valid (Memenuhi Syarat)</option>
+                                  <option value="Revisi">Revisi (Perlu Diperbaiki)</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div className="space-y-1.5">
+                              <label className="block text-sm font-medium text-slate-700">Catatan Verifikator <span className="text-red-500">*</span></label>
+                              <textarea 
+                                rows={5}
+                                value={catatanKab[editingIndicatorId] || ''}
+                                onChange={(e) => setCatatanKab({ ...catatanKab, [editingIndicatorId]: e.target.value })}
+                                placeholder="Berikan catatan, saran, atau alasan jika direvisi..."
+                                className="w-full text-sm p-2.5 border border-slate-300 rounded focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] outline-none transition resize-none"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 

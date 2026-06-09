@@ -15,6 +15,9 @@ export interface IndicatorScore {
   penjelasan?: string; // Penjelasan Kabupaten/Kota
   statusProvinsi?: string; // Status verifikasi, e.g., "Valid", "Revisi", "not set"
   penjelasanProvinsi?: string; // Catatan verifikator provinsi
+  nilaiKabupaten?: number; // Verified score by Admin Bappeda
+  statusKabupaten?: 'Draft' | 'Menunggu Verifikasi' | 'Valid' | 'Revisi'; // Status verifikasi tingkat Kabupaten
+  catatanKabupaten?: string; // Verification notes from Admin
 }
 
 export interface TatananAssessment {
