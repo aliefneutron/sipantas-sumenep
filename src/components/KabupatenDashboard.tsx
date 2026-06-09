@@ -723,7 +723,7 @@ export function KabupatenDashboard({
                                 value={catatanKab[editingIndicatorId] || ''}
                                 onChange={(e) => setCatatanKab({ ...catatanKab, [editingIndicatorId]: e.target.value })}
                                 placeholder="Berikan catatan, saran, atau alasan jika direvisi..."
-                                className="w-full text-sm p-2.5 border border-slate-300 rounded focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] outline-none transition resize-none"
+                                className="w-full text-sm p-2.5 border border-slate-300 rounded focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] outline-none transition resize-none bg-white"
                               />
                             </div>
                           </div>
