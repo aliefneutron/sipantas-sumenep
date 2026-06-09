@@ -375,8 +375,12 @@ export default function App() {
                   <span className="absolute top-1 right-1 h-2 w-2 bg-rose-500 rounded-full animate-ping" />
                 )}
               </button>
-              <div className="w-7 h-7 rounded-full bg-white/20 overflow-hidden border border-white/30">
-                <img src="https://images.unsplash.com/photo-1596395828695-037326df047b?auto=format&fit=crop&q=80&w=100&h=100" className="w-full h-full object-cover" />
+              <div className="w-7 h-7 rounded-full bg-white/20 overflow-hidden border border-white/30 flex items-center justify-center shrink-0">
+                {userSession?.avatarUrl ? (
+                  <img src={userSession.avatarUrl} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-[10px] font-bold uppercase text-white">{userSession?.name?.charAt(0) || 'U'}</span>
+                )}
               </div>
 
               {/* Notification Overlay Panel */}
