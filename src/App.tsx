@@ -8,15 +8,16 @@ import {
 import { KabupatenProposal, SystemConfig, NotificationMsg, INITIAL_TATANAN_STRUCTURE } from './types';
 import { INITIAL_PROPOSALS, INITIAL_SYSTEM_CONFIG, NOTIFICATIONS_MOCK } from './data';
 import { KabupatenDashboard } from './components/KabupatenDashboard';
-import { ProvinsiDashboard } from './components/ProvinsiDashboard';
-import { PusatDashboard } from './components/PusatDashboard';
 import { RekapitulasiData } from './components/RekapitulasiData';
+import { Login, UserSession } from './components/Login';
+import { UserManagement } from './components/UserManagement';
 import { collection, onSnapshot, doc, setDoc } from "firebase/firestore";
 import { db } from "./lib/firebase";
 
 export default function App() {
   // App state persistent storage
   const [proposals, setProposals] = useState<KabupatenProposal[]>(INITIAL_PROPOSALS);
+  const [resetKey, setResetKey] = useState(0);
 
   const [systemConfig, setSystemConfig] = useState<SystemConfig>(() => {
     const stored = localStorage.getItem('sipantas_config_v1');
@@ -35,10 +36,23 @@ export default function App() {
   });
 
   const [showNotifications, setShowNotifications] = useState(false);
-  const [resetKey, setResetKey] = useState(0); // Trigger clean state resets
   const [activeMenu, setActiveMenu] = useState<string>('dashboard');
   const [isTatananMenuOpen, setIsTatananMenuOpen] = useState(true);
-  const [userRole, setUserRole] = useState<'admin' | 'opd'>('admin');
+  const [userSession, setUserSession] = useState<UserSession | null>(() => {
+    const saved = localStorage.getItem('sipantas_session');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const handleLoginSuccess = (user: UserSession) => {
+    setUserSession(user);
+    localStorage.setItem('sipantas_session', JSON.stringify(user));
+  };
+
+  const handleLogout = () => {
+    setUserSession(null);
+    localStorage.removeItem('sipantas_session');
+    setActiveMenu('dashboard');
+  };
 
   // Sync state to local storage when resetKey changes (for full reset)
   useEffect(() => {
@@ -57,6 +71,9 @@ export default function App() {
 
   // Listen to Firestore real-time updates for proposals
   useEffect(() => {
+    // Start listener if logged in
+    if (!userSession) return;
+
     const unsubscribe = onSnapshot(collection(db, "proposals"), (snapshot) => {
       if (snapshot.empty) {
         // Seed database if empty
@@ -77,7 +94,7 @@ export default function App() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [userSession]);
 
   // Persist alterations
   const updateSingleProposal = async (updated: KabupatenProposal) => {
@@ -132,7 +149,7 @@ export default function App() {
   // Find User's Kabupaten pointer (Default is Kabupaten Sumenep)
   const userProposal = proposals.find(p => p.id === 'kab-sumenep') || proposals[0];
 
-  return (
+  const appContent = (
     <div className="min-h-screen bg-[#F0FDF4] text-[#166534] flex flex-col md:flex-row" id="sipantas-app-root">
       
       {/* Sidebar */}
@@ -157,13 +174,12 @@ export default function App() {
           </div>
         </div>
         
-        {/* Profile */}
         <div className="p-5 flex flex-col items-center justify-center border-b border-[#BBF7D0] text-center">
           <div className="w-16 h-16 rounded-full bg-slate-200 mb-3 overflow-hidden border-2 border-white shadow-sm">
             <img src="https://images.unsplash.com/photo-1596395828695-037326df047b?auto=format&fit=crop&q=80&w=200&h=200" alt="Profile" className="w-full h-full object-cover" />
           </div>
-          <span className="text-[11px] uppercase font-bold text-[#166534]">{userProposal?.name || 'Loading...'}</span>
-          <span className="text-[10px] text-slate-500 mt-0.5">( {userRole === 'admin' ? 'Admin Bappeda' : 'Akun OPD Pengampu'} )</span>
+          <span className="text-[11px] uppercase font-bold text-[#166534]">{userSession?.name || 'Loading...'}</span>
+          <span className="text-[10px] text-slate-500 mt-0.5">( {userSession?.role === 'superadmin' ? 'Super Admin' : userSession?.role === 'admin' ? 'Admin Bappeda' : 'OPD Pengampu'} )</span>
         </div>
 
         {/* Menu */}
@@ -228,23 +244,32 @@ export default function App() {
             <Award className="w-4 h-4" /> Penghargaan
           </button>
 
-          {userRole === 'admin' && (
-            <>
-              <button 
-                onClick={() => setActiveMenu('rekapitulasi')}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'rekapitulasi' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
-              >
-                <Database className="w-4 h-4" /> Rekapitulasi & Backup
-              </button>
-
-              <button 
-                onClick={() => setActiveMenu('user-opd')}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'user-opd' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
-              >
-                <Users className="w-4 h-4" /> User OPD
-              </button>
-            </>
+          {(userSession?.role === 'admin' || userSession?.role === 'superadmin') && (
+            <button 
+              onClick={() => setActiveMenu('rekapitulasi')}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'rekapitulasi' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+            >
+              <Database className="w-4 h-4" /> Rekapitulasi & Backup
+            </button>
           )}
+
+          {userSession?.role === 'superadmin' && (
+            <button 
+              onClick={() => setActiveMenu('user-opd')}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'user-opd' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+            >
+              <Users className="w-4 h-4" /> Manajemen Akun
+            </button>
+          )}
+
+          <div className="mt-8 px-3">
+            <button 
+              onClick={handleLogout}
+              className={`w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition cursor-pointer bg-red-50 text-red-600 hover:bg-red-100 border border-red-100`}
+            >
+               Keluar (Logout)
+            </button>
+          </div>
         </nav>
       </aside>
 
@@ -254,17 +279,10 @@ export default function App() {
         {/* Top Navbar */}
         <header className="bg-[#166534] text-white h-14 flex items-center justify-between px-4 shrink-0 shadow-sm z-40">
           <div className="flex items-center gap-4">
-            <select 
-              value={userRole} 
-              onChange={(e) => setUserRole(e.target.value as any)} 
-              className="bg-white/10 border border-white/20 text-white rounded px-2 py-1 text-xs outline-none cursor-pointer hover:bg-white/20 transition font-medium"
-            >
-              <option value="admin" className="text-slate-800">Mode: Admin Bappeda</option>
-              <option value="opd" className="text-slate-800">Mode: OPD Pengampu</option>
-            </select>
+            <span className="font-bold text-sm tracking-widest uppercase hidden md:block">PORTAL {userSession?.role.toUpperCase()}</span>
             {/* Year Dropdown */}
             <select className="bg-white/10 border border-white/20 text-white rounded px-2 py-1 text-xs outline-none cursor-pointer hover:bg-white/20 transition hidden sm:block">
-              <option value="2025" className="text-slate-800">2025</option>
+              <option value="2025" className="text-slate-800">Tahun 2025</option>
             </select>
           </div>
           <div className="flex items-center gap-4">
@@ -333,11 +351,13 @@ export default function App() {
             {/* Dynamic Context Render - Kabupaten Portal directly */}
             {userProposal && (
               <div id="active-context-area" className="transition-all duration-300">
-                {activeMenu === 'rekapitulasi' ? (
+                {activeMenu === 'rekapitulasi' && (userSession?.role === 'admin' || userSession?.role === 'superadmin') ? (
                   <RekapitulasiData 
                     proposal={userProposal}
                     onUpdateProposal={updateSingleProposal}
                   />
+                ) : activeMenu === 'user-opd' && userSession?.role === 'superadmin' ? (
+                  <UserManagement />
                 ) : (
                   <KabupatenDashboard 
                     proposal={userProposal} 
@@ -362,4 +382,10 @@ export default function App() {
 
     </div>
   );
+
+  if (!userSession) {
+    return <Login onLoginSuccess={handleLoginSuccess} />;
+  }
+
+  return appContent;
 }
