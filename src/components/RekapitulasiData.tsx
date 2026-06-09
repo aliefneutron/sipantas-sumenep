@@ -225,7 +225,13 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
                   capaian2025: '',
                   evidenceLink2024: '',
                   evidenceLink: '',
-                  capaian: 0
+                  capaian: 0,
+                  penjelasan: '',
+                  statusProvinsi: 'Draft',
+                  penjelasanProvinsi: '',
+                  nilaiKabupaten: 0,
+                  statusKabupaten: 'Draft',
+                  catatanKabupaten: ''
                 }
               };
             }
