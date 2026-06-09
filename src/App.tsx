@@ -3,7 +3,7 @@ import {
   Award, ShieldCheck, Settings, Users, BookOpen, AlertTriangle, 
   Bell, Clock, Calendar, RefreshCw, FileText, Sparkles, Building, Lock, Info, CheckCircle,
   Menu, ChevronDown, ChevronRight, Database,
-  User, LayoutGrid, ShoppingBag, Briefcase, MapPin, Truck, Shield, Globe, Edit2
+  User, LayoutGrid, ShoppingBag, Briefcase, MapPin, Truck, Shield, Globe, Edit2, Megaphone
 } from 'lucide-react';
 import { KabupatenProposal, SystemConfig, NotificationMsg, INITIAL_TATANAN_STRUCTURE } from './types';
 import { INITIAL_PROPOSALS, INITIAL_SYSTEM_CONFIG, NOTIFICATIONS_MOCK } from './data';
@@ -12,7 +12,8 @@ import { RekapitulasiData } from './components/RekapitulasiData';
 import { Login, UserSession } from './components/Login';
 import { UserManagement } from './components/UserManagement';
 import { ProfileEdit } from './components/ProfileEdit';
-import { collection, onSnapshot, doc, setDoc } from "firebase/firestore";
+import { NotificationManagement } from './components/NotificationManagement';
+import { collection, onSnapshot, doc, setDoc, query, orderBy } from "firebase/firestore";
 import { db } from "./lib/firebase";
 
 export default function App() {
@@ -28,13 +29,8 @@ export default function App() {
     return INITIAL_SYSTEM_CONFIG;
   });
 
-  const [notifications, setNotifications] = useState<NotificationMsg[]>(() => {
-    const stored = localStorage.getItem('sipantas_notifs_v1');
-    if (stored) {
-      try { return JSON.parse(stored); } catch (e) { return NOTIFICATIONS_MOCK; }
-    }
-    return NOTIFICATIONS_MOCK;
-  });
+  const [notifications, setNotifications] = useState<NotificationMsg[]>([]);
+  const [runningText, setRunningText] = useState('Selamat datang di SIPANTAS. Harap lengkapi seluruh indikator sebelum batas waktu.');
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string>('dashboard');
@@ -60,9 +56,7 @@ export default function App() {
   useEffect(() => {
     if (resetKey > 0) {
       setSystemConfig(INITIAL_SYSTEM_CONFIG);
-      setNotifications(NOTIFICATIONS_MOCK);
       localStorage.setItem('sipantas_config_v1', JSON.stringify(INITIAL_SYSTEM_CONFIG));
-      localStorage.setItem('sipantas_notifs_v1', JSON.stringify(NOTIFICATIONS_MOCK));
       
       // Also reset Firestore
       INITIAL_PROPOSALS.forEach(async (p) => {
@@ -126,6 +120,33 @@ export default function App() {
 
     return () => unsubscribe();
   }, [userSession?.id]);
+
+  // Listen to Firestore real-time updates for Notifications and Running Text
+  useEffect(() => {
+    if (!userSession) return;
+
+    // Running text
+    const unsubConfig = onSnapshot(doc(db, 'system', 'config'), (docSnap) => {
+      if (docSnap.exists() && docSnap.data().runningText) {
+        setRunningText(docSnap.data().runningText);
+      }
+    });
+
+    // Notifications
+    const q = query(collection(db, 'notifications'), orderBy('timestamp', 'desc'));
+    const unsubNotifs = onSnapshot(q, (snap) => {
+      const data: NotificationMsg[] = [];
+      snap.forEach(d => {
+        data.push({ id: d.id, ...d.data() } as NotificationMsg);
+      });
+      setNotifications(data);
+    });
+
+    return () => {
+      unsubConfig();
+      unsubNotifs();
+    };
+  }, [userSession]);
 
   // Persist alterations
   const updateSingleProposal = async (updated: KabupatenProposal) => {
@@ -291,12 +312,21 @@ export default function App() {
           </button>
 
           {(userSession?.role === 'admin' || userSession?.role === 'superadmin') && (
-            <button 
-              onClick={() => setActiveMenu('rekapitulasi')}
-              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'rekapitulasi' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
-            >
-              <Database className="w-4 h-4" /> Rekapitulasi & Backup
-            </button>
+            <>
+              <button 
+                onClick={() => setActiveMenu('notifikasi')}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'notifikasi' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+              >
+                <Megaphone className="w-4 h-4" /> Kelola Pengumuman
+              </button>
+
+              <button 
+                onClick={() => setActiveMenu('rekapitulasi')}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'rekapitulasi' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+              >
+                <Database className="w-4 h-4" /> Rekapitulasi & Backup
+              </button>
+            </>
           )}
 
           {userSession?.role === 'superadmin' && (
@@ -388,10 +418,12 @@ export default function App() {
         <main className="flex-1 overflow-y-auto bg-[#F0FDF4] p-4 md:p-6 lg:p-8 relative">
           
           <div className="max-w-7xl mx-auto space-y-6">
-            {/* Dynamic Announcement Banner */}
-            <div className="bg-[#166534] text-[#F0FDF4] text-xs font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow-sm">
-              <Clock className="w-4.5 h-4.5 shrink-0 text-[#86EFAC]" />
-              <span>BATAS WAKTU PENGUSULAN: Batas akhir upload e-Monev mandiri Kabupaten/Kota ditutup pada {systemConfig.deadline}. Harap lengkapi semua indikator & dokumen bukti fisik.</span>
+            {/* Dynamic Announcement Banner (Marquee) */}
+            <div className="bg-[#166534] text-[#F0FDF4] text-xs font-medium py-2.5 px-4 rounded-xl flex items-center justify-start gap-3 shadow-sm overflow-hidden">
+              <Clock className="w-4.5 h-4.5 shrink-0 text-[#86EFAC] animate-pulse" />
+              <marquee className="flex-1 font-semibold tracking-wide" scrollamount="5">
+                {runningText}
+              </marquee>
             </div>
 
             {/* Dynamic Context Render - Kabupaten Portal directly */}
@@ -404,6 +436,8 @@ export default function App() {
                   />
                 ) : activeMenu === 'user-opd' && userSession?.role === 'superadmin' ? (
                   <UserManagement onResetDatabase={handleFullReset} />
+                ) : activeMenu === 'notifikasi' && (userSession?.role === 'admin' || userSession?.role === 'superadmin') ? (
+                  <NotificationManagement />
                 ) : (
                   <KabupatenDashboard 
                     proposal={userProposal} 
