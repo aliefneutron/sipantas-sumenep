@@ -745,18 +745,25 @@ export function KabupatenDashboard({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {proposal.tatanan.map((t, index) => {
                 const totalIndicators = t.indicators.length;
-                const filledIndicators = t.indicators.filter(ind => {
+                const isFilled = (val: string | undefined) => val && val.trim() !== '' && val !== 'not set' && val !== '-';
+                
+                let fullyFilledCount = 0;
+                const totalProgressScore = t.indicators.reduce((acc, ind) => {
                   const s = ind.score;
-                  const isFilled = (val: string | undefined) => val && val.trim() !== '' && val !== 'not set' && val !== '-';
-                  return s.capaian > 0 && 
-                         isFilled(s.capaian2024) && 
-                         isFilled(s.capaian2025) && 
-                         isFilled(s.evidenceLink2024) && 
-                         isFilled(s.evidenceLink) && 
-                         isFilled(s.penjelasan);
-                }).length;
-                const progressPercent = totalIndicators > 0 ? Math.round((filledIndicators / totalIndicators) * 100) : 0;
-                const isTatananCompleted = filledIndicators > 0;
+                  let fieldCount = 0;
+                  if (s.capaian > 0) fieldCount++;
+                  if (isFilled(s.capaian2024)) fieldCount++;
+                  if (isFilled(s.capaian2025)) fieldCount++;
+                  if (isFilled(s.evidenceLink2024)) fieldCount++;
+                  if (isFilled(s.evidenceLink)) fieldCount++;
+                  if (isFilled(s.penjelasan)) fieldCount++;
+                  
+                  if (fieldCount === 6) fullyFilledCount++;
+                  return acc + (fieldCount / 6);
+                }, 0);
+
+                const progressPercent = totalIndicators > 0 ? Math.round((totalProgressScore / totalIndicators) * 100) : 0;
+                const isTatananCompleted = totalProgressScore > 0;
 
                 return (
                   <div 
@@ -794,7 +801,7 @@ export function KabupatenDashboard({
                     <div className="mt-4 space-y-2">
                       <div className="flex justify-between text-[10px] text-slate-500">
                         <span>Progress Pengisian</span>
-                        <span className="font-medium text-slate-700">{filledIndicators} / {totalIndicators} Indikator</span>
+                        <span className="font-medium text-slate-700">{fullyFilledCount} / {totalIndicators} Selesai Penuh</span>
                       </div>
                       <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
                         <div 
