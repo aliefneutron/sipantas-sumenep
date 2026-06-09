@@ -251,7 +251,7 @@ export function UserManagement({ onResetDatabase }: UserManagementProps) {
                   className="w-full text-sm border-2 border-slate-200 rounded-xl p-3 outline-none focus:border-[#16A34A] focus:ring-4 focus:ring-green-50 transition cursor-pointer"
                 >
                   <option value="opd">OPD Pengampu (Akses Terbatas)</option>
-                  <option value="admin">Admin Bappeda (Akses Penuh)</option>
+                  <option value="admin">Admin (Akses Penuh)</option>
                   <option value="superadmin">Super Admin (Akses Sistem)</option>
                 </select>
               </div>

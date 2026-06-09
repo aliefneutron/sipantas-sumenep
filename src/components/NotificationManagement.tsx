@@ -9,7 +9,7 @@ export function NotificationManagement() {
   const [loading, setLoading] = useState(true);
   
   const [message, setMessage] = useState('');
-  const [sender, setSender] = useState('Admin Bappeda');
+  const [sender, setSender] = useState('Admin');
   const [isSending, setIsSending] = useState(false);
 
   const [runningText, setRunningText] = useState('Selamat datang di SIPANTAS. Harap lengkapi seluruh indikator sebelum batas waktu.');

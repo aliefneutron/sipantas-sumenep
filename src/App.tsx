@@ -247,7 +247,7 @@ export default function App() {
           >
             {userSession?.name || 'Loading...'} <Edit2 className="w-3 h-3" />
           </button>
-          <span className="text-[10px] text-slate-500 mt-1">( {userSession?.role === 'superadmin' ? 'Super Admin' : userSession?.role === 'admin' ? 'Admin Bappeda' : 'OPD Pengampu'} )</span>
+          <span className="text-[10px] text-slate-500 mt-1">( {userSession?.role === 'superadmin' ? 'Super Admin' : userSession?.role === 'admin' ? 'Admin' : 'OPD Pengampu'} )</span>
         </div>
 
         {/* Menu */}
