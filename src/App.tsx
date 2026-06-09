@@ -98,6 +98,35 @@ export default function App() {
     return () => unsubscribe();
   }, [userSession]);
 
+  // Listen to Firestore real-time updates for the current user's profile
+  useEffect(() => {
+    if (!userSession?.id) return;
+    
+    const unsubscribe = onSnapshot(doc(db, 'users', userSession.id), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setUserSession(prev => {
+          if (!prev) return prev;
+          const newSession = {
+            ...prev,
+            username: data.username,
+            name: data.name,
+            role: data.role,
+            avatarUrl: data.avatarUrl
+          };
+          
+          if (JSON.stringify(prev) !== JSON.stringify(newSession)) {
+            localStorage.setItem('sipantas_session', JSON.stringify(newSession));
+            return newSession;
+          }
+          return prev;
+        });
+      }
+    });
+
+    return () => unsubscribe();
+  }, [userSession?.id]);
+
   // Persist alterations
   const updateSingleProposal = async (updated: KabupatenProposal) => {
     // Update local state optimistically
