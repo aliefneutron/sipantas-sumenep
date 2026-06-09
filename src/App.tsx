@@ -432,7 +432,7 @@ export default function App() {
         {/* Scrollable Main View */}
         <main className="flex-1 overflow-y-auto bg-[#F0FDF4] p-4 md:p-6 lg:p-8 relative">
           
-          <div className="max-w-7xl mx-auto space-y-6">
+          <div className="w-full space-y-6">
             {/* Dynamic Announcement Banner (Marquee) */}
             <div className="bg-[#166534] text-[#F0FDF4] text-xs font-medium py-2.5 px-4 rounded-xl flex items-center justify-start gap-3 shadow-sm overflow-hidden">
               <Clock className="w-4.5 h-4.5 shrink-0 text-[#86EFAC] animate-pulse" />
