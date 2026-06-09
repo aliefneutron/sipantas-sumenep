@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { KabupatenProposal } from '../types';
-import { Download, Edit, Trash2, FileText, Search, X, Check } from 'lucide-react';
+import { Download, Edit, Trash2, FileText, Search, X, Check, Archive, Code } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 interface RekapitulasiDataProps {
   proposal: KabupatenProposal;
@@ -80,6 +82,88 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
     ];
 
     XLSX.writeFile(workbook, `Rekap-SIPANTAS-${proposal.name}-${year}.xlsx`);
+  };
+
+  const handleExportZip = async () => {
+    try {
+      // 1. Initialize ZIP
+      const zip = new JSZip();
+      
+      // 2. Add Excel Summary
+      const exportData = allData.map((d, index) => ({
+        'No': index + 1,
+        'Tatanan': d.tatananName.replace('Tatanan ', ''),
+        'Indikator': d.indicatorText,
+        'Nilai Mandiri': d.capaian,
+        'Capaian 2024': d.capaian2024 || '-',
+        'Capaian 2025': d.capaian2025 || '-',
+        'Penjelasan': d.penjelasan || '-'
+      }));
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, `Rekap Keseluruhan`);
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      zip.file(`Rekap_Lengkap_SIPANTAS_${proposal.name.replace(/\s+/g, '_')}.xlsx`, excelBuffer);
+
+      // 3. Download and Add PDFs
+      alert("Proses pembuatan ZIP sedang berjalan. Bergantung pada jumlah file dan kecepatan internet, ini mungkin memakan waktu beberapa menit. Jangan tutup halaman ini.");
+      
+      for (const row of allData) {
+        const tatananFolder = zip.folder(row.tatananName.replace(/[\\/:*?"<>|]/g, ""));
+        if (!tatananFolder) continue;
+
+        // Simplify indicator folder name
+        const cleanIndicator = row.indicatorText.substring(0, 50).replace(/[\\/:*?"<>|]/g, "");
+        const indFolder = tatananFolder.folder(cleanIndicator);
+        if (!indFolder) continue;
+
+        // Helper to fetch and add file
+        const addFileToZip = async (url: string, filename: string) => {
+          if (!url) return;
+          try {
+            const response = await fetch(url);
+            if (response.ok) {
+              const blob = await response.blob();
+              indFolder.file(filename, blob);
+            }
+          } catch (error) {
+            console.error("Gagal mendownload:", url, error);
+          }
+        };
+
+        if (row.evidenceLink2024) await addFileToZip(row.evidenceLink2024, `[2024] Bukti Fisik.pdf`);
+        if (row.evidenceLink) await addFileToZip(row.evidenceLink, `[2025] Bukti Fisik.pdf`);
+      }
+
+      // 4. Generate and download
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, `Paket_Pusat_SIPANTAS_${proposal.name.replace(/\s+/g, '_')}.zip`);
+      
+    } catch (error) {
+      alert("Terjadi kesalahan saat membuat paket ZIP: " + error);
+    }
+  };
+
+  const handleExportAutofill = () => {
+    const autofillData = {
+      kabupaten: proposal.name,
+      timestamp: new Date().toISOString(),
+      data: allData.map(d => ({
+        tatananId: d.tatananId,
+        tatananName: d.tatananName,
+        indicatorId: d.indicatorId,
+        indicatorText: d.indicatorText,
+        nilaiMandiri: d.capaian || 0,
+        capaian2024: d.capaian2024 || '',
+        capaian2025: d.capaian2025 || '',
+        penjelasan: d.penjelasan || ''
+      }))
+    };
+
+    const blob = new Blob([JSON.stringify(autofillData, null, 2)], { type: "application/json" });
+    saveAs(blob, `Autofill_SIPANTAS_${proposal.name.replace(/\s+/g, '_')}.json`);
+    
+    alert(`File Autofill JSON berhasil diunduh!\n\nUntuk menggunakan ini di web SIPANTAS Pusat, Anda perlu meng-install ekstensi Tampermonkey di Chrome, lalu memasukkan skrip bot yang telah kami sediakan.`);
   };
 
   const startEdit = (row: any) => {
@@ -170,18 +254,31 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
             Lihat, edit, hapus, dan unduh backup data indikator yang telah diisi.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 justify-end max-w-[60%]">
           <button 
             onClick={() => handleBackup('2024')}
             className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-xs font-semibold transition"
           >
-            <Download className="w-4 h-4" /> Backup Excel 2024
+            <Download className="w-4 h-4" /> Excel 2024
           </button>
           <button 
             onClick={() => handleBackup('2025')}
-            className="flex items-center gap-2 px-3 py-2 bg-[#166534] text-white hover:bg-[#15803D] rounded-lg text-xs font-semibold transition shadow-sm"
+            className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-xs font-semibold transition"
           >
-            <Download className="w-4 h-4" /> Backup Excel 2025
+            <Download className="w-4 h-4" /> Excel 2025
+          </button>
+          <div className="w-full h-px bg-slate-200 my-1 hidden md:block"></div>
+          <button 
+            onClick={handleExportZip}
+            className="flex items-center gap-2 px-3 py-2 bg-[#16A34A] text-white hover:bg-[#15803D] rounded-lg text-xs font-semibold transition shadow-sm"
+          >
+            <Archive className="w-4 h-4" /> Unduh Paket Pusat (ZIP)
+          </button>
+          <button 
+            onClick={handleExportAutofill}
+            className="flex items-center gap-2 px-3 py-2 bg-slate-800 text-white hover:bg-slate-900 rounded-lg text-xs font-semibold transition shadow-sm"
+          >
+            <Code className="w-4 h-4" /> Data Autofill (JSON)
           </button>
         </div>
       </div>
