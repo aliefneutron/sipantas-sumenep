@@ -355,6 +355,9 @@ export default function App() {
             </select>
           </div>
           <div className="flex items-center gap-4">
+            <div className="hidden md:block text-[10px] font-medium opacity-80 uppercase tracking-wider text-white">
+              Created By Alief Neutron 2026
+            </div>
             <div className="flex items-center gap-3 border-l border-white/20 pl-4 relative">
               <button onClick={() => setShowNotifications(!showNotifications)} className="relative hover:bg-white/10 p-1.5 rounded-full transition cursor-pointer">
                 <Bell className="w-4 h-4" />
