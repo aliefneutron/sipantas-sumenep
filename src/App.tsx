@@ -3,7 +3,7 @@ import {
   Award, ShieldCheck, Settings, Users, BookOpen, AlertTriangle, 
   Bell, Clock, Calendar, RefreshCw, FileText, Sparkles, Building, Lock, Info, CheckCircle,
   Menu, ChevronDown, ChevronRight, Database,
-  User, LayoutGrid, ShoppingBag, Briefcase, MapPin, Truck, Shield, Globe, Edit2, Megaphone
+  User, LayoutGrid, ShoppingBag, Briefcase, MapPin, Truck, Shield, Globe, Edit2, Megaphone, LogOut
 } from 'lucide-react';
 import { KabupatenProposal, SystemConfig, NotificationMsg, INITIAL_TATANAN_STRUCTURE } from './types';
 import { INITIAL_PROPOSALS, INITIAL_SYSTEM_CONFIG, NOTIFICATIONS_MOCK } from './data';
@@ -33,6 +33,7 @@ export default function App() {
   const [runningText, setRunningText] = useState('Selamat datang di SIPANTAS. Harap lengkapi seluruh indikator sebelum batas waktu.');
 
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string>('dashboard');
   const [isTatananMenuOpen, setIsTatananMenuOpen] = useState(true);
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
@@ -338,14 +339,6 @@ export default function App() {
             </button>
           )}
 
-          <div className="mt-8 px-3">
-            <button 
-              onClick={handleLogout}
-              className={`w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition cursor-pointer bg-red-50 text-red-600 hover:bg-red-100 border border-red-100`}
-            >
-               Keluar (Logout)
-            </button>
-          </div>
         </nav>
       </aside>
 
@@ -375,13 +368,32 @@ export default function App() {
                   <span className="absolute top-1 right-1 h-2 w-2 bg-rose-500 rounded-full animate-ping" />
                 )}
               </button>
-              <div className="w-7 h-7 rounded-full bg-white/20 overflow-hidden border border-white/30 flex items-center justify-center shrink-0">
+              <button 
+                onClick={() => setShowProfileMenu(!showProfileMenu)}
+                className="w-7 h-7 rounded-full bg-white/20 overflow-hidden border border-white/30 flex items-center justify-center shrink-0 cursor-pointer hover:border-white transition"
+              >
                 {userSession?.avatarUrl ? (
                   <img src={userSession.avatarUrl} className="w-full h-full object-cover" />
                 ) : (
                   <span className="text-[10px] font-bold uppercase text-white">{userSession?.name?.charAt(0) || 'U'}</span>
                 )}
-              </div>
+              </button>
+
+              {/* Profile Dropdown Menu */}
+              {showProfileMenu && (
+                <div className="absolute top-10 right-0 mt-2 w-48 bg-white border border-[#BBF7D0] shadow-xl rounded-2xl p-2 z-50 text-left border-t-2 border-t-[#16A34A] animate-scaleUp text-[#166534]">
+                  <div className="px-3 py-2 border-b border-[#F0FDF4] mb-2">
+                    <p className="text-xs font-bold text-slate-800 truncate">{userSession?.name}</p>
+                    <p className="text-[10px] text-slate-500 font-semibold uppercase mt-0.5 tracking-wider">{userSession?.role}</p>
+                  </div>
+                  <button 
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer bg-red-50 text-red-600 hover:bg-red-100"
+                  >
+                     <LogOut className="w-3.5 h-3.5" /> Keluar (Logout)
+                  </button>
+                </div>
+              )}
 
               {/* Notification Overlay Panel */}
               {showNotifications && (
