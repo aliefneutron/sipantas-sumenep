@@ -94,7 +94,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
           <div className="w-16 h-16 bg-white/20 rounded-2xl mx-auto flex items-center justify-center mb-4 backdrop-blur-sm border border-white/30 shadow-inner">
             <Lock className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">Login SIPANTAS</h1>
+          <h1 className="text-2xl font-bold tracking-tight">LOGIN SIPANTAS</h1>
           <p className="text-emerald-100/80 text-xs mt-2 uppercase tracking-widest font-semibold">Sistem Informasi Pantau Tatanan Sehat</p>
         </div>
 
