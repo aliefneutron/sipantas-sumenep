@@ -90,7 +90,7 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
       const zip = new JSZip();
       
       // 2. Add Excel Summary
-      const exportData = allData.map((d, index) => ({
+      const exportData = filteredData.map((d, index) => ({
         'No': index + 1,
         'Tatanan': d.tatananName.replace('Tatanan ', ''),
         'Indikator': d.indicatorText,
@@ -108,7 +108,7 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
       // 3. Download and Add PDFs
       alert("Proses pembuatan ZIP sedang berjalan. Bergantung pada jumlah file dan kecepatan internet, ini mungkin memakan waktu beberapa menit. Jangan tutup halaman ini.");
       
-      for (const row of allData) {
+      for (const row of filteredData) {
         const tatananFolder = zip.folder(row.tatananName.replace(/[\\/:*?"<>|]/g, ""));
         if (!tatananFolder) continue;
 
@@ -148,7 +148,7 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
     const autofillData = {
       kabupaten: proposal.name,
       timestamp: new Date().toISOString(),
-      data: allData.map(d => ({
+      data: filteredData.map(d => ({
         tatananId: d.tatananId,
         tatananName: d.tatananName,
         indicatorId: d.indicatorId,
