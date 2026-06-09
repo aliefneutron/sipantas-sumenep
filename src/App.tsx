@@ -38,6 +38,7 @@ export default function App() {
   const [resetKey, setResetKey] = useState(0); // Trigger clean state resets
   const [activeMenu, setActiveMenu] = useState<string>('dashboard');
   const [isTatananMenuOpen, setIsTatananMenuOpen] = useState(true);
+  const [userRole, setUserRole] = useState<'admin' | 'opd'>('admin');
 
   // Sync state to local storage when resetKey changes (for full reset)
   useEffect(() => {
@@ -162,7 +163,7 @@ export default function App() {
             <img src="https://images.unsplash.com/photo-1596395828695-037326df047b?auto=format&fit=crop&q=80&w=200&h=200" alt="Profile" className="w-full h-full object-cover" />
           </div>
           <span className="text-[11px] uppercase font-bold text-[#166534]">{userProposal?.name || 'Loading...'}</span>
-          <span className="text-[10px] text-slate-500 mt-0.5">( Admin Kabupaten/Kota )</span>
+          <span className="text-[10px] text-slate-500 mt-0.5">( {userRole === 'admin' ? 'Admin Bappeda' : 'Akun OPD Pengampu'} )</span>
         </div>
 
         {/* Menu */}
@@ -227,19 +228,23 @@ export default function App() {
             <Award className="w-4 h-4" /> Penghargaan
           </button>
 
-          <button 
-            onClick={() => setActiveMenu('rekapitulasi')}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'rekapitulasi' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
-          >
-            <Database className="w-4 h-4" /> Rekapitulasi & Backup
-          </button>
+          {userRole === 'admin' && (
+            <>
+              <button 
+                onClick={() => setActiveMenu('rekapitulasi')}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'rekapitulasi' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+              >
+                <Database className="w-4 h-4" /> Rekapitulasi & Backup
+              </button>
 
-          <button 
-            onClick={() => setActiveMenu('user-opd')}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'user-opd' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
-          >
-            <Users className="w-4 h-4" /> User OPD
-          </button>
+              <button 
+                onClick={() => setActiveMenu('user-opd')}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'user-opd' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+              >
+                <Users className="w-4 h-4" /> User OPD
+              </button>
+            </>
+          )}
         </nav>
       </aside>
 
@@ -249,8 +254,16 @@ export default function App() {
         {/* Top Navbar */}
         <header className="bg-[#166534] text-white h-14 flex items-center justify-between px-4 shrink-0 shadow-sm z-40">
           <div className="flex items-center gap-4">
+            <select 
+              value={userRole} 
+              onChange={(e) => setUserRole(e.target.value as any)} 
+              className="bg-white/10 border border-white/20 text-white rounded px-2 py-1 text-xs outline-none cursor-pointer hover:bg-white/20 transition font-medium"
+            >
+              <option value="admin" className="text-slate-800">Mode: Admin Bappeda</option>
+              <option value="opd" className="text-slate-800">Mode: OPD Pengampu</option>
+            </select>
             {/* Year Dropdown */}
-            <select className="bg-white/10 border border-white/20 text-white rounded px-2 py-1 text-xs outline-none cursor-pointer hover:bg-white/20 transition">
+            <select className="bg-white/10 border border-white/20 text-white rounded px-2 py-1 text-xs outline-none cursor-pointer hover:bg-white/20 transition hidden sm:block">
               <option value="2025" className="text-slate-800">2025</option>
             </select>
           </div>
