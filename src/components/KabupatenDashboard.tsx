@@ -64,7 +64,7 @@ export function KabupatenDashboard({
   const [evidenceLink2024, setEvidenceLink2024] = useState<Record<string, string>>({});
   const [penjelasan, setPenjelasan] = useState<Record<string, string>>({});
   const [editingIndicatorId, setEditingIndicatorId] = useState<string | null>(null);
-  const [isIndicatorInfoOpen, setIsIndicatorInfoOpen] = useState(true);
+  const [isIndicatorInfoOpen, setIsIndicatorInfoOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [uploadingIndicatorFiles, setUploadingIndicatorFiles] = useState<Record<string, boolean>>({});
 
