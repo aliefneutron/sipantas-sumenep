@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  FileText, UploadCloud, CheckCircle2, AlertTriangle, 
+  FileText, UploadCloud, CheckCircle2, AlertTriangle, Download,
   ChevronRight, Save, Send, Award, Activity, 
   HelpCircle, ClipboardList, Info, Trash2, X, ChevronDown, ChevronUp, User, Loader2
 } from 'lucide-react';
@@ -307,10 +307,18 @@ export function KabupatenDashboard({
                       {score === 0 ? '-' : score}
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
-                      {link2024 ? 'Ada' : '-'}
+                      {link2024 ? (
+                        <a href={link2024} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition" title="Download File 2024">
+                          <Download className="w-4 h-4" />
+                        </a>
+                      ) : '-'}
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
-                      {link2025 ? 'Ada' : '-'}
+                      {link2025 ? (
+                        <a href={link2025} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition" title="Download File 2025">
+                          <Download className="w-4 h-4" />
+                        </a>
+                      ) : '-'}
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
                       {explanation || '-'}
