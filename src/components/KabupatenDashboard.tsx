@@ -231,9 +231,9 @@ export function KabupatenDashboard({
                 capaian2025: capaian2025[ind.id] || '',
                 evidenceLink2024: evidenceLink2024[ind.id] || '',
                 penjelasan: penjelasan[ind.id] || '',
-                nilaiKabupaten: isEditing && (userRole === 'admin' || userRole === 'superadmin') ? (nilaiKab[ind.id] || 0) : ind.score.nilaiKabupaten,
+                nilaiKabupaten: isEditing && (userRole === 'admin' || userRole === 'superadmin') ? (nilaiKab[ind.id] || 0) : (ind.score.nilaiKabupaten || 0),
                 statusKabupaten: isEditing && (userRole === 'admin' || userRole === 'superadmin') ? (statusKab[ind.id] || 'Draft') : autoStatusKab,
-                catatanKabupaten: isEditing && (userRole === 'admin' || userRole === 'superadmin') ? (catatanKab[ind.id] || '') : ind.score.catatanKabupaten,
+                catatanKabupaten: isEditing && (userRole === 'admin' || userRole === 'superadmin') ? (catatanKab[ind.id] || '') : (ind.score.catatanKabupaten || ''),
               }
             };
           })
