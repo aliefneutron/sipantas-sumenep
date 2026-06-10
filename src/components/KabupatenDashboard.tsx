@@ -343,14 +343,14 @@ export function KabupatenDashboard({
             <thead>
               <tr className="bg-[#166534] text-white border-b border-slate-200">
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group border-r border-[#BBF7D0]/15 font-mono">NO <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
-                <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group border-r border-[#BBF7D0]/15">INDIKATOR <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
+                <th scope="col" className="p-3 font-semibold text-left text-[10px] uppercase align-middle cursor-pointer group border-r border-[#BBF7D0]/15">INDIKATOR <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">CAPAIAN {activeTatanan.name.toUpperCase()}<br/>SAMPAI DENGAN TAHUN<br/>2024 <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">CAPAIAN {activeTatanan.name.toUpperCase()}<br/>SAMPAI DENGAN TAHUN<br/>2025 <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">NILAI<br/>MANDIRI <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">FILE {activeTatanan.name.toUpperCase()}<br/>2024 <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">FILE {activeTatanan.name.toUpperCase()}<br/>2025 <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
-                <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">PENJELASAN<br/>OPD <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
-                <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">VERIFIKASI<br/>KABUPATEN <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
+                <th scope="col" className="p-3 font-semibold text-left text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">PENJELASAN<br/>OPD <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
+                <th scope="col" className="p-3 font-semibold text-left text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">VERIFIKASI<br/>KABUPATEN <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">STATUS <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group">AKSI <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
               </tr>
@@ -371,7 +371,7 @@ export function KabupatenDashboard({
                 return (
                   <tr key={ind.id} className={i % 2 === 0 ? "bg-white" : "bg-[#F8F9FA]"}>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">{i + 1}</td>
-                    <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700 max-w-[280px]">
+                    <td className="p-3 text-left border-b border-slate-100 text-xs text-slate-700 max-w-[280px]">
                       {ind.question}
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
@@ -397,10 +397,10 @@ export function KabupatenDashboard({
                         </a>
                       ) : '-'}
                     </td>
-                    <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
+                    <td className="p-3 text-left border-b border-slate-100 text-xs text-slate-700">
                       {explanation || '-'}
                     </td>
-                    <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
+                    <td className="p-3 text-left border-b border-slate-100 text-xs text-slate-700">
                       {nkKab !== '-' ? <span className="font-bold text-[#16A34A] block mb-1">Nilai: {nkKab}</span> : null}
                       {feedKab}
                     </td>
