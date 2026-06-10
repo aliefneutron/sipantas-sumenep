@@ -390,7 +390,7 @@ export default function App() {
                 }, 50);
               }}
             >
-              {Array.from({ length: 12 }, (_, i) => 2025 + i).map(y => (
+              {Array.from({ length: 6 }, (_, i) => 2025 + i).map(y => (
                 <option key={y} value={y} className="text-slate-800">Tahun Penilaian {y}</option>
               ))}
             </select>
