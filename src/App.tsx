@@ -37,6 +37,7 @@ export default function App() {
   const [activeMenu, setActiveMenu] = useState<string>('dashboard');
   const [isTatananMenuOpen, setIsTatananMenuOpen] = useState(true);
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
+  const [isYearTransitioning, setIsYearTransitioning] = useState(false);
   const [userSession, setUserSession] = useState<UserSession | null>(() => {
     const saved = localStorage.getItem('sipantas_session');
     return saved ? JSON.parse(saved) : null;
@@ -377,9 +378,17 @@ export default function App() {
             <span className="font-bold text-sm tracking-widest uppercase hidden md:block">PORTAL {userSession?.role.toUpperCase()}</span>
             {/* Year Dropdown */}
             <select 
-              className="bg-white/10 border border-white/20 text-white rounded px-2 py-1 text-xs outline-none cursor-pointer hover:bg-white/20 transition hidden sm:block"
+              className="bg-white/10 border border-white/20 text-white rounded px-2 py-1 text-xs outline-none cursor-pointer hover:bg-white/20 transition hidden sm:block disabled:opacity-50"
               value={systemConfig.assessmentYear || 2026}
-              onChange={(e) => updateSystemConfig({...systemConfig, assessmentYear: parseInt(e.target.value)})}
+              disabled={isYearTransitioning}
+              onChange={(e) => {
+                const newYear = parseInt(e.target.value);
+                setIsYearTransitioning(true);
+                setTimeout(() => {
+                  updateSystemConfig({...systemConfig, assessmentYear: newYear});
+                  setTimeout(() => setIsYearTransitioning(false), 600); // Smooth professional transition
+                }, 50);
+              }}
             >
               {[2025, 2026, 2027, 2028, 2029, 2030].map(y => (
                 <option key={y} value={y} className="text-slate-800">Tahun Penilaian {y}</option>
@@ -473,28 +482,39 @@ export default function App() {
 
             {/* Dynamic Context Render - Kabupaten Portal directly */}
             {userProposal && (
-              <div id="active-context-area" className="transition-all duration-300">
-                {activeMenu === 'rekapitulasi' && (userSession?.role === 'admin' || userSession?.role === 'superadmin') ? (
-                  <RekapitulasiData 
-                    proposal={userProposal}
-                    onUpdateProposal={updateSingleProposal}
-                    assessmentYear={systemConfig.assessmentYear || 2026}
-                  />
-                ) : activeMenu === 'user-opd' && userSession?.role === 'superadmin' ? (
-                  <UserManagement onResetDatabase={handleFullReset} />
-                ) : activeMenu === 'notifikasi' && (userSession?.role === 'admin' || userSession?.role === 'superadmin') ? (
-                  <NotificationManagement />
-                ) : (
-                  <KabupatenDashboard 
-                    proposal={userProposal} 
-                    onUpdateProposal={updateSingleProposal}
-                    isLockedByDeadline={systemConfig.isTimelockActive}
-                    activeMenu={activeMenu}
-                    onNavigateMenu={setActiveMenu}
-                    userRole={userSession?.role}
-                    assessmentYear={systemConfig.assessmentYear || 2026}
-                  />
+              <div id="active-context-area" className="transition-all duration-300 relative min-h-[500px]">
+                {/* Year Transition Loading Overlay */}
+                {isYearTransitioning && (
+                  <div className="absolute inset-0 bg-[#F0FDF4]/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-xl animate-fadeIn">
+                    <Loader2 className="w-10 h-10 text-[#16A34A] animate-spin mb-4" />
+                    <h3 className="text-sm font-bold text-[#166534] tracking-wider uppercase">Menyiapkan Lembar Kerja</h3>
+                    <p className="text-xs text-slate-500 mt-1">Sistem sedang memuat data tahun penilaian {systemConfig.assessmentYear}</p>
+                  </div>
                 )}
+                
+                <div className={isYearTransitioning ? 'opacity-30 pointer-events-none transition-opacity duration-300' : 'opacity-100 transition-opacity duration-300'}>
+                  {activeMenu === 'rekapitulasi' && (userSession?.role === 'admin' || userSession?.role === 'superadmin') ? (
+                    <RekapitulasiData 
+                      proposal={userProposal}
+                      onUpdateProposal={updateSingleProposal}
+                      assessmentYear={systemConfig.assessmentYear || 2026}
+                    />
+                  ) : activeMenu === 'user-opd' && userSession?.role === 'superadmin' ? (
+                    <UserManagement onResetDatabase={handleFullReset} />
+                  ) : activeMenu === 'notifikasi' && (userSession?.role === 'admin' || userSession?.role === 'superadmin') ? (
+                    <NotificationManagement />
+                  ) : (
+                    <KabupatenDashboard 
+                      proposal={userProposal} 
+                      onUpdateProposal={updateSingleProposal}
+                      isLockedByDeadline={systemConfig.isTimelockActive}
+                      activeMenu={activeMenu}
+                      onNavigateMenu={setActiveMenu}
+                      userRole={userSession?.role}
+                      assessmentYear={systemConfig.assessmentYear || 2026}
+                    />
+                  )}
+                </div>
               </div>
             )}
             
