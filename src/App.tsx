@@ -390,7 +390,7 @@ export default function App() {
                 }, 50);
               }}
             >
-              {[2025, 2026, 2027, 2028, 2029, 2030].map(y => (
+              {Array.from({ length: 12 }, (_, i) => 2025 + i).map(y => (
                 <option key={y} value={y} className="text-slate-800">Tahun Penilaian {y}</option>
               ))}
             </select>
