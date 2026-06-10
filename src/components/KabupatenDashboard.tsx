@@ -68,6 +68,8 @@ export function KabupatenDashboard({
   const [editingIndicatorId, setEditingIndicatorId] = useState<string | null>(null);
   const [isIndicatorInfoOpen, setIsIndicatorInfoOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
   const [uploadingIndicatorFiles, setUploadingIndicatorFiles] = useState<Record<string, boolean>>({});
 
   // Tim Penilai states
@@ -274,6 +276,10 @@ export function KabupatenDashboard({
 
   // If a Tatanan is selected, render ONLY the Tatanan view (Full page)
   if (activeTatanan) {
+    const filteredIndicators = activeTatanan.indicators.filter(ind => 
+      ind.question.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm w-full p-6 space-y-6 text-left animate-fadeIn">
         {/* Drawer Header */}
@@ -303,7 +309,14 @@ export function KabupatenDashboard({
         <div className="flex justify-between items-center mb-4 text-sm text-slate-600 font-medium">
           <div className="flex items-center gap-2">
             <span>Show</span>
-            <select className="border border-slate-300 rounded px-2 py-1 outline-none focus:border-blue-400 bg-white">
+            <select 
+              value={itemsPerPage}
+              onChange={(e) => {
+                setItemsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="border border-slate-300 rounded px-2 py-1 outline-none focus:border-blue-400 bg-white"
+            >
               <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
@@ -312,7 +325,15 @@ export function KabupatenDashboard({
           </div>
           <div className="flex items-center gap-2">
             <span>Search:</span>
-            <input type="text" className="border border-slate-300 rounded px-2 py-1 outline-none focus:border-blue-400 w-48" />
+            <input 
+              type="text" 
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="border border-slate-300 rounded px-2 py-1 outline-none focus:border-blue-400 w-48" 
+            />
           </div>
         </div>
 
@@ -335,8 +356,8 @@ export function KabupatenDashboard({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-150">
-              {activeTatanan.indicators.slice((currentPage - 1) * 10, currentPage * 10).map((ind, mapIndex) => {
-                const i = (currentPage - 1) * 10 + mapIndex;
+              {filteredIndicators.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((ind, mapIndex) => {
+                const i = (currentPage - 1) * itemsPerPage + mapIndex;
                 const score = indicatorScores[ind.id] || 0;
                 const c2024 = capaian2024[ind.id] || '';
                 const c2025 = capaian2025[ind.id] || '';
@@ -428,7 +449,7 @@ export function KabupatenDashboard({
         {/* Pagination */}
         <div className="flex items-center justify-between px-4 py-3 bg-white border border-t-0 border-slate-200 rounded-b-xl -mt-6">
           <div className="text-sm text-slate-500 font-medium">
-            Showing {(currentPage - 1) * 10 + 1} to {Math.min(currentPage * 10, activeTatanan.indicators.length)} of {activeTatanan.indicators.length} entries
+            Showing {filteredIndicators.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredIndicators.length)} of {filteredIndicators.length} entries
           </div>
           <div className="flex items-center gap-1">
             <button
@@ -438,7 +459,7 @@ export function KabupatenDashboard({
             >
               &lt;
             </button>
-            {Array.from({ length: Math.ceil(activeTatanan.indicators.length / 10) }).map((_, idx) => (
+            {Array.from({ length: Math.ceil(filteredIndicators.length / itemsPerPage) }).map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentPage(idx + 1)}
@@ -452,8 +473,8 @@ export function KabupatenDashboard({
               </button>
             ))}
             <button
-              onClick={() => setCurrentPage(p => Math.min(Math.ceil(activeTatanan.indicators.length / 10), p + 1))}
-              disabled={currentPage === Math.ceil(activeTatanan.indicators.length / 10)}
+              onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredIndicators.length / itemsPerPage), p + 1))}
+              disabled={currentPage === Math.ceil(filteredIndicators.length / itemsPerPage) || filteredIndicators.length === 0}
               className="px-3 py-1.5 text-sm bg-slate-100 text-slate-400 rounded disabled:opacity-50 hover:bg-slate-200 cursor-pointer"
             >
               &gt;
