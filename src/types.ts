@@ -42,7 +42,9 @@ export interface TatananAssessment {
 }
 
 export interface KabupatenProposal {
-  id: string;
+  id: string; // e.g. kab-sumenep-2026
+  kabupatenId?: string; // e.g. kab-sumenep
+  assessmentYear?: number; // e.g. 2026
   name: string;
   provinsi: string;
   lastUpdated: string;

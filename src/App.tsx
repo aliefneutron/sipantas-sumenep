@@ -6,7 +6,7 @@ import {
   User, LayoutGrid, ShoppingBag, Briefcase, MapPin, Truck, Shield, Globe, Edit2, Megaphone, LogOut
 } from 'lucide-react';
 import { KabupatenProposal, SystemConfig, NotificationMsg, INITIAL_TATANAN_STRUCTURE } from './types';
-import { INITIAL_PROPOSALS, INITIAL_SYSTEM_CONFIG, NOTIFICATIONS_MOCK } from './data';
+import { INITIAL_PROPOSALS, INITIAL_SYSTEM_CONFIG, NOTIFICATIONS_MOCK, createEmptyProposal } from './data';
 import { KabupatenDashboard } from './components/KabupatenDashboard';
 import { RekapitulasiData } from './components/RekapitulasiData';
 import { Login, UserSession } from './components/Login';
@@ -152,7 +152,13 @@ export default function App() {
   // Persist alterations
   const updateSingleProposal = async (updated: KabupatenProposal) => {
     // Update local state optimistically
-    const updatedList = proposals.map(p => p.id === updated.id ? updated : p);
+    let updatedList = [...proposals];
+    const existingIndex = updatedList.findIndex(p => p.id === updated.id);
+    if (existingIndex >= 0) {
+      updatedList[existingIndex] = updated;
+    } else {
+      updatedList.push(updated);
+    }
     setProposals(updatedList);
     
     // Save to Firestore
@@ -200,7 +206,13 @@ export default function App() {
   };
 
   // Find User's Kabupaten pointer (Default is Kabupaten Sumenep)
-  const userProposal = proposals.find(p => p.id === 'kab-sumenep') || proposals[0];
+  const currentYear = systemConfig.assessmentYear || 2026;
+  let userProposal = proposals.find(p => p.kabupatenId === 'kab-sumenep' && p.assessmentYear === currentYear);
+  
+  // If no proposal exists for this year, generate a blank one
+  if (!userProposal) {
+    userProposal = createEmptyProposal('kab-sumenep', currentYear);
+  }
 
   const appContent = (
     <div className="min-h-screen bg-[#F0FDF4] text-[#166534] flex flex-col md:flex-row" id="sipantas-app-root">

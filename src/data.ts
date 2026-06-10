@@ -12,8 +12,9 @@ export const INITIAL_SYSTEM_CONFIG: SystemConfig = {
   }
 };
 
-const createMockProposal = (
-  id: string,
+export const createMockProposal = (
+  kabupatenId: string,
+  assessmentYear: number,
   name: string,
   provinsi: string,
   status: KabupatenProposal['status'],
@@ -57,8 +58,11 @@ const createMockProposal = (
     };
   });
 
+  const id = `${kabupatenId}-${assessmentYear}`;
   return {
     id,
+    kabupatenId,
+    assessmentYear,
     name,
     provinsi,
     lastUpdated: '2026-06-07T08:30:00Z',
@@ -91,7 +95,7 @@ const createMockProposal = (
 
 export const INITIAL_PROPOSALS: KabupatenProposal[] = [
   // User's own Kabupaten (Can be fully edited in Kabupaten level)
-  createMockProposal('kab-sumenep', 'Kabupaten Sumenep', 'Jawa Timur', 'Draft', 'Wistara', {
+  createMockProposal('kab-sumenep', 2026, 'Kabupaten Sumenep', 'Jawa Timur', 'Draft', 'Wistara', {
     skTimStatus: 'Draft',
     skForumStatus: 'Draft',
     renjaStatus: 'Draft',
@@ -99,7 +103,7 @@ export const INITIAL_PROPOSALS: KabupatenProposal[] = [
   }),
   
   // High quality candidate waiting for Provincial Verification
-  createMockProposal('kab-sidoarjo', 'Kabupaten Sidoarjo', 'Jawa Timur', 'Menunggu Verifikasi Provinsi', 'Wiwerda', {
+  createMockProposal('kab-sidoarjo', 2026, 'Kabupaten Sidoarjo', 'Jawa Timur', 'Menunggu Verifikasi Provinsi', 'Wiwerda', {
     skTimStatus: 'Pending',
     skForumStatus: 'Pending',
     renjaStatus: 'Pending',
@@ -107,7 +111,7 @@ export const INITIAL_PROPOSALS: KabupatenProposal[] = [
   }),
 
   // Approved by Province, waiting for Central Decision (Great for AI review!)
-  createMockProposal('kota-bandung', 'Kota Bandung', 'Jawa Barat', 'Disetujui Provinsi/Menunggu Pusat', 'Wistara', {
+  createMockProposal('kota-bandung', 2026, 'Kota Bandung', 'Jawa Barat', 'Disetujui Provinsi/Menunggu Pusat', 'Wistara', {
     skTimStatus: 'Valid',
     skForumStatus: 'Valid',
     renjaStatus: 'Valid',
@@ -116,7 +120,7 @@ export const INITIAL_PROPOSALS: KabupatenProposal[] = [
   }),
 
   // Returned proposal needs local revisions (Shows feedback loop!)
-  createMockProposal('kab-sumba-barat', 'Kabupaten Sumba Barat', 'Nusa Tenggara Timur', 'Revisi Provinsi', 'Padapa', {
+  createMockProposal('kab-sumba-barat', 2026, 'Kabupaten Sumba Barat', 'Nusa Tenggara Timur', 'Revisi Provinsi', 'Padapa', {
     skTimStatus: 'Revisi',
     skForumStatus: 'Valid',
     renjaStatus: 'Valid',
@@ -126,7 +130,7 @@ export const INITIAL_PROPOSALS: KabupatenProposal[] = [
 
   // Completed awarded city
   {
-    ...createMockProposal('kota-surabaya', 'Kota Surabaya', 'Jawa Timur', 'Selesai', 'Wistara', {
+    ...createMockProposal('kota-surabaya', 2026, 'Kota Surabaya', 'Jawa Timur', 'Selesai', 'Wistara', {
       skTimStatus: 'Valid',
       skForumStatus: 'Valid',
       renjaStatus: 'Valid',
@@ -159,3 +163,12 @@ export const NOTIFICATIONS_MOCK = [
     read: false
   }
 ];
+
+export const createEmptyProposal = (kabupatenId: string, assessmentYear: number, name: string = 'Kabupaten Sumenep', provinsi: string = 'Jawa Timur'): KabupatenProposal => {
+  return createMockProposal(kabupatenId, assessmentYear, name, provinsi, 'Draft', 'Wistara', {
+    skTimStatus: 'Draft',
+    skForumStatus: 'Draft',
+    renjaStatus: 'Draft',
+    baseScore: 0
+  });
+};
