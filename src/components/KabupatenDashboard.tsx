@@ -201,7 +201,7 @@ export function KabupatenDashboard({
       setStatusKab(sk);
       setCatatanKab(ck);
     }
-  }, [activeTatanan?.id]);
+  }, [activeTatanan?.id, proposal.id]);
 
   const openTatananAssess = (t: TatananAssessment) => {
     if (onNavigateMenu) {
