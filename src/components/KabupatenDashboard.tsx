@@ -182,9 +182,9 @@ export function KabupatenDashboard({
       activeTatanan.indicators.forEach(ind => {
         scores[ind.id] = ind.score.capaian || 0;
         links[ind.id] = ind.score.evidenceTahun?.[year2] || ind.score.evidenceLink || '';
-        cap24[ind.id] = ind.score.capaianTahun?.[year1] || ind.score.capaianYear1 || '';
-        cap25[ind.id] = ind.score.capaianTahun?.[year2] || ind.score.capaianYear2 || '';
-        ev24[ind.id] = ind.score.evidenceTahun?.[year1] || ind.score.evidenceYear1 || '';
+        cap24[ind.id] = ind.score.capaianTahun?.[year1] || (ind.score as any).capaian2024 || (ind.score as any).capaianYear1 || '';
+        cap25[ind.id] = ind.score.capaianTahun?.[year2] || (ind.score as any).capaian2025 || (ind.score as any).capaianYear2 || '';
+        ev24[ind.id] = ind.score.evidenceTahun?.[year1] || (ind.score as any).evidenceLink2024 || (ind.score as any).evidenceYear1 || '';
         penjel[ind.id] = ind.score.penjelasan || '';
         nk[ind.id] = ind.score.nilaiKabupaten || 0;
         sk[ind.id] = ind.score.statusKabupaten || 'Draft';
@@ -238,9 +238,21 @@ export function KabupatenDashboard({
                 ...ind.score,
                 capaian: indicatorScores[ind.id] !== undefined ? indicatorScores[ind.id] : 0,
                 evidenceLink: evidenceYear2[ind.id] || '',
-                capaianYear1: capaianYear1[ind.id] || '',
-                capaianYear2: capaianYear2[ind.id] || '',
-                evidenceYear1: evidenceYear1[ind.id] || '',
+                // Update legacy fields for compatibility
+                capaian2024: capaianYear1[ind.id] || '',
+                capaian2025: capaianYear2[ind.id] || '',
+                evidenceLink2024: evidenceYear1[ind.id] || '',
+                // Update dynamic fields
+                capaianTahun: {
+                  ...ind.score.capaianTahun,
+                  [year1]: capaianYear1[ind.id] || '',
+                  [year2]: capaianYear2[ind.id] || ''
+                },
+                evidenceTahun: {
+                  ...ind.score.evidenceTahun,
+                  [year1]: evidenceYear1[ind.id] || '',
+                  [year2]: evidenceYear2[ind.id] || ''
+                },
                 penjelasan: penjelasan[ind.id] || '',
                 nilaiKabupaten: isEditing && (userRole === 'admin' || userRole === 'superadmin') ? (nilaiKab[ind.id] || 0) : (ind.score.nilaiKabupaten || 0),
                 statusKabupaten: isEditing && (userRole === 'admin' || userRole === 'superadmin') ? (statusKab[ind.id] || 'Draft') : autoStatusKab,
@@ -580,7 +592,7 @@ export function KabupatenDashboard({
                         <input 
                           type="text"
                           value={capaianYear1[editingIndicatorId] || ''}
-                          onChange={(e) => setCapaian2024({ ...capaianYear1, [editingIndicatorId]: e.target.value })}
+                          onChange={(e) => setCapaianYear1({ ...capaianYear1, [editingIndicatorId]: e.target.value })}
                           placeholder="Capaian {year1}"
                           className="w-full text-sm p-2.5 border border-slate-300 rounded focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] outline-none transition"
                         />
