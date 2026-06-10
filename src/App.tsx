@@ -436,9 +436,9 @@ export default function App() {
             {/* Dynamic Announcement Banner (Marquee) */}
             <div className="bg-[#166534] text-[#F0FDF4] text-xs font-medium py-2.5 px-4 rounded-xl flex items-center justify-start gap-3 shadow-sm overflow-hidden">
               <Clock className="w-4.5 h-4.5 shrink-0 text-[#86EFAC] animate-pulse" />
-              <marquee className="flex-1 font-semibold tracking-wide" scrollamount="5">
-                {runningText}
-              </marquee>
+              <div className="flex-1 marquee-wrapper font-semibold tracking-wide">
+                <span className="marquee-content">{runningText}</span>
+              </div>
             </div>
 
             {/* Dynamic Context Render - Kabupaten Portal directly */}
