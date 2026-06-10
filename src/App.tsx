@@ -3,7 +3,7 @@ import {
   Award, ShieldCheck, Settings, Users, BookOpen, AlertTriangle, 
   Bell, Clock, Calendar, RefreshCw, FileText, Sparkles, Building, Lock, Info, CheckCircle,
   Menu, ChevronDown, ChevronRight, Database,
-  User, LayoutGrid, ShoppingBag, Briefcase, MapPin, Truck, Shield, Globe, Edit2, Megaphone, LogOut
+  User, LayoutGrid, ShoppingBag, Briefcase, MapPin, Truck, Shield, Globe, Edit2, Megaphone, LogOut, Loader2
 } from 'lucide-react';
 import { KabupatenProposal, SystemConfig, NotificationMsg, INITIAL_TATANAN_STRUCTURE } from './types';
 import { INITIAL_PROPOSALS, INITIAL_SYSTEM_CONFIG, NOTIFICATIONS_MOCK, createEmptyProposal } from './data';
