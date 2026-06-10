@@ -205,10 +205,22 @@ export default function App() {
     }
   };
 
-  // Find User's Kabupaten pointer (Default is Kabupaten Sumenep)
   const currentYear = systemConfig.assessmentYear || 2026;
   let userProposal = proposals.find(p => p.kabupatenId === 'kab-sumenep' && p.assessmentYear === currentYear);
   
+  // Backward compatibility: Recover old data stored under 'kab-sumenep' without assessmentYear
+  if (!userProposal && currentYear === 2026) {
+    const legacyProposal = proposals.find(p => p.id === 'kab-sumenep');
+    if (legacyProposal) {
+      userProposal = {
+        ...legacyProposal,
+        id: 'kab-sumenep-2026',
+        kabupatenId: 'kab-sumenep',
+        assessmentYear: 2026
+      };
+    }
+  }
+
   // If no proposal exists for this year, generate a blank one
   if (!userProposal) {
     userProposal = createEmptyProposal('kab-sumenep', currentYear);
