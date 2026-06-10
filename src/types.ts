@@ -8,10 +8,15 @@ export interface DocumentField {
 
 export interface IndicatorScore {
   capaian: number; // 0 to 100 (Nilai Mandiri)
-  evidenceLink: string; // File Sehat Mandiri 2025
-  capaian2024?: string; // Capaian Sehat Mandiri s.d. 2024
-  capaian2025?: string; // Capaian Sehat Mandiri s.d. 2025
-  evidenceLink2024?: string; // File Sehat Mandiri 2024
+  evidenceLink?: string; // Legacy: File Sehat Mandiri 2025
+  capaian2024?: string; // Legacy: Capaian Sehat Mandiri s.d. 2024
+  capaian2025?: string; // Legacy: Capaian Sehat Mandiri s.d. 2025
+  evidenceLink2024?: string; // Legacy: File Sehat Mandiri 2024
+  
+  // New Dynamic Fields
+  capaianTahun?: Record<string, string>; // e.g. { "2024": "...", "2025": "..." }
+  evidenceTahun?: Record<string, string>; // e.g. { "2024": "...", "2025": "..." }
+
   penjelasan?: string; // Penjelasan Kabupaten/Kota
   statusProvinsi?: string; // Status verifikasi, e.g., "Valid", "Revisi", "not set"
   penjelasanProvinsi?: string; // Catatan verifikator provinsi
@@ -67,6 +72,7 @@ export interface NotificationMsg {
 }
 
 export interface SystemConfig {
+  assessmentYear?: number; // e.g., 2026
   deadline: string; // ISO string or simple date
   isTimelockActive: boolean;
   isMasaSanggahActive: boolean;

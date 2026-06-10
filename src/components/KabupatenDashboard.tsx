@@ -13,20 +13,29 @@ interface KabupatenDashboardProps {
   proposal: KabupatenProposal;
   onUpdateProposal: (updated: KabupatenProposal) => void;
   isLockedByDeadline: boolean;
-  activeMenu?: string;
-  onNavigateMenu?: (menuId: string) => void;
+  activeMenu: string;
+  onNavigateMenu: (menuId: string) => void;
   userRole?: string;
+  assessmentYear?: number;
 }
 
 export function KabupatenDashboard({ 
   proposal, 
   onUpdateProposal, 
   isLockedByDeadline,
-  activeMenu = 'dashboard',
+  activeMenu,
   onNavigateMenu,
-  userRole
+  userRole,
+  assessmentYear = 2026
 }: KabupatenDashboardProps) {
-  
+
+  const year1 = assessmentYear - 2;
+  const year2 = assessmentYear - 1;
+
+  const [activeTatananId, setActiveTatananId] = useState<string>(() => {
+    return activeMenu.startsWith('tatanan-') ? activeMenu : 'tatanan-1';
+  });
+
   const stats = getProposalStats(proposal);
 
   // Identity edit states so the user can label the app as their own Kabupaten/Kota
@@ -58,12 +67,12 @@ export function KabupatenDashboard({
   const selectedTatananId = activeTatanan ? activeTatanan.id : null;
 
   const [indicatorScores, setIndicatorScores] = useState<Record<string, number>>({});
-  const [indicatorLinks, setIndicatorLinks] = useState<Record<string, string>>({});
+  const [evidenceYear2, setEvidenceYear2] = useState<Record<string, string>>({});
   
   // SIPANTAS Specific detailed states
-  const [capaian2024, setCapaian2024] = useState<Record<string, string>>({});
-  const [capaian2025, setCapaian2025] = useState<Record<string, string>>({});
-  const [evidenceLink2024, setEvidenceLink2024] = useState<Record<string, string>>({});
+  const [capaianYear1, setCapaianYear1] = useState<Record<string, string>>({});
+  const [capaianYear2, setCapaianYear2] = useState<Record<string, string>>({});
+  const [evidenceYear1, setEvidenceYear1] = useState<Record<string, string>>({});
   const [penjelasan, setPenjelasan] = useState<Record<string, string>>({});
   const [editingIndicatorId, setEditingIndicatorId] = useState<string | null>(null);
   const [isIndicatorInfoOpen, setIsIndicatorInfoOpen] = useState(false);
@@ -77,7 +86,7 @@ export function KabupatenDashboard({
   const [statusKab, setStatusKab] = useState<Record<string, 'Draft' | 'Menunggu Verifikasi' | 'Valid' | 'Revisi'>>({});
   const [catatanKab, setCatatanKab] = useState<Record<string, string>>({});
 
-  const handleIndicatorFileUpload = async (indicatorId: string, year: '2024' | '2025', file: File | null) => {
+  const handleIndicatorFileUpload = async (indicatorId: string, year: number, file: File | null) => {
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
       alert("Gagal mengunggah: Ukuran file melebihi batas maksimal 5 MB!");
@@ -94,10 +103,10 @@ export function KabupatenDashboard({
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
       
-      if (year === '2024') {
-        setEvidenceLink2024(prev => ({ ...prev, [indicatorId]: downloadURL }));
+      if (year === year1) {
+        setEvidenceYear1(prev => ({ ...prev, [indicatorId]: downloadURL }));
       } else {
-        setIndicatorLinks(prev => ({ ...prev, [indicatorId]: downloadURL }));
+        setEvidenceYear2(prev => ({ ...prev, [indicatorId]: downloadURL }));
       }
       
       alert(`File ${year} berhasil diunggah! Link telah tersimpan.`);
@@ -109,7 +118,7 @@ export function KabupatenDashboard({
     }
   };
 
-  const getFilenameFromUrl = (url: string, year: '2024'|'2025') => {
+  const getFilenameFromUrl = (url: string, year: number) => {
     if (!url) return '';
     try {
       const decoded = decodeURIComponent(url);
@@ -172,10 +181,10 @@ export function KabupatenDashboard({
       
       activeTatanan.indicators.forEach(ind => {
         scores[ind.id] = ind.score.capaian || 0;
-        links[ind.id] = ind.score.evidenceLink || '';
-        cap24[ind.id] = ind.score.capaian2024 || '';
-        cap25[ind.id] = ind.score.capaian2025 || '';
-        ev24[ind.id] = ind.score.evidenceLink2024 || '';
+        links[ind.id] = ind.score.evidenceTahun?.[year2] || ind.score.evidenceLink || '';
+        cap24[ind.id] = ind.score.capaianTahun?.[year1] || ind.score.capaianYear1 || '';
+        cap25[ind.id] = ind.score.capaianTahun?.[year2] || ind.score.capaianYear2 || '';
+        ev24[ind.id] = ind.score.evidenceTahun?.[year1] || ind.score.evidenceYear1 || '';
         penjel[ind.id] = ind.score.penjelasan || '';
         nk[ind.id] = ind.score.nilaiKabupaten || 0;
         sk[ind.id] = ind.score.statusKabupaten || 'Draft';
@@ -183,10 +192,10 @@ export function KabupatenDashboard({
       });
       
       setIndicatorScores(scores);
-      setIndicatorLinks(links);
-      setCapaian2024(cap24);
-      setCapaian2025(cap25);
-      setEvidenceLink2024(ev24);
+      setEvidenceYear2(links);
+      setCapaianYear1(cap24);
+      setCapaianYear2(cap25);
+      setEvidenceYear1(ev24);
       setPenjelasan(penjel);
       setNilaiKab(nk);
       setStatusKab(sk);
@@ -228,10 +237,10 @@ export function KabupatenDashboard({
               score: {
                 ...ind.score,
                 capaian: indicatorScores[ind.id] !== undefined ? indicatorScores[ind.id] : 0,
-                evidenceLink: indicatorLinks[ind.id] || '',
-                capaian2024: capaian2024[ind.id] || '',
-                capaian2025: capaian2025[ind.id] || '',
-                evidenceLink2024: evidenceLink2024[ind.id] || '',
+                evidenceLink: evidenceYear2[ind.id] || '',
+                capaianYear1: capaianYear1[ind.id] || '',
+                capaianYear2: capaianYear2[ind.id] || '',
+                evidenceYear1: evidenceYear1[ind.id] || '',
                 penjelasan: penjelasan[ind.id] || '',
                 nilaiKabupaten: isEditing && (userRole === 'admin' || userRole === 'superadmin') ? (nilaiKab[ind.id] || 0) : (ind.score.nilaiKabupaten || 0),
                 statusKabupaten: isEditing && (userRole === 'admin' || userRole === 'superadmin') ? (statusKab[ind.id] || 'Draft') : autoStatusKab,
@@ -300,7 +309,7 @@ export function KabupatenDashboard({
           <div className="space-y-1">
             <p className="font-bold">Panduan Pengisian Indikator:</p>
             <p className="leading-relaxed opacity-90">
-              Untuk setiap indikator di bawah ini, berikan penilaian angka mandiri (0–100), isi besaran capaian tahun 2024 & 2025, lampirkan link folder dokumen bukti fisik dari OPD pengampu, serta tulis penjelasan deskriptif singkat. Klik tombol <span className="font-semibold text-[#16A34A]">✎ Edit</span> pada kolom Aksi untuk mengisi data masing-masing indikator.
+              Untuk setiap indikator di bawah ini, berikan penilaian angka mandiri (0–100), isi besaran capaian tahun {year1} & {year2}, lampirkan link folder dokumen bukti fisik dari OPD pengampu, serta tulis penjelasan deskriptif singkat. Klik tombol <span className="font-semibold text-[#16A34A]">✎ Edit</span> pada kolom Aksi untuk mengisi data masing-masing indikator.
             </p>
           </div>
         </div>
@@ -344,11 +353,11 @@ export function KabupatenDashboard({
               <tr className="bg-[#166534] text-white border-b border-slate-200">
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group border-r border-[#BBF7D0]/15 font-mono">NO <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group border-r border-[#BBF7D0]/15">INDIKATOR <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
-                <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">CAPAIAN {activeTatanan.name.toUpperCase()}<br/>SAMPAI DENGAN TAHUN<br/>2024 <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
-                <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">CAPAIAN {activeTatanan.name.toUpperCase()}<br/>SAMPAI DENGAN TAHUN<br/>2025 <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
+                <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">CAPAIAN {activeTatanan.name.toUpperCase()}<br/>SAMPAI DENGAN TAHUN<br/>{year1} <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
+                <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">CAPAIAN {activeTatanan.name.toUpperCase()}<br/>SAMPAI DENGAN TAHUN<br/>{year2} <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">NILAI<br/>MANDIRI <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
-                <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">FILE {activeTatanan.name.toUpperCase()}<br/>2024 <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
-                <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">FILE {activeTatanan.name.toUpperCase()}<br/>2025 <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
+                <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">FILE {activeTatanan.name.toUpperCase()}<br/>{year1} <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
+                <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">FILE {activeTatanan.name.toUpperCase()}<br/>{year2} <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">PENJELASAN<br/>OPD <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">VERIFIKASI<br/>KABUPATEN <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
                 <th scope="col" className="p-3 font-semibold text-center text-[10px] uppercase align-middle cursor-pointer group leading-snug border-r border-[#BBF7D0]/15">STATUS <span className="text-[10px] opacity-40 ml-1 group-hover:opacity-100">⇅</span></th>
@@ -359,10 +368,10 @@ export function KabupatenDashboard({
               {filteredIndicators.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((ind, mapIndex) => {
                 const i = (currentPage - 1) * itemsPerPage + mapIndex;
                 const score = indicatorScores[ind.id] || 0;
-                const c2024 = capaian2024[ind.id] || '';
-                const c2025 = capaian2025[ind.id] || '';
-                const link2024 = evidenceLink2024[ind.id] || '';
-                const link2025 = indicatorLinks[ind.id] || '';
+                const cYear1 = capaianYear1[ind.id] || '';
+                const cYear2 = capaianYear2[ind.id] || '';
+                const linkYear1 = evidenceYear1[ind.id] || '';
+                const linkYear2 = evidenceYear2[ind.id] || '';
                 const explanation = penjelasan[ind.id] || '';
                 const stKab = ind.score.statusKabupaten || 'Draft';
                 const feedKab = ind.score.catatanKabupaten || '-';
@@ -375,24 +384,24 @@ export function KabupatenDashboard({
                       {ind.question}
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
-                      {c2024 || '-'}
+                      {cYear1 || '-'}
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
-                      {c2025 || '-'}
+                      {cYear2 || '-'}
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
                       {score === 0 ? '-' : score}
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
-                      {link2024 ? (
-                        <a href={link2024} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition" title="Download File 2024">
+                      {linkYear1 ? (
+                        <a href={linkYear1} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition" title="Download File {year1}">
                           <Download className="w-4 h-4" />
                         </a>
                       ) : '-'}
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
-                      {link2025 ? (
-                        <a href={link2025} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition" title="Download File 2025">
+                      {linkYear2 ? (
+                        <a href={linkYear2} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition" title="Download File {year2}">
                           <Download className="w-4 h-4" />
                         </a>
                       ) : '-'}
@@ -417,7 +426,7 @@ export function KabupatenDashboard({
                         <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide block whitespace-nowrap">
                           Menunggu Verifikasi
                         </span>
-                      ) : score === 0 && !c2024 && !c2025 ? (
+                      ) : score === 0 && !cYear1 && !cYear2 ? (
                         <span className="bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide">
                           Kosong
                         </span>
@@ -567,23 +576,23 @@ export function KabupatenDashboard({
                     {/* Left Col */}
                     <div className="space-y-6">
                       <div className="space-y-1.5">
-                        <label className="block text-sm font-medium text-slate-700">Capaian 2024 <span className="text-red-500">*</span></label>
+                        <label className="block text-sm font-medium text-slate-700">Capaian {year1} <span className="text-red-500">*</span></label>
                         <input 
                           type="text"
-                          value={capaian2024[editingIndicatorId] || ''}
-                          onChange={(e) => setCapaian2024({ ...capaian2024, [editingIndicatorId]: e.target.value })}
-                          placeholder="Capaian 2024"
+                          value={capaianYear1[editingIndicatorId] || ''}
+                          onChange={(e) => setCapaian2024({ ...capaianYear1, [editingIndicatorId]: e.target.value })}
+                          placeholder="Capaian {year1}"
                           className="w-full text-sm p-2.5 border border-slate-300 rounded focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] outline-none transition"
                         />
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="block text-sm font-medium text-slate-700">Capaian 2025 <span className="text-red-500">*</span></label>
+                        <label className="block text-sm font-medium text-slate-700">Capaian {year2} <span className="text-red-500">*</span></label>
                         <input 
                           type="text"
-                          value={capaian2025[editingIndicatorId] || ''}
-                          onChange={(e) => setCapaian2025({ ...capaian2025, [editingIndicatorId]: e.target.value })}
-                          placeholder="Capaian 2025"
+                          value={capaianYear2[editingIndicatorId] || ''}
+                          onChange={(e) => setCapaian2025({ ...capaianYear2, [editingIndicatorId]: e.target.value })}
+                          placeholder="Capaian {year2}"
                           className="w-full text-sm p-2.5 border border-slate-300 rounded focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] outline-none transition"
                         />
                       </div>
@@ -606,26 +615,26 @@ export function KabupatenDashboard({
                     {/* Right Col */}
                     <div className="space-y-6">
                       <div className="space-y-1.5">
-                        <label className="block text-sm font-medium text-slate-700">File 2024 <span className="text-red-500">*</span></label>
-                        {evidenceLink2024[editingIndicatorId] ? (
+                        <label className="block text-sm font-medium text-slate-700">File {year1} <span className="text-red-500">*</span></label>
+                        {evidenceYear1[editingIndicatorId] ? (
                           <div className="flex flex-col gap-2">
                             <a 
-                              href={evidenceLink2024[editingIndicatorId]} 
+                              href={evidenceYear1[editingIndicatorId]} 
                               target="_blank" 
                               rel="noreferrer" 
                               className="flex items-center justify-between p-3 border-2 border-[#16A34A] bg-green-50 rounded-xl hover:bg-green-100 transition group"
                             >
                               <span className="text-sm font-bold text-[#16A34A] truncate mr-2">
-                                {getFilenameFromUrl(evidenceLink2024[editingIndicatorId], '2024')}
+                                {getFilenameFromUrl(evidenceYear1[editingIndicatorId], year1)}
                               </span>
                               <Download className="w-4 h-4 text-[#16A34A] group-hover:scale-110 transition shrink-0" />
                             </a>
                             <label className="text-xs text-slate-500 hover:text-slate-800 cursor-pointer underline w-fit">
-                              Ganti File 2024
+                              Ganti File {year1}
                               <input 
                                 type="file"
                                 className="hidden"
-                                onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, '2024', e.target.files?.[0] || null)}
+                                onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, year1, e.target.files?.[0] || null)}
                               />
                             </label>
                           </div>
@@ -633,7 +642,7 @@ export function KabupatenDashboard({
                           <div className="relative">
                             <input 
                               type="file"
-                              onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, '2024', e.target.files?.[0] || null)}
+                              onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, year1, e.target.files?.[0] || null)}
                               disabled={uploadingIndicatorFiles[`${editingIndicatorId}-2024`]}
                               className="w-full text-sm border border-slate-300 p-1.5 rounded bg-white file:mr-4 file:py-1 file:px-3 file:rounded file:border file:border-slate-300 file:bg-[#16A34A] file:text-white file:font-semibold hover:file:bg-[#15803D] cursor-pointer disabled:opacity-50 transition"
                             />
@@ -648,26 +657,26 @@ export function KabupatenDashboard({
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="block text-sm font-medium text-slate-700">File 2025 <span className="text-red-500">*</span></label>
-                        {indicatorLinks[editingIndicatorId] ? (
+                        <label className="block text-sm font-medium text-slate-700">File {year2} <span className="text-red-500">*</span></label>
+                        {evidenceYear2[editingIndicatorId] ? (
                           <div className="flex flex-col gap-2">
                             <a 
-                              href={indicatorLinks[editingIndicatorId]} 
+                              href={evidenceYear2[editingIndicatorId]} 
                               target="_blank" 
                               rel="noreferrer" 
                               className="flex items-center justify-between p-3 border-2 border-[#16A34A] bg-green-50 rounded-xl hover:bg-green-100 transition group"
                             >
                               <span className="text-sm font-bold text-[#16A34A] truncate mr-2">
-                                {getFilenameFromUrl(indicatorLinks[editingIndicatorId], '2025')}
+                                {getFilenameFromUrl(evidenceYear2[editingIndicatorId], year2)}
                               </span>
                               <Download className="w-4 h-4 text-[#16A34A] group-hover:scale-110 transition shrink-0" />
                             </a>
                             <label className="text-xs text-slate-500 hover:text-slate-800 cursor-pointer underline w-fit">
-                              Ganti File 2025
+                              Ganti File {year2}
                               <input 
                                 type="file"
                                 className="hidden"
-                                onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, '2025', e.target.files?.[0] || null)}
+                                onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, year2, e.target.files?.[0] || null)}
                               />
                             </label>
                           </div>
@@ -675,7 +684,7 @@ export function KabupatenDashboard({
                           <div className="relative">
                             <input 
                               type="file"
-                              onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, '2025', e.target.files?.[0] || null)}
+                              onChange={(e) => handleIndicatorFileUpload(editingIndicatorId, year2, e.target.files?.[0] || null)}
                               disabled={uploadingIndicatorFiles[`${editingIndicatorId}-2025`]}
                               className="w-full text-sm border border-slate-300 p-1.5 rounded bg-white file:mr-4 file:py-1 file:px-3 file:rounded file:border file:border-slate-300 file:bg-[#16A34A] file:text-white file:font-semibold hover:file:bg-[#15803D] cursor-pointer disabled:opacity-50 transition"
                             />
@@ -919,9 +928,9 @@ export function KabupatenDashboard({
                   const s = ind.score;
                   let fieldCount = 0;
                   if (s.capaian > 0) fieldCount++;
-                  if (isFilled(s.capaian2024)) fieldCount++;
-                  if (isFilled(s.capaian2025)) fieldCount++;
-                  if (isFilled(s.evidenceLink2024)) fieldCount++;
+                  if (isFilled(s.capaianYear1)) fieldCount++;
+                  if (isFilled(s.capaianYear2)) fieldCount++;
+                  if (isFilled(s.evidenceYear1)) fieldCount++;
                   if (isFilled(s.evidenceLink)) fieldCount++;
                   if (isFilled(s.penjelasan)) fieldCount++;
                   

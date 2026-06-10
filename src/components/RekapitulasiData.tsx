@@ -8,20 +8,24 @@ import { saveAs } from 'file-saver';
 interface RekapitulasiDataProps {
   proposal: KabupatenProposal;
   onUpdateProposal: (updated: KabupatenProposal) => void;
+  assessmentYear?: number;
 }
 
-export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDataProps) {
+export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 2026 }: RekapitulasiDataProps) {
+  
+  const year1 = assessmentYear - 2;
+  const year2 = assessmentYear - 1;
   const [searchTerm, setSearchTerm] = useState('');
   const [filterTatananId, setFilterTatananId] = useState('all');
   
   // States for Editing
   const [editingRow, setEditingRow] = useState<any>(null);
-  const [capaian2024, setCapaian2024] = useState('');
-  const [capaian2025, setCapaian2025] = useState('');
-  const [evidenceLink2024, setEvidenceLink2024] = useState('');
-  const [evidenceLink2025, setEvidenceLink2025] = useState(''); // assuming this field is used for 2025 evidence, wait, the type is just evidenceLink.
-  // Actually, evidenceLink is for 2025, evidenceLink2024 is for 2024.
-  const [evidenceLink, setEvidenceLink] = useState('');
+  const [capaianYear1, setCapaianYear1] = useState('');
+  const [capaianYear2, setCapaianYear2] = useState('');
+  const [evidenceYear1, setEvidenceYear1] = useState('');
+  const [evidenceYear22025, setEvidenceYear22025] = useState(''); // assuming this field is used for 2025 evidence, wait, the type is just evidenceYear2.
+  // Actually, evidenceYear2 is for 2025, evidenceYear1 is for 2024.
+  const [evidenceYear2, setEvidenceYear2] = useState('');
   
   // Aggregate all filled indicators
   const allData = useMemo(() => {
@@ -29,7 +33,7 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
     proposal.tatanan?.forEach(t => {
       t.indicators.forEach(ind => {
         // Only include if there is some data filled in
-        if (ind.score.capaian2024 || ind.score.capaian2025 || ind.score.evidenceLink || ind.score.evidenceLink2024) {
+        if (ind.score.capaianYear1 || ind.score.capaianYear2 || ind.score.evidenceYear2 || ind.score.evidenceYear1) {
           data.push({
             tatananId: t.id,
             tatananName: t.name,
@@ -50,24 +54,24 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
     return matchesSearch && matchesTatanan;
   });
 
-  const handleBackup = (year: '2024' | '2025') => {
+  const handleBackup = (year: number) => {
     // Prepare data for export
     const exportData = filteredData.map((d, index) => {
-      if (year === '2024') {
+      if (year === year1) {
         return {
           'No': index + 1,
           'Tatanan': d.tatananName.replace('Tatanan ', ''),
           'Indikator': d.indicatorText,
-          'Capaian 2024': d.capaian2024 || '-',
-          'Link Bukti (2024)': d.evidenceLink2024 || '-'
+          ['Capaian ' + year1]: d.capaianYear1 || '-',
+          ['Link Bukti (' + year1 + ')']: d.evidenceYear1 || '-'
         };
       } else {
         return {
           'No': index + 1,
           'Tatanan': d.tatananName.replace('Tatanan ', ''),
           'Indikator': d.indicatorText,
-          'Capaian 2025': d.capaian2025 || '-',
-          'Link Bukti (2025)': d.evidenceLink || '-'
+          ['Capaian ' + year2]: d.capaianYear2 || '-',
+          ['Link Bukti (' + year2 + ')']: d.evidenceYear2 || '-'
         };
       }
     });
@@ -95,8 +99,8 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
         'Tatanan': d.tatananName.replace('Tatanan ', ''),
         'Indikator': d.indicatorText,
         'Nilai Mandiri': d.capaian,
-        'Capaian 2024': d.capaian2024 || '-',
-        'Capaian 2025': d.capaian2025 || '-',
+        ['Capaian ' + year1]: d.capaianYear1 || '-',
+        ['Capaian ' + year2]: d.capaianYear2 || '-',
         'Penjelasan': d.penjelasan || '-'
       }));
       const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -131,8 +135,8 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
           }
         };
 
-        if (row.evidenceLink2024) await addFileToZip(row.evidenceLink2024, `[2024] Bukti Fisik.pdf`);
-        if (row.evidenceLink) await addFileToZip(row.evidenceLink, `[2025] Bukti Fisik.pdf`);
+        if (row.evidenceYear1) await addFileToZip(row.evidenceYear1, `[${year1}] Bukti Fisik.pdf`);
+        if (row.evidenceYear2) await addFileToZip(row.evidenceYear2, `[${year2}] Bukti Fisik.pdf`);
       }
 
       // 4. Generate and download
@@ -154,8 +158,8 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
         indicatorId: d.indicatorId,
         indicatorText: d.indicatorText,
         nilaiMandiri: d.capaian || 0,
-        capaian2024: d.capaian2024 || '',
-        capaian2025: d.capaian2025 || '',
+        ['capaian' + year1]: d.capaianYear1 || '',
+        ['capaian' + year2]: d.capaianYear2 || '',
         penjelasan: d.penjelasan || ''
       }))
     };
@@ -168,10 +172,10 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
 
   const startEdit = (row: any) => {
     setEditingRow(row);
-    setCapaian2024(row.capaian2024 || '');
-    setCapaian2025(row.capaian2025 || '');
-    setEvidenceLink2024(row.evidenceLink2024 || '');
-    setEvidenceLink(row.evidenceLink || '');
+    setCapaianYear1(row.capaianYear1 || '');
+    setCapaianYear2(row.capaianYear2 || '');
+    setEvidenceYear1(row.evidenceYear1 || '');
+    setEvidenceYear2(row.evidenceYear2 || '');
   };
 
   const saveEdit = () => {
@@ -188,10 +192,10 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
                 ...ind,
                 score: {
                   ...ind.score,
-                  capaian2024,
-                  capaian2025,
-                  evidenceLink2024,
-                  evidenceLink
+                  capaianYear1,
+                  capaianYear2,
+                  evidenceYear1,
+                  evidenceYear2
                 }
               };
             }
@@ -221,10 +225,10 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
                 ...ind,
                 score: {
                   ...ind.score,
-                  capaian2024: '',
-                  capaian2025: '',
-                  evidenceLink2024: '',
-                  evidenceLink: '',
+                  ['capaian' + year1]: '',
+                  ['capaian' + year2]: '',
+                  evidenceYear1: '',
+                  evidenceYear2: '',
                   capaian: 0,
                   penjelasan: '',
                   statusProvinsi: 'Draft',
@@ -262,16 +266,16 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
         </div>
         <div className="flex flex-wrap gap-2 justify-end max-w-[60%]">
           <button 
-            onClick={() => handleBackup('2024')}
+            onClick={() => handleBackup(year1)}
             className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-xs font-semibold transition"
           >
-            <Download className="w-4 h-4" /> Excel 2024
+            <Download className="w-4 h-4" /> Excel {year1}
           </button>
           <button 
-            onClick={() => handleBackup('2025')}
+            onClick={() => handleBackup(year2)}
             className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-xs font-semibold transition"
           >
-            <Download className="w-4 h-4" /> Excel 2025
+            <Download className="w-4 h-4" /> Excel {year2}
           </button>
           <div className="w-full h-px bg-slate-200 my-1 hidden md:block"></div>
           <button 
@@ -351,27 +355,27 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
                   <td className="p-4 text-xs">
                     <div className="flex flex-col gap-1">
                       <div className="flex justify-between border-b border-dashed border-slate-200 pb-1">
-                        <span className="text-slate-400">2024:</span>
-                        <span className="font-medium text-slate-700">{row.capaian2024 || '-'}</span>
+                        <span className="text-slate-400">{year1}:</span>
+                        <span className="font-medium text-slate-700">{row.capaianYear1 || '-'}</span>
                       </div>
                       <div className="flex justify-between pt-1">
-                        <span className="text-slate-400">2025:</span>
-                        <span className="font-medium text-slate-700">{row.capaian2025 || '-'}</span>
+                        <span className="text-slate-400">{year2}:</span>
+                        <span className="font-medium text-slate-700">{row.capaianYear2 || '-'}</span>
                       </div>
                     </div>
                   </td>
                   <td className="p-4 text-xs">
                     <div className="flex flex-col gap-2">
-                      {row.evidenceLink2024 ? (
-                        <a href={row.evidenceLink2024} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline flex items-center gap-1">
-                          File 2024
+                      {row.evidenceYear1 ? (
+                        <a href={row.evidenceYear1} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline flex items-center gap-1">
+                          File {year1}
                         </a>
-                      ) : <span className="text-slate-300 italic">No File 2024</span>}
-                      {row.evidenceLink ? (
-                        <a href={row.evidenceLink} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline flex items-center gap-1">
-                          File 2025
+                      ) : <span className="text-slate-300 italic">No File {year1}</span>}
+                      {row.evidenceYear2 ? (
+                        <a href={row.evidenceYear2} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline flex items-center gap-1">
+                          File {year2}
                         </a>
-                      ) : <span className="text-slate-300 italic">No File 2025</span>}
+                      ) : <span className="text-slate-300 italic">No File {year2}</span>}
                     </div>
                   </td>
                   <td className="p-4">
@@ -408,22 +412,22 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* 2024 Data */}
                 <div className="space-y-4">
-                  <div className="bg-[#DCFCE7] text-[#166534] px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-center">Data 2024</div>
+                  <div className="bg-[#DCFCE7] text-[#166534] px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-center">Data {year1}</div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-600 mb-1">Capaian 2024</label>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Capaian {year1}</label>
                     <input 
                       type="text" 
-                      value={capaian2024} 
-                      onChange={(e) => setCapaian2024(e.target.value)}
+                      value={capaianYear1} 
+                      onChange={(e) => setCapaianYear1(e.target.value)}
                       className="w-full text-sm border-2 border-slate-200 rounded-lg p-2.5 outline-none focus:border-[#16A34A] focus:ring-4 focus:ring-green-50 transition" 
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-600 mb-1">Link Bukti 2024 (URL)</label>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Link Bukti {year1} (URL)</label>
                     <input 
                       type="text" 
-                      value={evidenceLink2024} 
-                      onChange={(e) => setEvidenceLink2024(e.target.value)}
+                      value={evidenceYear1} 
+                      onChange={(e) => setEvidenceYear1(e.target.value)}
                       className="w-full text-sm border-2 border-slate-200 rounded-lg p-2.5 outline-none focus:border-[#16A34A] focus:ring-4 focus:ring-green-50 transition" 
                     />
                   </div>
@@ -431,22 +435,22 @@ export function RekapitulasiData({ proposal, onUpdateProposal }: RekapitulasiDat
 
                 {/* 2025 Data */}
                 <div className="space-y-4">
-                  <div className="bg-[#166534] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-center">Data 2025</div>
+                  <div className="bg-[#166534] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-center">Data {year2}</div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-600 mb-1">Capaian 2025</label>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Capaian {year2}</label>
                     <input 
                       type="text" 
-                      value={capaian2025} 
-                      onChange={(e) => setCapaian2025(e.target.value)}
+                      value={capaianYear2} 
+                      onChange={(e) => setCapaianYear2(e.target.value)}
                       className="w-full text-sm border-2 border-slate-200 rounded-lg p-2.5 outline-none focus:border-[#16A34A] focus:ring-4 focus:ring-green-50 transition" 
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-600 mb-1">Link Bukti 2025 (URL)</label>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Link Bukti {year2} (URL)</label>
                     <input 
                       type="text" 
-                      value={evidenceLink} 
-                      onChange={(e) => setEvidenceLink(e.target.value)}
+                      value={evidenceYear2} 
+                      onChange={(e) => setEvidenceYear2(e.target.value)}
                       className="w-full text-sm border-2 border-slate-200 rounded-lg p-2.5 outline-none focus:border-[#16A34A] focus:ring-4 focus:ring-green-50 transition" 
                     />
                   </div>

@@ -1,6 +1,7 @@
 import { KabupatenProposal, INITIAL_TATANAN_STRUCTURE, SystemConfig } from './types';
 
 export const INITIAL_SYSTEM_CONFIG: SystemConfig = {
+  assessmentYear: 2026,
   deadline: '2026-07-31',
   isTimelockActive: false,
   isMasaSanggahActive: true,

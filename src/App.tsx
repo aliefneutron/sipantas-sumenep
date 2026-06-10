@@ -352,8 +352,14 @@ export default function App() {
           <div className="flex items-center gap-4">
             <span className="font-bold text-sm tracking-widest uppercase hidden md:block">PORTAL {userSession?.role.toUpperCase()}</span>
             {/* Year Dropdown */}
-            <select className="bg-white/10 border border-white/20 text-white rounded px-2 py-1 text-xs outline-none cursor-pointer hover:bg-white/20 transition hidden sm:block">
-              <option value="2025" className="text-slate-800">Tahun 2025</option>
+            <select 
+              className="bg-white/10 border border-white/20 text-white rounded px-2 py-1 text-xs outline-none cursor-pointer hover:bg-white/20 transition hidden sm:block"
+              value={systemConfig.assessmentYear || 2026}
+              onChange={(e) => updateSystemConfig({...systemConfig, assessmentYear: parseInt(e.target.value)})}
+            >
+              {[2025, 2026, 2027, 2028, 2029, 2030].map(y => (
+                <option key={y} value={y} className="text-slate-800">Tahun Penilaian {y}</option>
+              ))}
             </select>
           </div>
           <div className="flex items-center gap-4">
@@ -448,6 +454,7 @@ export default function App() {
                   <RekapitulasiData 
                     proposal={userProposal}
                     onUpdateProposal={updateSingleProposal}
+                    assessmentYear={systemConfig.assessmentYear || 2026}
                   />
                 ) : activeMenu === 'user-opd' && userSession?.role === 'superadmin' ? (
                   <UserManagement onResetDatabase={handleFullReset} />
@@ -461,6 +468,7 @@ export default function App() {
                     activeMenu={activeMenu}
                     onNavigateMenu={setActiveMenu}
                     userRole={userSession?.role}
+                    assessmentYear={systemConfig.assessmentYear || 2026}
                   />
                 )}
               </div>
