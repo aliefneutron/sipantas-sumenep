@@ -593,7 +593,7 @@ export function KabupatenDashboard({
                           type="text"
                           value={capaianYear1[editingIndicatorId] || ''}
                           onChange={(e) => setCapaianYear1({ ...capaianYear1, [editingIndicatorId]: e.target.value })}
-                          placeholder="Capaian {year1}"
+                          placeholder={`Capaian ${year1}`}
                           className="w-full text-sm p-2.5 border border-slate-300 rounded focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] outline-none transition"
                         />
                       </div>
@@ -603,8 +603,8 @@ export function KabupatenDashboard({
                         <input 
                           type="text"
                           value={capaianYear2[editingIndicatorId] || ''}
-                          onChange={(e) => setCapaian2025({ ...capaianYear2, [editingIndicatorId]: e.target.value })}
-                          placeholder="Capaian {year2}"
+                          onChange={(e) => setCapaianYear2({ ...capaianYear2, [editingIndicatorId]: e.target.value })}
+                          placeholder={`Capaian ${year2}`}
                           className="w-full text-sm p-2.5 border border-slate-300 rounded focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] outline-none transition"
                         />
                       </div>
