@@ -18,7 +18,13 @@ import { db } from "./lib/firebase";
 
 export default function App() {
   // App state persistent storage
-  const [proposals, setProposals] = useState<KabupatenProposal[]>(INITIAL_PROPOSALS);
+  const [proposals, setProposals] = useState<KabupatenProposal[]>(() => {
+    const stored = localStorage.getItem('sipantas_proposals_v1');
+    if (stored) {
+      try { return JSON.parse(stored); } catch (e) { return INITIAL_PROPOSALS; }
+    }
+    return INITIAL_PROPOSALS;
+  });
   const [resetKey, setResetKey] = useState(0);
 
   const [systemConfig, setSystemConfig] = useState<SystemConfig>(() => {
@@ -89,7 +95,11 @@ export default function App() {
           loaded.push(docSnapshot.data() as KabupatenProposal);
         });
         setProposals(loaded);
+        localStorage.setItem('sipantas_proposals_v1', JSON.stringify(loaded));
       }
+    }, (error) => {
+      console.error("Firebase proposals snapshot error:", error);
+      // Data remains intact from localStorage if Firebase fails
     });
 
     return () => unsubscribe();
@@ -162,13 +172,14 @@ export default function App() {
       updatedList.push(updated);
     }
     setProposals(updatedList);
-    
-    // Save to Firestore
+    localStorage.setItem('sipantas_proposals_v1', JSON.stringify(updatedList));
+
+    // Persist to Firebase
     try {
       await setDoc(doc(db, "proposals", updated.id), updated);
     } catch (error) {
       console.error("Error saving proposal to Firestore:", error);
-      triggerNotification("System Error", "Gagal menyimpan data ke cloud Firebase.");
+      // Fallback: we already saved to localStorage above for offline support
     }
   };
 
@@ -204,6 +215,27 @@ export default function App() {
       localStorage.removeItem('sipantas_config_v1');
       localStorage.removeItem('sipantas_notifs_v1');
       setResetKey(prev => prev + 1);
+    }
+  };
+
+  const handleRecoverData = async () => {
+    const legacy = proposals.find(p => p.id === 'kab-sumenep');
+    if (!legacy) {
+      alert('Data versi lama (sebelum update tahun) tidak ditemukan di database Anda.');
+      return;
+    }
+    if (window.confirm('PERINGATAN: Apakah Anda yakin ingin memulihkan data lama? Ini akan menimpa seluruh inputan Anda di tahun 2026 dengan data yang terakhir kali tersimpan di versi sebelumnya.')) {
+      if (userProposal) {
+        const recovered = {
+          ...userProposal,
+          tatanan: legacy.tatanan, // Restore all tatanan scores & evidences
+          skTimPembina: legacy.skTimPembina,
+          skForumPokja: legacy.skForumPokja,
+          renja: legacy.renja
+        };
+        await updateSingleProposal(recovered);
+        alert('Data berhasil dipulihkan! Silakan cek kembali Tatanan Anda.');
+      }
     }
   };
 
