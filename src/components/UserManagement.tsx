@@ -14,9 +14,10 @@ interface UserData {
 
 interface UserManagementProps {
   onResetDatabase?: () => void;
+  onRecoverData?: () => void;
 }
 
-export function UserManagement({ onResetDatabase }: UserManagementProps) {
+export function UserManagement({ onResetDatabase, onRecoverData }: UserManagementProps) {
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -196,8 +197,8 @@ export function UserManagement({ onResetDatabase }: UserManagementProps) {
         </table>
       </div>
 
-      {/* Danger Zone */}
-      {onResetDatabase && (
+      {/* Advanced Actions */}
+      {(onResetDatabase || onRecoverData) && (
         <div className="mt-12 pt-6 border-t border-red-100 animate-fadeIn">
           <div className="bg-red-50 rounded-2xl border border-red-200 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
@@ -208,12 +209,33 @@ export function UserManagement({ onResetDatabase }: UserManagementProps) {
                 Tindakan ini akan <b>menghapus seluruh draf capaian dan bukti file</b> dari seluruh tatanan yang sudah diisi, serta mengembalikan aplikasi ke kondisi kosong dari pabrik. <b>Hanya lakukan jika Anda sedang dalam tahap uji coba (Testing).</b>
               </p>
             </div>
-            <button 
-              onClick={onResetDatabase}
-              className="w-full md:w-auto px-5 py-3 bg-white text-red-600 hover:bg-red-600 hover:text-white font-bold text-sm rounded-xl border-2 border-red-200 hover:border-red-600 transition-all shadow-sm"
-            >
-              Reset Total Database
-            </button>
+            {onResetDatabase && (
+              <button 
+                onClick={onResetDatabase}
+                className="w-full md:w-auto px-5 py-3 bg-white text-red-600 hover:bg-red-600 hover:text-white font-bold text-sm rounded-xl border-2 border-red-200 hover:border-red-600 transition-all shadow-sm"
+              >
+                Reset Total Database
+              </button>
+            )}
+          </div>
+          
+          <div className="bg-amber-50 rounded-2xl border border-amber-200 p-6 flex flex-col md:flex-row items-center justify-between gap-6 mt-4">
+            <div>
+              <h4 className="text-amber-700 font-bold text-lg flex items-center gap-2">
+                <Shield className="w-5 h-5" /> Pemulihan Data Migrasi
+              </h4>
+              <p className="text-xs text-amber-600/80 mt-1 font-medium leading-relaxed max-w-lg">
+                Tindakan ini akan mengembalikan data capaian dari versi database lama (sebelum migrasi multiple-years) ke tahun penilaian saat ini. Lakukan jika Anda mendapati data kosong hari ini.
+              </p>
+            </div>
+            {onRecoverData && (
+              <button 
+                onClick={onRecoverData}
+                className="w-full md:w-auto px-5 py-3 bg-white text-amber-600 hover:bg-amber-500 hover:text-white font-bold text-sm rounded-xl border-2 border-amber-200 hover:border-amber-500 transition-all shadow-sm"
+              >
+                Pemulihan Data
+              </button>
+            )}
           </div>
         </div>
       )}

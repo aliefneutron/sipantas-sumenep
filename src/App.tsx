@@ -440,15 +440,6 @@ export default function App() {
               Created By Alief Neutron 2026
             </div>
             <div className="flex items-center gap-3 border-l border-white/20 pl-4 relative">
-              {/* Recovery Button */}
-              <button
-                onClick={handleRecoverData}
-                className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded flex items-center gap-1 transition cursor-pointer"
-                title="Pulihkan Data Lama"
-              >
-                <RefreshCw className="w-3.5 h-3.5" /> <span className="hidden md:inline">Pemulihan Data</span>
-              </button>
-
               <button onClick={() => setShowNotifications(!showNotifications)} className="relative hover:bg-white/10 p-1.5 rounded-full transition cursor-pointer">
                 <Bell className="w-4 h-4" />
                 {notifications.some(n => !n.read) && (
@@ -549,7 +540,7 @@ export default function App() {
                       assessmentYear={systemConfig.assessmentYear || 2026}
                     />
                   ) : activeMenu === 'user-opd' && userSession?.role === 'superadmin' ? (
-                    <UserManagement onResetDatabase={handleFullReset} />
+                    <UserManagement onResetDatabase={handleFullReset} onRecoverData={handleRecoverData} />
                   ) : activeMenu === 'notifikasi' && (userSession?.role === 'admin' || userSession?.role === 'superadmin') ? (
                     <NotificationManagement />
                   ) : (
