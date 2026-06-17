@@ -208,16 +208,6 @@ export default function App() {
     localStorage.setItem('sipantas_notifs_v1', JSON.stringify(readList));
   };
 
-  // Full reset to play again
-  const handleFullReset = () => {
-    if (window.confirm("Apakah Anda yakin ingin mengatur ulang data draf SIPANTAS Kabupaten ke pengaturan bawaan? Semua inputan Anda akan diset ulang.")) {
-      localStorage.removeItem('sipantas_proposals_v1');
-      localStorage.removeItem('sipantas_config_v1');
-      localStorage.removeItem('sipantas_notifs_v1');
-      setResetKey(prev => prev + 1);
-    }
-  };
-
   const currentYear = systemConfig.assessmentYear || 2026;
   let userProposal = proposals.find(p => p.kabupatenId === 'kab-sumenep' && p.assessmentYear === currentYear);
   
@@ -519,7 +509,7 @@ export default function App() {
                       assessmentYear={systemConfig.assessmentYear || 2026}
                     />
                   ) : activeMenu === 'user-opd' && userSession?.role === 'superadmin' ? (
-                    <UserManagement onResetDatabase={handleFullReset} />
+                    <UserManagement />
                   ) : activeMenu === 'notifikasi' && (userSession?.role === 'admin' || userSession?.role === 'superadmin') ? (
                     <NotificationManagement />
                   ) : (

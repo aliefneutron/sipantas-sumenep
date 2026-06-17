@@ -13,10 +13,10 @@ interface UserData {
 }
 
 interface UserManagementProps {
-  onResetDatabase?: () => void;
+  // Add props here if needed in future
 }
 
-export function UserManagement({ onResetDatabase }: UserManagementProps) {
+export function UserManagement({}: UserManagementProps = {}) {
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -196,28 +196,6 @@ export function UserManagement({ onResetDatabase }: UserManagementProps) {
         </table>
       </div>
 
-      {/* Danger Zone */}
-      {onResetDatabase && (
-        <div className="mt-12 pt-6 border-t border-red-100 animate-fadeIn">
-          <div className="bg-red-50 rounded-2xl border border-red-200 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h4 className="text-red-700 font-bold text-lg flex items-center gap-2">
-                <Trash2 className="w-5 h-5" /> Zona Berbahaya (Danger Zone)
-              </h4>
-              <p className="text-xs text-red-600/80 mt-1 font-medium leading-relaxed max-w-lg">
-                Tindakan ini akan <b>menghapus seluruh draf capaian dan bukti file</b> dari seluruh tatanan yang sudah diisi, serta mengembalikan aplikasi ke kondisi kosong dari pabrik. <b>Hanya lakukan jika Anda sedang dalam tahap uji coba (Testing).</b>
-              </p>
-            </div>
-            <button 
-              onClick={onResetDatabase}
-              className="w-full md:w-auto px-5 py-3 bg-white text-red-600 hover:bg-red-600 hover:text-white font-bold text-sm rounded-xl border-2 border-red-200 hover:border-red-600 transition-all shadow-sm"
-            >
-              Reset Total Database
-            </button>
-          </div>
-        </div>
-      )}
-
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl animate-scaleUp overflow-hidden">
@@ -263,34 +241,7 @@ export function UserManagement({ onResetDatabase }: UserManagementProps) {
                   required
                   placeholder="Misal: dinkes_sumenep"
                   value={formData.username} 
-                  onChange={(e) => setFormData({...formData, username: e.target.value})}
-                  className="w-full text-sm border-2 border-slate-200 rounded-xl p-3 outline-none focus:border-[#16A34A] focus:ring-4 focus:ring-green-50 transition" 
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1 uppercase">Password Login</label>
-                <input 
-                  type="text" 
-                  required
-                  placeholder="Masukkan password"
-                  value={formData.password} 
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
-                  className="w-full text-sm border-2 border-slate-200 rounded-xl p-3 outline-none focus:border-[#16A34A] focus:ring-4 focus:ring-green-50 transition" 
-                />
-              </div>
-
-              <div className="pt-4 flex justify-end gap-3">
-                <button 
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition"
-                >
-                  Batal
-                </button>
-                <button 
-                  type="submit"
-                  className="flex items-center gap-2 px-6 py-2.5 bg-[#16A34A] hover:bg-[#15803D] text-white rounded-xl text-sm font-bold transition shadow-md hover:shadow-lg"
+                  onChange={(e) => setFormData({...formData, username: e.target.value})}                  className="flex items-center gap-2 px-6 py-2.5 bg-[#16A34A] hover:bg-[#15803D] text-white rounded-xl text-sm font-bold transition shadow-md hover:shadow-lg"
                 >
                   <Save className="w-4 h-4" /> Simpan Data
                 </button>
