@@ -5,7 +5,7 @@ import {
   HelpCircle, ClipboardList, Info, Trash2, X, ChevronDown, ChevronUp, User, Loader2
 } from 'lucide-react';
 import { KabupatenProposal, TatananAssessment, INITIAL_TATANAN_STRUCTURE } from '../types';
-import { getProposalStats } from '../utils';
+import { getProposalStats, formatDynamicYearText } from '../utils';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../lib/firebase';
 
@@ -391,7 +391,7 @@ export function KabupatenDashboard({
                   <tr key={ind.id} className={i % 2 === 0 ? "bg-white" : "bg-[#F8F9FA]"}>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">{i + 1}</td>
                     <td className="p-3 text-left border-b border-slate-100 text-xs text-slate-700 max-w-[280px]">
-                      {ind.question}
+                      {formatDynamicYearText(ind.question, assessmentYear)}
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
                       {cYear1 || '-'}
@@ -512,7 +512,7 @@ export function KabupatenDashboard({
                 {/* Header */}
                 <div className="border-b border-slate-200 px-5 py-4 flex justify-between items-center text-slate-800">
                   <h3 className="font-medium text-sm text-slate-700">
-                    Input Data Indikator {ind?.question}
+                    Input Data Indikator {formatDynamicYearText(ind?.question, assessmentYear)}
                   </h3>
                   <button onClick={() => setEditingIndicatorId(null)} className="text-slate-400 hover:text-slate-600 transition">
                     <X className="w-5 h-5" />
@@ -545,21 +545,21 @@ export function KabupatenDashboard({
                               <td className="py-3 pr-4 font-medium align-top w-1/4">Definisi Operasional</td>
                               <td className="py-3 px-2 align-top w-4 text-center">:</td>
                               <td className="py-3 pl-2 align-top">
-                                {referenceInd?.definisiOperasional || ind?.definisiOperasional || '-'}
+                                {formatDynamicYearText(referenceInd?.definisiOperasional || ind?.definisiOperasional, assessmentYear) || '-'}
                               </td>
                             </tr>
                             <tr className="border-b border-slate-100 last:border-0 bg-slate-50">
                               <td className="py-3 pr-4 font-medium align-top w-1/4">Sumber Data</td>
                               <td className="py-3 px-2 align-top w-4 text-center">:</td>
                               <td className="py-3 pl-2 align-top">
-                                {referenceInd?.sumberData || ind?.sumberData || '-'}
+                                {formatDynamicYearText(referenceInd?.sumberData || ind?.sumberData, assessmentYear) || '-'}
                               </td>
                             </tr>
                             <tr className="border-b border-slate-100 last:border-0">
                               <td className="py-3 pr-4 font-medium align-top w-1/4">Bukti Dukung</td>
                               <td className="py-3 px-2 align-top w-4 text-center">:</td>
                               <td className="py-3 pl-2 align-top">
-                                {referenceInd?.buktiDukung || ind?.buktiDukung || '-'}
+                                {formatDynamicYearText(referenceInd?.buktiDukung || ind?.buktiDukung, assessmentYear) || '-'}
                               </td>
                             </tr>
                             <tr className="last:border-0">
@@ -568,7 +568,7 @@ export function KabupatenDashboard({
                               <td className="py-3 pl-2 align-top">
                                 <ul className="space-y-1">
                                   {(referenceInd?.skala || ind?.skala)?.map((s, idx) => (
-                                    <li key={idx}>{idx + 1}. Nilai {s.nilai} jika {s.deskripsi.replace(/^[a-z]\.\s*/, '')}</li>
+                                    <li key={idx}>{idx + 1}. Nilai {s.nilai} jika {formatDynamicYearText(s.deskripsi.replace(/^[a-z]\.\s*/, ''), assessmentYear)}</li>
                                   ))}
                                 </ul>
                               </td>
