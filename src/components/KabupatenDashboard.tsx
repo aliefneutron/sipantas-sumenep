@@ -206,18 +206,16 @@ export function KabupatenDashboard({
   const openTatananAssess = (t: TatananAssessment) => {
     if (onNavigateMenu) {
       onNavigateMenu(`tatanan-${t.id}`);
-    } else {
-      setSelectedTatananId(t.id);
     }
     window.scrollTo(0, 0);
   };
 
   const saveTatananAssess = () => {
-    if (!selectedTatananId) return;
+    if (!activeTatanan?.id) return;
 
     const updated = { ...proposal };
     updated.tatanan = updated.tatanan.map(t => {
-      if (t.id === selectedTatananId) {
+      if (t.id === activeTatanan.id) {
         return {
           ...t,
           status: 'Ditinjau' as const, // Changes to under-evaluation
@@ -938,12 +936,17 @@ export function KabupatenDashboard({
                 let fullyFilledCount = 0;
                 const totalProgressScore = t.indicators.reduce((acc, ind) => {
                   const s = ind.score;
+                  const cY1 = s.capaianTahun?.[year1] || (s as any).capaian2024 || (s as any).capaianYear1;
+                  const cY2 = s.capaianTahun?.[year2] || (s as any).capaian2025 || (s as any).capaianYear2;
+                  const eY1 = s.evidenceTahun?.[year1] || (s as any).evidenceLink2024 || (s as any).evidenceYear1;
+                  const eY2 = s.evidenceTahun?.[year2] || s.evidenceLink || (s as any).evidenceYear2;
+
                   let fieldCount = 0;
                   if (s.capaian > 0) fieldCount++;
-                  if (isFilled(s.capaianYear1)) fieldCount++;
-                  if (isFilled(s.capaianYear2)) fieldCount++;
-                  if (isFilled(s.evidenceYear1)) fieldCount++;
-                  if (isFilled(s.evidenceLink)) fieldCount++;
+                  if (isFilled(cY1)) fieldCount++;
+                  if (isFilled(cY2)) fieldCount++;
+                  if (isFilled(eY1)) fieldCount++;
+                  if (isFilled(eY2)) fieldCount++;
                   if (isFilled(s.penjelasan)) fieldCount++;
                   
                   if (fieldCount === 6) fullyFilledCount++;

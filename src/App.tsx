@@ -36,6 +36,7 @@ export default function App() {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string>('dashboard');
   const [isTatananMenuOpen, setIsTatananMenuOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
   const [isYearTransitioning, setIsYearTransitioning] = useState(false);
   const [userSession, setUserSession] = useState<UserSession | null>(() => {
@@ -231,8 +232,8 @@ export default function App() {
     <div className="min-h-screen bg-[#F0FDF4] text-[#166534] flex flex-col md:flex-row" id="sipantas-app-root">
       
       {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-white border-r border-[#BBF7D0] flex flex-col h-screen sticky top-0 shrink-0 z-50">
-        <div className="p-4 border-b border-[#BBF7D0] flex items-center justify-between">
+      <aside className={`bg-white border-r border-[#BBF7D0] flex flex-col h-screen sticky top-0 shrink-0 z-50 transition-all duration-300 ${isSidebarOpen ? 'w-full md:w-64' : 'w-0 overflow-hidden border-none'}`}>
+        <div className="p-4 border-b border-[#BBF7D0] flex items-center justify-between min-w-[256px]">
           <div className="flex items-center gap-2">
             <div className="flex gap-1">
               <ShieldCheck className="w-6 h-6 text-[#16A34A]" />
@@ -243,7 +244,7 @@ export default function App() {
             </div>
           </div>
           <div className="flex gap-2">
-            <button className="md:hidden p-1 text-slate-400 cursor-pointer hover:bg-slate-100 rounded">
+            <button onClick={() => setIsSidebarOpen(false)} className="md:hidden p-1 text-slate-400 cursor-pointer hover:bg-slate-100 rounded">
               <Menu className="w-5 h-5" />
             </button>
           </div>
@@ -373,8 +374,15 @@ export default function App() {
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
         
         {/* Top Navbar */}
-        <header className="bg-[#166534] text-white h-14 flex items-center justify-between px-4 shrink-0 shadow-sm z-40">
+        <header className="bg-[#166534] text-white h-14 flex items-center justify-between px-4 shrink-0 shadow-sm z-40 transition-all">
           <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+              className="p-1 hover:bg-white/10 rounded cursor-pointer transition"
+              title="Toggle Sidebar"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
             <span className="font-bold text-sm tracking-widest uppercase hidden md:block">PORTAL {userSession?.role.toUpperCase()}</span>
             {/* Year Dropdown */}
             <select 
@@ -474,7 +482,7 @@ export default function App() {
           <div className="w-full space-y-6">
             {/* Dynamic Announcement Banner (Marquee) */}
             <div className="bg-[#166534] text-[#F0FDF4] text-xs font-medium py-2.5 px-4 rounded-xl flex items-center justify-start gap-3 shadow-sm overflow-hidden">
-              <Megaphone className="w-4.5 h-4.5 shrink-0 text-[#86EFAC] animate-pulse" />
+              <Clock className="w-4.5 h-4.5 shrink-0 text-[#86EFAC] animate-pulse" />
               <div className="flex-1 marquee-wrapper font-semibold tracking-wide">
                 <span className="marquee-content">{runningText}</span>
               </div>

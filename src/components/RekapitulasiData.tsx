@@ -32,20 +32,29 @@ export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 
     let data: any[] = [];
     proposal.tatanan?.forEach(t => {
       t.indicators.forEach(ind => {
+        const cY1 = ind.score.capaianTahun?.[year1] || (ind.score as any).capaian2024 || (ind.score as any).capaianYear1;
+        const cY2 = ind.score.capaianTahun?.[year2] || (ind.score as any).capaian2025 || (ind.score as any).capaianYear2;
+        const eY1 = ind.score.evidenceTahun?.[year1] || (ind.score as any).evidenceLink2024 || (ind.score as any).evidenceYear1;
+        const eY2 = ind.score.evidenceTahun?.[year2] || ind.score.evidenceLink || (ind.score as any).evidenceYear2;
+
         // Only include if there is some data filled in
-        if (ind.score.capaianYear1 || ind.score.capaianYear2 || ind.score.evidenceYear2 || ind.score.evidenceYear1) {
+        if (cY1 || cY2 || eY1 || eY2 || ind.score.capaian > 0 || ind.score.penjelasan) {
           data.push({
             tatananId: t.id,
             tatananName: t.name,
             indicatorId: ind.id,
             indicatorText: ind.question,
-            ...ind.score
+            ...ind.score,
+            capaianYear1: cY1,
+            capaianYear2: cY2,
+            evidenceYear1: eY1,
+            evidenceYear2: eY2
           });
         }
       });
     });
     return data;
-  }, [proposal]);
+  }, [proposal, year1, year2]);
 
   // Filter based on search term and tatanan
   const filteredData = allData.filter(d => {
@@ -192,10 +201,21 @@ export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 
                 ...ind,
                 score: {
                   ...ind.score,
-                  capaianYear1,
-                  capaianYear2,
-                  evidenceYear1,
-                  evidenceYear2
+                  capaianTahun: {
+                    ...ind.score.capaianTahun,
+                    [year1]: capaianYear1,
+                    [year2]: capaianYear2
+                  },
+                  evidenceTahun: {
+                    ...ind.score.evidenceTahun,
+                    [year1]: evidenceYear1,
+                    [year2]: evidenceYear2
+                  },
+                  // Keep legacy fields synced
+                  capaian2024: capaianYear1,
+                  capaian2025: capaianYear2,
+                  evidenceLink2024: evidenceYear1,
+                  evidenceLink: evidenceYear2
                 }
               };
             }
@@ -225,10 +245,12 @@ export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 
                 ...ind,
                 score: {
                   ...ind.score,
-                  ['capaian' + year1]: '',
-                  ['capaian' + year2]: '',
-                  evidenceYear1: '',
-                  evidenceYear2: '',
+                  capaianTahun: {},
+                  evidenceTahun: {},
+                  capaian2024: '',
+                  capaian2025: '',
+                  evidenceLink2024: '',
+                  evidenceLink: '',
                   capaian: 0,
                   penjelasan: '',
                   statusProvinsi: 'Draft',
