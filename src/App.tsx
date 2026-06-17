@@ -218,27 +218,6 @@ export default function App() {
     }
   };
 
-  const handleRecoverData = async () => {
-    const legacy = proposals.find(p => p.id === 'kab-sumenep');
-    if (!legacy) {
-      alert('Data versi lama (sebelum update tahun) tidak ditemukan di database Anda.');
-      return;
-    }
-    if (window.confirm('PERINGATAN: Apakah Anda yakin ingin memulihkan data lama? Ini akan menimpa seluruh inputan Anda di tahun 2026 dengan data yang terakhir kali tersimpan di versi sebelumnya.')) {
-      if (userProposal) {
-        const recovered = {
-          ...userProposal,
-          tatanan: legacy.tatanan, // Restore all tatanan scores & evidences
-          skTimPembina: legacy.skTimPembina,
-          skForumPokja: legacy.skForumPokja,
-          renja: legacy.renja
-        };
-        await updateSingleProposal(recovered);
-        alert('Data berhasil dipulihkan! Silakan cek kembali Tatanan Anda.');
-      }
-    }
-  };
-
   const currentYear = systemConfig.assessmentYear || 2026;
   let userProposal = proposals.find(p => p.kabupatenId === 'kab-sumenep' && p.assessmentYear === currentYear);
   
@@ -540,7 +519,7 @@ export default function App() {
                       assessmentYear={systemConfig.assessmentYear || 2026}
                     />
                   ) : activeMenu === 'user-opd' && userSession?.role === 'superadmin' ? (
-                    <UserManagement onResetDatabase={handleFullReset} onRecoverData={handleRecoverData} />
+                    <UserManagement onResetDatabase={handleFullReset} />
                   ) : activeMenu === 'notifikasi' && (userSession?.role === 'admin' || userSession?.role === 'superadmin') ? (
                     <NotificationManagement />
                   ) : (
