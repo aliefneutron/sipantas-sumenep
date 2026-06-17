@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  FileText, UploadCloud, CheckCircle2, AlertTriangle, Download,
+  FileText, UploadCloud, CheckCircle2, AlertTriangle, Download, Eye,
   ChevronRight, Save, Send, Award, Activity, 
   HelpCircle, ClipboardList, Info, Trash2, X, ChevronDown, ChevronUp, User, Loader2
 } from 'lucide-react';
@@ -404,15 +404,15 @@ export function KabupatenDashboard({
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
                       {linkYear1 ? (
-                        <a href={linkYear1} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition" title="Download File {year1}">
-                          <Download className="w-4 h-4" />
+                        <a href={linkYear1} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition font-semibold" title={`Lihat File ${year1}`}>
+                          <Eye className="w-4 h-4" /> View
                         </a>
                       ) : '-'}
                     </td>
                     <td className="p-3 text-center border-b border-slate-100 text-xs text-slate-700">
                       {linkYear2 ? (
-                        <a href={linkYear2} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition" title="Download File {year2}">
-                          <Download className="w-4 h-4" />
+                        <a href={linkYear2} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition font-semibold" title={`Lihat File ${year2}`}>
+                          <Eye className="w-4 h-4" /> View
                         </a>
                       ) : '-'}
                     </td>
