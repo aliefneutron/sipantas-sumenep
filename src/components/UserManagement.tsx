@@ -241,7 +241,34 @@ export function UserManagement({}: UserManagementProps = {}) {
                   required
                   placeholder="Misal: dinkes_sumenep"
                   value={formData.username} 
-                  onChange={(e) => setFormData({...formData, username: e.target.value})}                  className="flex items-center gap-2 px-6 py-2.5 bg-[#16A34A] hover:bg-[#15803D] text-white rounded-xl text-sm font-bold transition shadow-md hover:shadow-lg"
+                  onChange={(e) => setFormData({...formData, username: e.target.value})}
+                  className="w-full text-sm border-2 border-slate-200 rounded-xl p-3 outline-none focus:border-[#16A34A] focus:ring-4 focus:ring-green-50 transition" 
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-600 mb-1 uppercase">Password Login</label>
+                <input 
+                  type="text" 
+                  required
+                  placeholder="Masukkan password"
+                  value={formData.password} 
+                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  className="w-full text-sm border-2 border-slate-200 rounded-xl p-3 outline-none focus:border-[#16A34A] focus:ring-4 focus:ring-green-50 transition" 
+                />
+              </div>
+
+              <div className="pt-4 flex justify-end gap-3">
+                <button 
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition"
+                >
+                  Batal
+                </button>
+                <button 
+                  type="submit"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-[#16A34A] hover:bg-[#15803D] text-white rounded-xl text-sm font-bold transition shadow-md hover:shadow-lg"
                 >
                   <Save className="w-4 h-4" /> Simpan Data
                 </button>
