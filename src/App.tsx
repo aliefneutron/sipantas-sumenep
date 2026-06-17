@@ -440,6 +440,15 @@ export default function App() {
               Created By Alief Neutron 2026
             </div>
             <div className="flex items-center gap-3 border-l border-white/20 pl-4 relative">
+              {/* Recovery Button */}
+              <button
+                onClick={handleRecoverData}
+                className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded flex items-center gap-1 transition cursor-pointer"
+                title="Pulihkan Data Lama"
+              >
+                <RefreshCw className="w-3.5 h-3.5" /> <span className="hidden md:inline">Pemulihan Data</span>
+              </button>
+
               <button onClick={() => setShowNotifications(!showNotifications)} className="relative hover:bg-white/10 p-1.5 rounded-full transition cursor-pointer">
                 <Bell className="w-4 h-4" />
                 {notifications.some(n => !n.read) && (
@@ -514,7 +523,7 @@ export default function App() {
           <div className="w-full space-y-6">
             {/* Dynamic Announcement Banner (Marquee) */}
             <div className="bg-[#166534] text-[#F0FDF4] text-xs font-medium py-2.5 px-4 rounded-xl flex items-center justify-start gap-3 shadow-sm overflow-hidden">
-              <Clock className="w-4.5 h-4.5 shrink-0 text-[#86EFAC] animate-pulse" />
+              <Megaphone className="w-4.5 h-4.5 shrink-0 text-[#86EFAC] animate-pulse" />
               <div className="flex-1 marquee-wrapper font-semibold tracking-wide">
                 <span className="marquee-content">{runningText}</span>
               </div>
