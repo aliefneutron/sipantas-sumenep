@@ -229,6 +229,34 @@ export default function App() {
     userProposal = createEmptyProposal('kab-sumenep', currentYear);
   }
 
+  // Auto-repair missing tatanans (e.g., if a legacy state only saved 2 or 3 tatanans)
+  useEffect(() => {
+    if (userProposal && userProposal.tatanan && userProposal.tatanan.length < 9) {
+      const fullTatananList = INITIAL_TATANAN_STRUCTURE.map((t) => {
+        const existing = userProposal!.tatanan.find(et => et.id === t.id);
+        if (existing) return existing;
+        
+        return {
+          id: t.id,
+          name: t.name,
+          locked: false,
+          status: 'Draft' as const,
+          indicators: t.indicators.map(ind => ({
+            id: ind.id,
+            question: ind.question,
+            skala: (ind as any).skala,
+            score: { capaian: 0, evidenceLink: '', capaian2024: '', capaian2025: '', evidenceLink2024: '', penjelasan: '', statusProvinsi: 'Draft', penjelasanProvinsi: '' }
+          }))
+        };
+      });
+      
+      updateSingleProposal({
+        ...userProposal,
+        tatanan: fullTatananList as any
+      });
+    }
+  }, [userProposal?.tatanan?.length, userProposal?.id]);
+
   const appContent = (
     <div className="min-h-screen bg-[#F0FDF4] text-[#166534] flex flex-col md:flex-row" id="sipantas-app-root">
       
