@@ -29,8 +29,8 @@ export function KabupatenDashboard({
   assessmentYear = 2026
 }: KabupatenDashboardProps) {
 
-  const year1 = assessmentYear - 1;
-  const year2 = assessmentYear;
+  const year1 = assessmentYear - 2;
+  const year2 = assessmentYear - 1;
 
   const [activeTatananId, setActiveTatananId] = useState<string>(() => {
     return activeMenu.startsWith('tatanan-') ? activeMenu : 'tatanan-1';

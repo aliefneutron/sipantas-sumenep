@@ -13,8 +13,8 @@ interface RekapitulasiDataProps {
 
 export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 2026 }: RekapitulasiDataProps) {
   
-  const year1 = assessmentYear - 1;
-  const year2 = assessmentYear;
+  const year1 = assessmentYear - 2;
+  const year2 = assessmentYear - 1;
   const [searchTerm, setSearchTerm] = useState('');
   const [filterTatananId, setFilterTatananId] = useState('all');
   
