@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SIPANTAS Pusat Autofill Bot
 // @namespace    http://tampermonkey.net/
-// @version      2.7
+// @version      2.8
 // @description  Otomatisasi pengisian data SIPANTAS Pusat dari file JSON Ekspor
 // @author       Sistem SIPANTAS Kabupaten
 // @match        *://*/*sipantas*/*
@@ -13,7 +13,7 @@
 
 (function() {
     'use strict';
-    console.log("🤖 [SIPANTAS Bot] Versi 2.7 Aktif!");
+    console.log("🤖 [SIPANTAS Bot] Versi 2.8 Aktif!");
 
     // Global native event logging on document level to diagnose unblocked events
     document.addEventListener('change', (e) => {
@@ -334,25 +334,6 @@
             }
         }
 
-        // 2. Cari data indikator yang cocok di JSON secara case-insensitive & tanpa spasi/karakter aneh
-        const match = importedData.find(item => {
-            const textA = item.indicatorText.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const textB = indicatorName.toLowerCase().replace(/[^a-z0-9]/g, '');
-            return textA.includes(textB) || textB.includes(textA) ||
-                   textA.substring(0, 30).includes(textB.substring(0, 15)) ||
-                   textB.substring(0, 30).includes(textA.substring(0, 15));
-        });
-
-        if (!match) {
-            console.warn("🤖 [SIPANTAS Bot] Tidak menemukan data JSON yang cocok untuk:", indicatorName);
-            statusText.innerText = `⚠️ Tidak cocok: ${indicatorName.substring(0, 15)}...`;
-            statusText.style.color = '#facc15';
-            return;
-        }
-
-        console.log("🤖 [SIPANTAS Bot] Menemukan kecocokan data JSON:", match);
-        statusText.innerText = `⏳ Mengisi data...`;
-
         // Deteksi tahun aktif dari modal atau filter halaman
         let activeYear = '2025';
         const modalText = modalContainer.innerText || '';
@@ -367,6 +348,86 @@
             }
         }
         console.log("🤖 [SIPANTAS Bot] Tahun aktif terdeteksi:", activeYear);
+
+        // Deteksi Tatanan aktif dari baris tabel di halaman
+        let activeTatananName = '';
+        const rows = Array.from(document.querySelectorAll('tr'));
+        const cleanModalInd = indicatorName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        for (const row of rows) {
+            const cells = Array.from(row.querySelectorAll('td'));
+            if (cells.length >= 2) {
+                // Cari cell yang paling cocok dengan nama indikator di modal
+                const matchingCellIndex = cells.findIndex(cell => {
+                    const cleanCellText = cell.innerText.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    return cleanCellText !== '' && (cleanCellText === cleanModalInd || cleanCellText.includes(cleanModalInd) || cleanModalInd.includes(cleanCellText));
+                });
+                
+                if (matchingCellIndex !== -1) {
+                    // Cari cell lain di baris yang sama yang mengandung keyword Tatanan
+                    const tatananCell = cells.find(cell => {
+                        const text = cell.innerText.toLowerCase();
+                        return text.includes('sehat') || text.includes('pendidikan') || text.includes('pasar') || text.includes('perkantoran') || 
+                               text.includes('pariwisata') || text.includes('lalu lintas') || text.includes('sosial') || text.includes('bencana') ||
+                               text.includes('pangan') || text.includes('mandiri');
+                    });
+                    if (tatananCell) {
+                        activeTatananName = tatananCell.innerText.trim();
+                        console.log("🤖 [SIPANTAS Bot] Deteksi Tatanan aktif dari baris tabel:", activeTatananName);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Filter data JSON yang berada di dalam satu Tatanan saja
+        let filteredImportedData = importedData;
+        if (activeTatananName) {
+            const cleanActiveTatanan = activeTatananName.toLowerCase().replace(/[^a-z0-9]/g, '').replace('tatanan', '');
+            const temp = importedData.filter(item => {
+                const cleanItemTatanan = item.tatananName.toLowerCase().replace(/[^a-z0-9]/g, '').replace('tatanan', '');
+                return cleanItemTatanan.includes(cleanActiveTatanan) || cleanActiveTatanan.includes(cleanItemTatanan);
+            });
+            if (temp.length > 0) {
+                filteredImportedData = temp;
+                console.log(`🤖 [SIPANTAS Bot] Membatasi pencarian ke ${temp.length} indikator di dalam Tatanan: ${activeTatananName}`);
+            }
+        }
+
+        // 2. Cari data indikator yang cocok di JSON secara berjenjang (Exact -> Substring -> Loose)
+        const cleanNameB = indicatorName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        
+        // TAHAP 1: Cocok persis
+        let match = filteredImportedData.find(item => {
+            const cleanNameA = item.indicatorText.toLowerCase().replace(/[^a-z0-9]/g, '');
+            return cleanNameA === cleanNameB;
+        });
+
+        // TAHAP 2: Cocok sebagian (substring)
+        if (!match) {
+            match = filteredImportedData.find(item => {
+                const cleanNameA = item.indicatorText.toLowerCase().replace(/[^a-z0-9]/g, '');
+                return cleanNameA.includes(cleanNameB) || cleanNameB.includes(cleanNameA);
+            });
+        }
+
+        // TAHAP 3: Cocok parsial (loose fallback)
+        if (!match) {
+            match = filteredImportedData.find(item => {
+                const cleanNameA = item.indicatorText.toLowerCase().replace(/[^a-z0-9]/g, '');
+                return cleanNameA.substring(0, 30).includes(cleanNameB.substring(0, 15)) ||
+                       cleanNameB.substring(0, 30).includes(cleanNameA.substring(0, 15));
+            });
+        }
+
+        if (!match) {
+            console.warn("🤖 [SIPANTAS Bot] Tidak menemukan data JSON yang cocok untuk:", indicatorName);
+            statusText.innerText = `⚠️ Tidak cocok: ${indicatorName.substring(0, 15)}...`;
+            statusText.style.color = '#facc15';
+            return;
+        }
+
+        console.log("🤖 [SIPANTAS Bot] Menemukan kecocokan data JSON:", match);
+        statusText.innerText = `⏳ Mengisi data...`;
 
         // 3. Cari input di DALAM kontainer modalBody saja
         let input2024 = modalBody.querySelector('input[placeholder*="2024"], input[name*="2024"], input[name*="capaian_2024"]');
