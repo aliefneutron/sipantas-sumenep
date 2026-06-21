@@ -31,7 +31,7 @@ export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 
   const allData = useMemo(() => {
     let data: any[] = [];
     proposal.tatanan?.forEach(t => {
-      t.indicators.forEach(ind => {
+      t.indicators.forEach((ind, index) => {
         const cY1 = ind.score.capaianTahun?.[year1] || (ind.score as any).capaian2024 || (ind.score as any).capaianYear1;
         const cY2 = ind.score.capaianTahun?.[year2] || (ind.score as any).capaian2025 || (ind.score as any).capaianYear2;
         const eY1 = ind.score.evidenceTahun?.[year1] || (ind.score as any).evidenceLink2024 || (ind.score as any).evidenceYear1;
@@ -44,6 +44,7 @@ export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 
             tatananName: t.name,
             indicatorId: ind.id,
             indicatorText: ind.question,
+            indicatorNumber: index + 1,
             ...ind.score,
             capaianYear1: cY1,
             capaianYear2: cY2,
@@ -125,8 +126,8 @@ export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 
         const tatananFolder = zip.folder(row.tatananName.replace(/[\\/:*?"<>|]/g, ""));
         if (!tatananFolder) continue;
 
-        // Simplify indicator folder name
-        const cleanIndicator = row.indicatorText.substring(0, 50).replace(/[\\/:*?"<>|]/g, "");
+        // Simplify indicator folder name and prefix with its number
+        const cleanIndicator = `${row.indicatorNumber}. ${row.indicatorText.substring(0, 50)}`.replace(/[\\/:*?"<>|]/g, "");
         const indFolder = tatananFolder.folder(cleanIndicator);
         if (!indFolder) continue;
 
