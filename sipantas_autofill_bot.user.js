@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SIPANTAS Pusat Autofill Bot
 // @namespace    http://tampermonkey.net/
-// @version      2.2
+// @version      2.3
 // @description  Otomatisasi pengisian data SIPANTAS Pusat dari file JSON Ekspor
 // @author       Sistem SIPANTAS Kabupaten
 // @match        *://*/*sipantas*/*
@@ -13,7 +13,7 @@
 
 (function() {
     'use strict';
-    console.log("🤖 [SIPANTAS Bot] Versi 2.2 Aktif!");
+    console.log("🤖 [SIPANTAS Bot] Versi 2.3 Aktif!");
 
     // Global native event logging on document level to diagnose unblocked events
     document.addEventListener('change', (e) => {
@@ -137,8 +137,13 @@
                     dataTransfer.items.add(file);
                     fileInput.files = dataTransfer.files;
                     
+                    const $ = typeof unsafeWindow !== 'undefined' ? (unsafeWindow.jQuery || window.jQuery) : window.jQuery;
                     fileInput.dispatchEvent(new Event('input', { bubbles: true }));
                     fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+                    if ($) {
+                        console.log("🤖 [SIPANTAS Bot] Memicu event change jQuery pada fileInput");
+                        $(fileInput).trigger('change');
+                    }
                     console.log(`Berhasil menyematkan file ke input: ${defaultName + ext}`);
                     statusText.innerText = `✅ Berhasil upload file`;
                     statusText.style.color = '#4ade80';
@@ -196,10 +201,12 @@
             
             // Block native events in bubble phase (allows internal handlers to run, but blocks them from escaping)
             modalBody.addEventListener('change', (e) => {
+                if (e.target && e.target.type === 'file') return; // Biarkan file input untuk proses upload
                 console.log("🤖 [SIPANTAS Bot] Mencegah propagasi native change keluar modal. Target:", e.target);
                 e.stopPropagation();
             });
             modalBody.addEventListener('input', (e) => {
+                if (e.target && e.target.type === 'file') return; // Biarkan file input untuk proses upload
                 console.log("🤖 [SIPANTAS Bot] Mencegah propagasi native input keluar modal. Target:", e.target);
                 e.stopPropagation();
             });
@@ -207,6 +214,7 @@
             // Block jQuery events
             if ($) {
                 $(modalBody).on('change change.select2 input', (e) => {
+                    if (e.target && e.target.type === 'file') return; // Biarkan file input untuk proses upload
                     console.log("🤖 [SIPANTAS Bot] Mencegah propagasi jQuery change keluar modal. Target:", e.target);
                     e.stopPropagation();
                 });
