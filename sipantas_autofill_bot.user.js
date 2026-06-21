@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SIPANTAS Pusat Autofill Bot
 // @namespace    http://tampermonkey.net/
-// @version      2.5
+// @version      2.6
 // @description  Otomatisasi pengisian data SIPANTAS Pusat dari file JSON Ekspor
 // @author       Sistem SIPANTAS Kabupaten
 // @match        *://*/*sipantas*/*
@@ -13,7 +13,7 @@
 
 (function() {
     'use strict';
-    console.log("🤖 [SIPANTAS Bot] Versi 2.5 Aktif!");
+    console.log("🤖 [SIPANTAS Bot] Versi 2.6 Aktif!");
 
     // Global native event logging on document level to diagnose unblocked events
     document.addEventListener('change', (e) => {
@@ -46,8 +46,18 @@
     container.style.fontFamily = 'sans-serif';
     container.style.width = '250px';
 
+    // Restore posisi panel jika tersimpan di localStorage
+    const savedLeft = localStorage.getItem('sipantas_bot_ui_left');
+    const savedTop = localStorage.getItem('sipantas_bot_ui_top');
+    if (savedLeft && savedTop) {
+        container.style.bottom = 'auto';
+        container.style.right = 'auto';
+        container.style.left = savedLeft;
+        container.style.top = savedTop;
+    }
+
     const title = document.createElement('div');
-    title.innerText = '🤖 SIPANTAS Auto-Bot';
+    title.innerText = '🤖 SIPANTAS Auto-Bot (Drag me)';
     title.style.fontWeight = 'bold';
     title.style.marginBottom = '10px';
     container.appendChild(title);
@@ -95,6 +105,45 @@
     container.appendChild(resetBtn);
 
     document.body.appendChild(container);
+
+    // Buat Panel Draggable (Bisa digeser)
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let startLeft = 0, startTop = 0;
+
+    title.style.cursor = 'move';
+    title.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        const rect = container.getBoundingClientRect();
+        startLeft = rect.left;
+        startTop = rect.top;
+        
+        container.style.bottom = 'auto';
+        container.style.right = 'auto';
+        container.style.left = startLeft + 'px';
+        container.style.top = startTop + 'px';
+        
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        container.style.left = (startLeft + dx) + 'px';
+        container.style.top = (startTop + dy) + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            localStorage.setItem('sipantas_bot_ui_left', container.style.left);
+            localStorage.setItem('sipantas_bot_ui_top', container.style.top);
+        }
+    });
 
     let importedData = null;
     let lastFilledIndicator = null;
