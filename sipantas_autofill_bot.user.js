@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SIPANTAS Pusat Autofill Bot
 // @namespace    http://tampermonkey.net/
-// @version      2.3
+// @version      2.4
 // @description  Otomatisasi pengisian data SIPANTAS Pusat dari file JSON Ekspor
 // @author       Sistem SIPANTAS Kabupaten
 // @match        *://*/*sipantas*/*
@@ -13,7 +13,7 @@
 
 (function() {
     'use strict';
-    console.log("🤖 [SIPANTAS Bot] Versi 2.3 Aktif!");
+    console.log("🤖 [SIPANTAS Bot] Versi 2.4 Aktif!");
 
     // Global native event logging on document level to diagnose unblocked events
     document.addEventListener('change', (e) => {
@@ -110,14 +110,26 @@
     // Helper untuk mendownload file bukti via GM_xmlhttpRequest dan menyematkannya ke form upload
     function uploadFile(fileInput, fileUrl, defaultName) {
         if (!fileInput || !fileUrl) return;
+
+        // Resolve relative URL to localhost if it's not absolute
+        let resolvedUrl = fileUrl;
+        if (fileUrl !== '-' && !fileUrl.startsWith('http://') && !fileUrl.startsWith('https://')) {
+            const cleanPath = fileUrl.startsWith('/') ? fileUrl.slice(1) : fileUrl;
+            resolvedUrl = `http://localhost:5173/${cleanPath}`;
+        }
         
-        console.log(`Mengunduh file bukti via GM_xmlhttpRequest: ${fileUrl}`);
+        if (resolvedUrl === '-' || !resolvedUrl) {
+            console.log("🤖 [SIPANTAS Bot] URL file bukti kosong atau strip (-). Lewati download.");
+            return;
+        }
+
+        console.log(`Mengunduh file bukti via GM_xmlhttpRequest: ${resolvedUrl}`);
         statusText.innerText = `⏳ Mengunduh dokumen...`;
         statusText.style.color = '#facc15';
 
         GM_xmlhttpRequest({
             method: "GET",
-            url: fileUrl,
+            url: resolvedUrl,
             responseType: "blob",
             onload: function(response) {
                 if (response.status >= 200 && response.status < 300) {
@@ -240,9 +252,37 @@
         console.log("🤖 [SIPANTAS Bot] Menemukan kecocokan data JSON:", match);
         statusText.innerText = `⏳ Mengisi data...`;
 
+        // Deteksi tahun aktif dari modal atau filter halaman
+        let activeYear = '2025';
+        const modalText = modalContainer.innerText || '';
+        if (modalText.includes('2024')) {
+            activeYear = '2024';
+        } else if (modalText.includes('2025')) {
+            activeYear = '2025';
+        } else {
+            const globalYearSelect = document.querySelector('select[name="global_year"], select[id*="year"], select[class*="year"]');
+            if (globalYearSelect && globalYearSelect.value) {
+                activeYear = globalYearSelect.value;
+            }
+        }
+        console.log("🤖 [SIPANTAS Bot] Tahun aktif terdeteksi:", activeYear);
+
         // 3. Cari input di DALAM kontainer modalBody saja
-        const input2024 = modalBody.querySelector('input[placeholder*="2024"], input[name*="2024"], input[name*="capaian_2024"]');
-        const input2025 = modalBody.querySelector('input[placeholder*="2025"], input[name*="2025"], input[name*="capaian_2025"]');
+        let input2024 = modalBody.querySelector('input[placeholder*="2024"], input[name*="2024"], input[name*="capaian_2024"]');
+        let input2025 = modalBody.querySelector('input[placeholder*="2025"], input[name*="2025"], input[name*="capaian_2025"]');
+        
+        // Fallback jika form hanya mengedit satu tahun secara dinamis
+        if (!input2024 && !input2025) {
+            const genericInput = modalBody.querySelector('input[name="capaian"], input[id="capaian"], input[placeholder*="Capaian"], input[placeholder*="capaian"], input[name*="nilai_capaian"]');
+            if (genericInput) {
+                console.log("🤖 [SIPANTAS Bot] Menemukan input capaian generik, dipetakan ke tahun:", activeYear);
+                if (activeYear === '2024') {
+                    input2024 = genericInput;
+                } else {
+                    input2025 = genericInput;
+                }
+            }
+        }
         
         // Cari select dropdown atau input biasa untuk Nilai Mandiri (HAPUS 'capaian' agar tidak menyentuh pemilih tahun)
         const inputNilai = modalBody.querySelector('select[name*="nilai"], select[name*="skala"], select[id*="nilai"], select[name*="mandiri"], select[id*="mandiri"], select[class*="nilai"], select[class*="skala"], input[placeholder*="Mandiri"], input[placeholder*="mandiri"], input[name*="nilai"], input[name*="capaian_mandiri"]');
@@ -251,13 +291,26 @@
         const inputPenjelasan = modalBody.querySelector('textarea, textarea[name*="penjelasan"], textarea[id*="penjelasan"]');
 
         // Cari file input (biasanya input[type="file"]) di dalam modal
-        const fileInputs = Array.from(modalBody.querySelectorAll('input[type="file"]'));
-        let fileInput2024 = fileInputs.find(i => i.name.includes('2024') || i.id.includes('2024'));
-        let fileInput2025 = fileInputs.find(i => i.name.includes('2025') || i.id.includes('2025'));
+        const fileInputs = Array.from(modalContainer.querySelectorAll('input[type="file"]'));
+        console.log(`🤖 [SIPANTAS Bot] Ditemukan ${fileInputs.length} input file di dalam modal.`);
+        let fileInput2024 = null;
+        let fileInput2025 = null;
 
-        // Fallback berdasarkan urutan jika tidak ketemu berdasarkan nama
-        if (!fileInput2024 && fileInputs[0]) fileInput2024 = fileInputs[0];
-        if (!fileInput2025 && fileInputs[1]) fileInput2025 = fileInputs[1];
+        if (fileInputs.length === 1) {
+            console.log(`🤖 [SIPANTAS Bot] Memetakan single file input ke tahun aktif: ${activeYear}`);
+            if (activeYear === '2024') {
+                fileInput2024 = fileInputs[0];
+            } else {
+                fileInput2025 = fileInputs[0];
+            }
+        } else if (fileInputs.length >= 2) {
+            fileInput2024 = fileInputs.find(i => i.name.includes('2024') || i.id.includes('2024'));
+            fileInput2025 = fileInputs.find(i => i.name.includes('2025') || i.id.includes('2025'));
+            
+            // Fallback berdasarkan urutan jika tidak ketemu berdasarkan nama
+            if (!fileInput2024) fileInput2024 = fileInputs[0];
+            if (!fileInput2025) fileInput2025 = fileInputs[1];
+        }
 
         // Cari key capaian secara dinamis jika nama key berbeda
         const key2024 = Object.keys(match).find(k => k.includes('2024')) || 'capaian2024';
