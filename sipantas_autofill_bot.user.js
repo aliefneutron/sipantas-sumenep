@@ -235,6 +235,9 @@
             filledAny = true;
         }
 
+        // Disable Nilai Mandiri dropdown filling to prevent global change listeners from reloading the page.
+        // You will select the scale rating dropdown manually.
+        /*
         if (inputNilai) {
             const val = match.nilaiMandiri !== undefined ? match.nilaiMandiri : (match.capaian !== undefined ? match.capaian : '');
             console.log("🤖 [SIPANTAS Bot] Mengisi Nilai Mandiri dengan:", val);
@@ -266,6 +269,7 @@
             
             filledAny = true;
         }
+        */
 
         if (inputPenjelasan && match.penjelasan !== undefined) {
             console.log("🤖 [SIPANTAS Bot] Mengisi Penjelasan dengan:", match.penjelasan);
