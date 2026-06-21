@@ -120,6 +120,31 @@ Berikan output evaluatif dalam format Markdown bahasa Indonesia yang bergaya res
     }
   });
 
+  // Proxy endpoint to download files to bypass CORS
+  app.get("/api/download", async (req, res) => {
+    const { url } = req.query;
+    if (!url || typeof url !== "string") {
+      return res.status(400).json({ error: "URL is required" });
+    }
+
+    try {
+      console.log("Proxying download for URL:", url);
+      const fileResponse = await fetch(url);
+      if (!fileResponse.ok) {
+        throw new Error(`Failed to fetch file: ${fileResponse.statusText}`);
+      }
+
+      const contentType = fileResponse.headers.get("content-type") || "application/octet-stream";
+      res.setHeader("Content-Type", contentType);
+
+      const arrayBuffer = await fileResponse.arrayBuffer();
+      res.send(Buffer.from(arrayBuffer));
+    } catch (error: any) {
+      console.error("Error proxying file:", error);
+      res.status(500).json({ error: "Failed to download file: " + error.message });
+    }
+  });
+
   // Serve static UI assets
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

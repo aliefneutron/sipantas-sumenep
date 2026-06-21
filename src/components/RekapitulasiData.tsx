@@ -134,10 +134,20 @@ export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 
         const addFileToZip = async (url: string, filename: string) => {
           if (!url) return;
           try {
-            const response = await fetch(url);
+            // Gunakan proxy backend lokal untuk menghindari pemblokiran CORS browser
+            const proxyUrl = `/api/download?url=${encodeURIComponent(url)}`;
+            const response = await fetch(proxyUrl);
             if (response.ok) {
               const blob = await response.blob();
               indFolder.file(filename, blob);
+            } else {
+              console.warn("Proxy download gagal, mencoba fetch langsung:", url);
+              // Fallback fetch langsung jika server backend tidak aktif (misal vercel static)
+              const fallbackResponse = await fetch(url);
+              if (fallbackResponse.ok) {
+                const blob = await fallbackResponse.blob();
+                indFolder.file(filename, blob);
+              }
             }
           } catch (error) {
             console.error("Gagal mendownload:", url, error);
