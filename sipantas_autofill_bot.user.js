@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SIPANTAS Pusat Autofill Bot
 // @namespace    http://tampermonkey.net/
-// @version      2.6
+// @version      2.7
 // @description  Otomatisasi pengisian data SIPANTAS Pusat dari file JSON Ekspor
 // @author       Sistem SIPANTAS Kabupaten
 // @match        *://*/*sipantas*/*
@@ -13,7 +13,7 @@
 
 (function() {
     'use strict';
-    console.log("🤖 [SIPANTAS Bot] Versi 2.6 Aktif!");
+    console.log("🤖 [SIPANTAS Bot] Versi 2.7 Aktif!");
 
     // Global native event logging on document level to diagnose unblocked events
     document.addEventListener('change', (e) => {
@@ -227,15 +227,24 @@
                 if (response.status >= 200 && response.status < 300) {
                     const blob = response.response;
                     
-                    // Tentukan ekstensi file
+                    // Ekstrak ekstensi asli dari URL secara dinamis
                     let ext = '.pdf';
-                    const lowerUrl = fileUrl.toLowerCase();
-                    if (lowerUrl.includes('.xlsx')) ext = '.xlsx';
-                    else if (lowerUrl.includes('.xls')) ext = '.xls';
-                    else if (lowerUrl.includes('.docx')) ext = '.docx';
-                    else if (lowerUrl.includes('.doc')) ext = '.doc';
+                    try {
+                        const decodedUrl = decodeURIComponent(resolvedUrl);
+                        const urlPath = decodedUrl.split('?')[0];
+                        const lastDotIndex = urlPath.lastIndexOf('.');
+                        if (lastDotIndex !== -1) {
+                            const suspectedExt = urlPath.substring(lastDotIndex).toLowerCase();
+                            // Pastikan ekstensinya standar (3-5 karakter, misal .pdf, .xlsx, .png, .jpg)
+                            if (suspectedExt.match(/^\.[a-z0-9]{3,5}$/)) {
+                                ext = suspectedExt;
+                            }
+                        }
+                    } catch (err) {
+                        console.warn("🤖 [SIPANTAS Bot] Gagal mengekstrak ekstensi:", err);
+                    }
                     
-                    const file = new File([blob], defaultName + ext, { type: blob.type || "application/pdf" });
+                    const file = new File([blob], defaultName + ext, { type: blob.type || "application/octet-stream" });
                     
                     const dataTransfer = new DataTransfer();
                     dataTransfer.items.add(file);

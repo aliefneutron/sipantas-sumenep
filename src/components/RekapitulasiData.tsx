@@ -154,8 +154,32 @@ export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 
           }
         };
 
-        if (row.evidenceYear1) await addFileToZip(row.evidenceYear1, `[${year1}] Bukti Fisik.pdf`);
-        if (row.evidenceYear2) await addFileToZip(row.evidenceYear2, `[${year2}] Bukti Fisik.pdf`);
+        // Helper to extract file extension dynamically
+        const getExtension = (fileUrl: string) => {
+          try {
+            const decodedUrl = decodeURIComponent(fileUrl);
+            const urlPath = decodedUrl.split('?')[0];
+            const lastDotIndex = urlPath.lastIndexOf('.');
+            if (lastDotIndex !== -1) {
+              const ext = urlPath.substring(lastDotIndex).toLowerCase();
+              if (ext.match(/^\.[a-z0-9]{3,5}$/)) {
+                return ext;
+              }
+            }
+          } catch (e) {
+            console.error("Gagal mendapatkan ekstensi:", e);
+          }
+          return '.pdf'; // fallback
+        };
+
+        if (row.evidenceYear1) {
+          const ext = getExtension(row.evidenceYear1);
+          await addFileToZip(row.evidenceYear1, `[${year1}] Bukti Fisik${ext}`);
+        }
+        if (row.evidenceYear2) {
+          const ext = getExtension(row.evidenceYear2);
+          await addFileToZip(row.evidenceYear2, `[${year2}] Bukti Fisik${ext}`);
+        }
       }
 
       // 4. Generate and download
