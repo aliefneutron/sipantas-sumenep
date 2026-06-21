@@ -238,6 +238,18 @@
         if (inputNilai) {
             const val = match.nilaiMandiri !== undefined ? match.nilaiMandiri : (match.capaian !== undefined ? match.capaian : '');
             console.log("🤖 [SIPANTAS Bot] Mengisi Nilai Mandiri dengan:", val);
+            
+            // Hentikan penyebaran event change agar tidak memicu form submit global halaman
+            inputNilai.addEventListener('change', (e) => {
+                e.stopPropagation();
+            }, { capture: true });
+            
+            if (window.jQuery) {
+                window.jQuery(inputNilai).on('change change.select2', function(e) {
+                    e.stopPropagation();
+                });
+            }
+
             inputNilai.value = String(val);
             inputNilai.dispatchEvent(new Event('input', { bubbles: true }));
             inputNilai.dispatchEvent(new Event('change', { bubbles: true }));
