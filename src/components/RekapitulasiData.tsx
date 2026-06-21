@@ -169,6 +169,8 @@ export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 
         nilaiMandiri: d.capaian || 0,
         ['capaian' + year1]: d.capaianYear1 || '',
         ['capaian' + year2]: d.capaianYear2 || '',
+        ['evidence' + year1]: d.evidenceYear1 || '',
+        ['evidence' + year2]: d.evidenceYear2 || '',
         penjelasan: d.penjelasan || ''
       }))
     };
