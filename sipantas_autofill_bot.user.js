@@ -13,6 +13,7 @@
 
 (function() {
     'use strict';
+    console.log("🤖 [SIPANTAS Bot] Versi 2.0 Aktif!");
 
     // 1. Buat UI Tombol Import di pojok kanan bawah
     const container = document.createElement('div');
