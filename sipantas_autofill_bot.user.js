@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SIPANTAS Pusat Autofill Bot
 // @namespace    http://tampermonkey.net/
-// @version      2.1
+// @version      2.2
 // @description  Otomatisasi pengisian data SIPANTAS Pusat dari file JSON Ekspor
 // @author       Sistem SIPANTAS Kabupaten
 // @match        *://*/*sipantas*/*
@@ -13,7 +13,24 @@
 
 (function() {
     'use strict';
-    console.log("🤖 [SIPANTAS Bot] Versi 2.1 Aktif!");
+    console.log("🤖 [SIPANTAS Bot] Versi 2.2 Aktif!");
+
+    // Global native event logging on document level to diagnose unblocked events
+    document.addEventListener('change', (e) => {
+        console.log("🔥 [SIPANTAS Bot Debug] Native Change reached Document! Target:", e.target, "Path:", e.composedPath().map(el => el.tagName + (el.className ? '.' + el.className.split(' ').join('.') : '')));
+    }, { capture: true });
+
+    document.addEventListener('input', (e) => {
+        console.log("🔥 [SIPANTAS Bot Debug] Native Input reached Document! Target:", e.target, "Path:", e.composedPath().map(el => el.tagName + (el.className ? '.' + el.className.split(' ').join('.') : '')));
+    }, { capture: true });
+
+    // Also jQuery event logging if jQuery reaches document
+    const pagejQuery = typeof unsafeWindow !== 'undefined' ? (unsafeWindow.jQuery || window.jQuery) : window.jQuery;
+    if (pagejQuery) {
+        pagejQuery(document).on('change change.select2 input', (e) => {
+            console.log("🔥 [SIPANTAS Bot Debug] jQuery Event reached Document! Target:", e.target);
+        });
+    }
 
     // 1. Buat UI Tombol Import di pojok kanan bawah
     const container = document.createElement('div');
@@ -171,26 +188,30 @@
         const modalBody = modalContainer.querySelector('.modal-body, div[class*="body"]') || modalContainer;
         console.log("🤖 [SIPANTAS Bot] modalBody yang digunakan:", modalBody);
 
-        // Hentikan penyebaran event change/input dari dalam modal agar tidak memicu form submit global halaman
-        modalBody.querySelectorAll('input, select, textarea').forEach(el => {
-            if (!el.dataset.botEventsBlocked) {
-                el.dataset.botEventsBlocked = "true";
-                el.addEventListener('change', (e) => {
-                    console.log("🤖 [SIPANTAS Bot] Mencegah propagasi event change pada:", el);
+        const $ = typeof unsafeWindow !== 'undefined' ? (unsafeWindow.jQuery || window.jQuery) : window.jQuery;
+
+        // Hentikan penyebaran event change/input dari dalam modal di tingkat kontainer modalBody
+        if (modalBody && !modalBody.dataset.botEventsBlocked) {
+            modalBody.dataset.botEventsBlocked = "true";
+            
+            // Block native events in bubble phase (allows internal handlers to run, but blocks them from escaping)
+            modalBody.addEventListener('change', (e) => {
+                console.log("🤖 [SIPANTAS Bot] Mencegah propagasi native change keluar modal. Target:", e.target);
+                e.stopPropagation();
+            });
+            modalBody.addEventListener('input', (e) => {
+                console.log("🤖 [SIPANTAS Bot] Mencegah propagasi native input keluar modal. Target:", e.target);
+                e.stopPropagation();
+            });
+
+            // Block jQuery events
+            if ($) {
+                $(modalBody).on('change change.select2 input', (e) => {
+                    console.log("🤖 [SIPANTAS Bot] Mencegah propagasi jQuery change keluar modal. Target:", e.target);
                     e.stopPropagation();
-                }, { capture: true });
-                el.addEventListener('input', (e) => {
-                    console.log("🤖 [SIPANTAS Bot] Mencegah propagasi event input pada:", el);
-                    e.stopPropagation();
-                }, { capture: true });
-                if (window.jQuery) {
-                    window.jQuery(el).on('change change.select2 input', (e) => {
-                        console.log("🤖 [SIPANTAS Bot] Mencegah propagasi event jQuery/Select2 pada:", el);
-                        e.stopPropagation();
-                    });
-                }
+                });
             }
-        });
+        }
 
         // 2. Cari data indikator yang cocok di JSON secara case-insensitive & tanpa spasi/karakter aneh
         const match = importedData.find(item => {
@@ -266,9 +287,9 @@
             
             // Pemicu khusus Select2 (jQuery) agar tampilan pilihan di layar langsung terupdate
             try {
-                if (window.jQuery && window.jQuery(inputNilai).data('select2')) {
+                if ($ && $(inputNilai).data('select2')) {
                     console.log("🤖 [SIPANTAS Bot] Memicu update visual Select2 untuk nilai:", val);
-                    window.jQuery(inputNilai).val(String(val)).trigger('change.select2').trigger('change');
+                    $(inputNilai).val(String(val)).trigger('change.select2').trigger('change');
                 }
             } catch (e) {
                 console.warn("🤖 [SIPANTAS Bot] Gagal memperbarui UI Select2 secara visual:", e);
