@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SIPANTAS Pusat Autofill Bot
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      2.1
 // @description  Otomatisasi pengisian data SIPANTAS Pusat dari file JSON Ekspor
 // @author       Sistem SIPANTAS Kabupaten
 // @match        *://*/*sipantas*/*
@@ -13,7 +13,7 @@
 
 (function() {
     'use strict';
-    console.log("🤖 [SIPANTAS Bot] Versi 2.0 Aktif!");
+    console.log("🤖 [SIPANTAS Bot] Versi 2.1 Aktif!");
 
     // 1. Buat UI Tombol Import di pojok kanan bawah
     const container = document.createElement('div');
@@ -166,10 +166,31 @@
         // GUNAKAN PARENT DARI PARENT JUDUL SEBAGAI CONTAINER BOX MODAL (Sangat Aman & Terisolasi)
         const modalContainer = titleEl.parentElement.parentElement || titleEl.closest('.modal-content') || document;
         console.log("🤖 [SIPANTAS Bot] modalContainer yang digunakan:", modalContainer);
-        
+
         // Batasi pencarian hanya di dalam area BODY modal (.modal-body) untuk keamanan maksimal
         const modalBody = modalContainer.querySelector('.modal-body, div[class*="body"]') || modalContainer;
         console.log("🤖 [SIPANTAS Bot] modalBody yang digunakan:", modalBody);
+
+        // Hentikan penyebaran event change/input dari dalam modal agar tidak memicu form submit global halaman
+        modalBody.querySelectorAll('input, select, textarea').forEach(el => {
+            if (!el.dataset.botEventsBlocked) {
+                el.dataset.botEventsBlocked = "true";
+                el.addEventListener('change', (e) => {
+                    console.log("🤖 [SIPANTAS Bot] Mencegah propagasi event change pada:", el);
+                    e.stopPropagation();
+                }, { capture: true });
+                el.addEventListener('input', (e) => {
+                    console.log("🤖 [SIPANTAS Bot] Mencegah propagasi event input pada:", el);
+                    e.stopPropagation();
+                }, { capture: true });
+                if (window.jQuery) {
+                    window.jQuery(el).on('change change.select2 input', (e) => {
+                        console.log("🤖 [SIPANTAS Bot] Mencegah propagasi event jQuery/Select2 pada:", el);
+                        e.stopPropagation();
+                    });
+                }
+            }
+        });
 
         // 2. Cari data indikator yang cocok di JSON secara case-insensitive & tanpa spasi/karakter aneh
         const match = importedData.find(item => {
@@ -235,23 +256,9 @@
             filledAny = true;
         }
 
-        // Disable Nilai Mandiri dropdown filling to prevent global change listeners from reloading the page.
-        // You will select the scale rating dropdown manually.
-        /*
         if (inputNilai) {
             const val = match.nilaiMandiri !== undefined ? match.nilaiMandiri : (match.capaian !== undefined ? match.capaian : '');
             console.log("🤖 [SIPANTAS Bot] Mengisi Nilai Mandiri dengan:", val);
-            
-            // Hentikan penyebaran event change agar tidak memicu form submit global halaman
-            inputNilai.addEventListener('change', (e) => {
-                e.stopPropagation();
-            }, { capture: true });
-            
-            if (window.jQuery) {
-                window.jQuery(inputNilai).on('change change.select2', function(e) {
-                    e.stopPropagation();
-                });
-            }
 
             inputNilai.value = String(val);
             inputNilai.dispatchEvent(new Event('input', { bubbles: true }));
@@ -269,7 +276,6 @@
             
             filledAny = true;
         }
-        */
 
         if (inputPenjelasan && match.penjelasan !== undefined) {
             console.log("🤖 [SIPANTAS Bot] Mengisi Penjelasan dengan:", match.penjelasan);
