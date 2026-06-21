@@ -161,15 +161,15 @@
         // Supaya tidak mengisi berulang-ulang pada modal yang sama
         if (lastFilledIndicator === indicatorName) return;
 
+        console.log("🤖 [SIPANTAS Bot] Mendeteksi modal terbuka untuk:", indicatorName);
+
         // GUNAKAN PARENT DARI PARENT JUDUL SEBAGAI CONTAINER BOX MODAL (Sangat Aman & Terisolasi)
         const modalContainer = titleEl.parentElement.parentElement || titleEl.closest('.modal-content') || document;
+        console.log("🤖 [SIPANTAS Bot] modalContainer yang digunakan:", modalContainer);
         
         // Batasi pencarian hanya di dalam area BODY modal (.modal-body) untuk keamanan maksimal
         const modalBody = modalContainer.querySelector('.modal-body, div[class*="body"]') || modalContainer;
-
-        console.log("Mendeteksi modal terbuka untuk indikator:", indicatorName);
-        statusText.innerText = `🔍 Mencocokkan: ${indicatorName.substring(0, 15)}...`;
-        statusText.style.color = '#facc15';
+        console.log("🤖 [SIPANTAS Bot] modalBody yang digunakan:", modalBody);
 
         // 2. Cari data indikator yang cocok di JSON secara case-insensitive & tanpa spasi/karakter aneh
         const match = importedData.find(item => {
@@ -181,13 +181,13 @@
         });
 
         if (!match) {
-            console.warn("Tidak menemukan data JSON yang cocok untuk:", indicatorName);
+            console.warn("🤖 [SIPANTAS Bot] Tidak menemukan data JSON yang cocok untuk:", indicatorName);
             statusText.innerText = `⚠️ Tidak cocok: ${indicatorName.substring(0, 15)}...`;
             statusText.style.color = '#facc15';
             return;
         }
 
-        console.log("Menemukan kecocokan data JSON:", match);
+        console.log("🤖 [SIPANTAS Bot] Menemukan kecocokan data JSON:", match);
         statusText.innerText = `⏳ Mengisi data...`;
 
         // 3. Cari input di DALAM kontainer modalBody saja
@@ -196,6 +196,7 @@
         
         // Cari select dropdown atau input biasa untuk Nilai Mandiri (HAPUS 'capaian' agar tidak menyentuh pemilih tahun)
         const inputNilai = modalBody.querySelector('select[name*="nilai"], select[name*="skala"], select[id*="nilai"], select[name*="mandiri"], select[id*="mandiri"], select[class*="nilai"], select[class*="skala"], input[placeholder*="Mandiri"], input[placeholder*="mandiri"], input[name*="nilai"], input[name*="capaian_mandiri"]');
+        console.log("🤖 [SIPANTAS Bot] Elemen inputNilai ditemukan:", inputNilai);
         
         const inputPenjelasan = modalBody.querySelector('textarea, textarea[name*="penjelasan"], textarea[id*="penjelasan"]');
 
@@ -219,6 +220,7 @@
         let filledAny = false;
 
         if (input2024 && match[key2024] !== undefined) {
+            console.log("🤖 [SIPANTAS Bot] Mengisi Capaian 2024 dengan:", match[key2024]);
             input2024.value = match[key2024];
             input2024.dispatchEvent(new Event('input', { bubbles: true }));
             input2024.dispatchEvent(new Event('change', { bubbles: true }));
@@ -226,6 +228,7 @@
         }
 
         if (input2025 && match[key2025] !== undefined) {
+            console.log("🤖 [SIPANTAS Bot] Mengisi Capaian 2025 dengan:", match[key2025]);
             input2025.value = match[key2025];
             input2025.dispatchEvent(new Event('input', { bubbles: true }));
             input2025.dispatchEvent(new Event('change', { bubbles: true }));
@@ -234,6 +237,7 @@
 
         if (inputNilai) {
             const val = match.nilaiMandiri !== undefined ? match.nilaiMandiri : (match.capaian !== undefined ? match.capaian : '');
+            console.log("🤖 [SIPANTAS Bot] Mengisi Nilai Mandiri dengan:", val);
             inputNilai.value = String(val);
             inputNilai.dispatchEvent(new Event('input', { bubbles: true }));
             inputNilai.dispatchEvent(new Event('change', { bubbles: true }));
@@ -241,16 +245,18 @@
             // Pemicu khusus Select2 (jQuery) agar tampilan pilihan di layar langsung terupdate
             try {
                 if (window.jQuery && window.jQuery(inputNilai).data('select2')) {
+                    console.log("🤖 [SIPANTAS Bot] Memicu update visual Select2 untuk nilai:", val);
                     window.jQuery(inputNilai).val(String(val)).trigger('change.select2').trigger('change');
                 }
             } catch (e) {
-                console.warn("Gagal memperbarui UI Select2 secara visual:", e);
+                console.warn("🤖 [SIPANTAS Bot] Gagal memperbarui UI Select2 secara visual:", e);
             }
             
             filledAny = true;
         }
 
         if (inputPenjelasan && match.penjelasan !== undefined) {
+            console.log("🤖 [SIPANTAS Bot] Mengisi Penjelasan dengan:", match.penjelasan);
             inputPenjelasan.value = match.penjelasan;
             inputPenjelasan.dispatchEvent(new Event('input', { bubbles: true }));
             inputPenjelasan.dispatchEvent(new Event('change', { bubbles: true }));
@@ -272,7 +278,7 @@
 
         if (filledAny) {
             lastFilledIndicator = indicatorName;
-            console.log("Berhasil mengisi modal untuk:", indicatorName);
+            console.log("🤖 [SIPANTAS Bot] Berhasil mengisi modal untuk:", indicatorName);
             statusText.innerText = `✍️ Terisi: ${indicatorName.substring(0, 15)}...`;
             statusText.style.color = '#4ade80';
         }
