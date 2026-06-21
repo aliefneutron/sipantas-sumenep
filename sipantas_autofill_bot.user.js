@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SIPANTAS Pusat Autofill Bot
 // @namespace    http://tampermonkey.net/
-// @version      2.4
+// @version      2.5
 // @description  Otomatisasi pengisian data SIPANTAS Pusat dari file JSON Ekspor
 // @author       Sistem SIPANTAS Kabupaten
 // @match        *://*/*sipantas*/*
@@ -13,7 +13,7 @@
 
 (function() {
     'use strict';
-    console.log("🤖 [SIPANTAS Bot] Versi 2.4 Aktif!");
+    console.log("🤖 [SIPANTAS Bot] Versi 2.5 Aktif!");
 
     // Global native event logging on document level to diagnose unblocked events
     document.addEventListener('change', (e) => {
@@ -80,10 +80,36 @@
     statusText.style.textAlign = 'center';
     container.appendChild(statusText);
 
+    const resetBtn = document.createElement('button');
+    resetBtn.innerText = 'Reset/Hapus Data';
+    resetBtn.style.width = '100%';
+    resetBtn.style.padding = '5px';
+    resetBtn.style.marginTop = '8px';
+    resetBtn.style.backgroundColor = '#ef4444';
+    resetBtn.style.color = 'white';
+    resetBtn.style.border = 'none';
+    resetBtn.style.borderRadius = '5px';
+    resetBtn.style.cursor = 'pointer';
+    resetBtn.style.fontWeight = 'bold';
+    resetBtn.style.fontSize = '11px';
+    container.appendChild(resetBtn);
+
     document.body.appendChild(container);
 
     let importedData = null;
     let lastFilledIndicator = null;
+
+    // Load from localStorage if exists
+    try {
+        const savedData = localStorage.getItem('sipantas_bot_imported_data');
+        if (savedData) {
+            importedData = JSON.parse(savedData);
+            statusText.innerText = `✅ Tersimpan: ${importedData.length} data`;
+            statusText.style.color = '#4ade80';
+        }
+    } catch (e) {
+        console.error("Gagal membaca data tersimpan dari localStorage:", e);
+    }
 
     // 2. Baca file JSON
     fileInput.addEventListener('change', (e) => {
@@ -95,6 +121,10 @@
                 const json = JSON.parse(ev.target.result);
                 importedData = json.data;
                 lastFilledIndicator = null; // reset
+                
+                // Simpan ke localStorage agar tidak hilang saat reload halaman
+                localStorage.setItem('sipantas_bot_imported_data', JSON.stringify(importedData));
+                
                 statusText.innerText = `✅ Berhasil memuat ${importedData.length} data`;
                 statusText.style.color = '#4ade80';
                 alert(`Berhasil memuat ${importedData.length} indikator dari Kabupaten ${json.kabupaten}!\n\nSekarang Anda cukup mengeklik tombol "Edit" pada salah satu indikator di web ini, dan data akan terisi secara otomatis.`);
@@ -105,6 +135,19 @@
             }
         };
         reader.readAsText(file);
+    });
+
+    // Reset data
+    resetBtn.addEventListener('click', () => {
+        if (confirm("Hapus data JSON yang tersimpan di bot?")) {
+            localStorage.removeItem('sipantas_bot_imported_data');
+            importedData = null;
+            lastFilledIndicator = null;
+            fileInput.value = '';
+            statusText.innerText = '🤖 Silakan upload file JSON';
+            statusText.style.color = '#facc15';
+            alert("Data bot berhasil dihapus!");
+        }
     });
 
     // Helper untuk mendownload file bukti via GM_xmlhttpRequest dan menyematkannya ke form upload
