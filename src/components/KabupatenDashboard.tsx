@@ -163,11 +163,17 @@ export function KabupatenDashboard({
     setEditingDocType(null);
   };
 
+  // Reset view states only when navigating to a different Tatanan
+  React.useEffect(() => {
+    if (activeTatanan?.id) {
+      setEditingIndicatorId(null);
+      setCurrentPage(1);
+    }
+  }, [activeTatanan?.id]);
+
   // Open assessment modal/panel for a tatanan (Populate fields via useEffect)
   React.useEffect(() => {
     if (activeTatanan) {
-      setEditingIndicatorId(null);
-      setCurrentPage(1);
       
       const scores: Record<string, number> = {};
       const links: Record<string, string> = {};
