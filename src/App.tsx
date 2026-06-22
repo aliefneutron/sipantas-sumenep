@@ -95,6 +95,36 @@ export default function App() {
         snapshot.forEach((docSnapshot) => {
           loaded.push(docSnapshot.data() as KabupatenProposal);
         });
+
+        // Prevent overwriting local data if local data is newer
+        const localDataStr = localStorage.getItem('sipantas_proposals_v1');
+        if (localDataStr) {
+          try {
+            const localData = JSON.parse(localDataStr) as KabupatenProposal[];
+            let merged = [...loaded];
+            let hasNewerLocalData = false;
+            
+            merged = merged.map(serverP => {
+              const localP = localData.find(lp => lp.id === serverP.id);
+              if (localP && localP.lastUpdated && serverP.lastUpdated) {
+                if (new Date(localP.lastUpdated) > new Date(serverP.lastUpdated)) {
+                  hasNewerLocalData = true;
+                  return localP; // Keep local data if newer
+                }
+              }
+              return serverP;
+            });
+            
+            if (hasNewerLocalData) {
+              setProposals(merged);
+              localStorage.setItem('sipantas_proposals_v1', JSON.stringify(merged));
+              return;
+            }
+          } catch (e) {
+            console.error("Failed to parse local proposals", e);
+          }
+        }
+
         setProposals(loaded);
         localStorage.setItem('sipantas_proposals_v1', JSON.stringify(loaded));
       }
@@ -180,7 +210,7 @@ export default function App() {
       await setDoc(doc(db, "proposals", updated.id), updated);
     } catch (error) {
       console.error("Error saving proposal to Firestore:", error);
-      // Fallback: we already saved to localStorage above for offline support
+      alert("⚠️ GAGAL MENYIMPAN KE SERVER CLOUD!\nKoneksi terputus atau pengaturan server bermasalah. Data saat ini hanya tersimpan di browser Anda.");
     }
   };
 
