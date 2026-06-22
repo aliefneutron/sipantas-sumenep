@@ -168,6 +168,7 @@ export function KabupatenDashboard({
     if (activeTatanan?.id) {
       setEditingIndicatorId(null);
       setCurrentPage(1);
+      setSearchTerm('');
     }
   }, [activeTatanan?.id]);
 
