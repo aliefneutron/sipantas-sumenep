@@ -9,6 +9,7 @@ import { KabupatenProposal, SystemConfig, NotificationMsg, INITIAL_TATANAN_STRUC
 import { INITIAL_PROPOSALS, INITIAL_SYSTEM_CONFIG, NOTIFICATIONS_MOCK, createEmptyProposal } from './data';
 import { KabupatenDashboard } from './components/KabupatenDashboard';
 import { RekapitulasiData } from './components/RekapitulasiData';
+import { RekapBelumTerisi } from './components/RekapBelumTerisi';
 import { Login, UserSession } from './components/Login';
 import { UserManagement } from './components/UserManagement';
 import { ProfileEdit } from './components/ProfileEdit';
@@ -362,6 +363,13 @@ export default function App() {
           </div>
 
           <button 
+            onClick={() => setActiveMenu('rekap-belum-terisi')}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${activeMenu === 'rekap-belum-terisi' ? 'bg-[#15803D] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+          >
+            <AlertTriangle className="w-4 h-4" /> Rekap Belum Terisi
+          </button>
+
+          <button 
             disabled
             className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition cursor-not-allowed opacity-50 text-slate-600`}
             title="Menu ini sedang dinonaktifkan"
@@ -540,6 +548,11 @@ export default function App() {
                     <UserManagement />
                   ) : activeMenu === 'notifikasi' && (userSession?.role === 'admin' || userSession?.role === 'superadmin') ? (
                     <NotificationManagement />
+                  ) : activeMenu === 'rekap-belum-terisi' ? (
+                    <RekapBelumTerisi 
+                      proposal={userProposal}
+                      assessmentYear={systemConfig.assessmentYear || 2026}
+                    />
                   ) : (
                     <KabupatenDashboard 
                       proposal={userProposal} 
