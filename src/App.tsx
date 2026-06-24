@@ -104,6 +104,7 @@ export default function App() {
           try {
             const localData = JSON.parse(localDataStr) as KabupatenProposal[];
             const mergedMap = new Map<string, KabupatenProposal>();
+            let needsUpload = false;
             
             // Add server data first
             loaded.forEach(serverP => {
@@ -116,17 +117,35 @@ export default function App() {
               if (!serverP) {
                 // Local exists but server doesn't (e.g. not synced yet), keep local
                 mergedMap.set(localP.id, localP);
+                needsUpload = true;
               } else if (localP.lastUpdated && serverP.lastUpdated) {
                 // Keep whichever is newer
                 if (new Date(localP.lastUpdated) > new Date(serverP.lastUpdated)) {
                   mergedMap.set(localP.id, localP);
+                  needsUpload = true;
                 }
               } else if (localP.lastUpdated && !serverP.lastUpdated) {
                 mergedMap.set(localP.id, localP);
+                needsUpload = true;
               }
             });
             
             merged = Array.from(mergedMap.values());
+
+            // Auto-sync local data to server if local is newer
+            if (needsUpload) {
+              merged.forEach(async (p) => {
+                const sp = loaded.find(s => s.id === p.id);
+                // Only upload if it's actually the local version that won
+                if (!sp || (p.lastUpdated && sp.lastUpdated && new Date(p.lastUpdated) > new Date(sp.lastUpdated)) || !sp.lastUpdated) {
+                  try {
+                    await setDoc(doc(db, "proposals", p.id), p);
+                  } catch (e) {
+                    console.error("Auto-sync to Firebase failed", e);
+                  }
+                }
+              });
+            }
           } catch (e) {
             console.error("Failed to parse local proposals", e);
           }
