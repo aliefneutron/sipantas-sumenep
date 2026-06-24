@@ -466,7 +466,7 @@ export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-slate-200">
-        <table className="w-full text-left border-collapse min-w-max">
+        <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 font-bold uppercase tracking-wider">
               <th className="p-4 w-[20%]">Tatanan</th>
