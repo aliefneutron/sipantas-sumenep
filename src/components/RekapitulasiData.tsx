@@ -9,9 +9,11 @@ interface RekapitulasiDataProps {
   proposal: KabupatenProposal;
   onUpdateProposal: (updated: KabupatenProposal) => void;
   assessmentYear?: number;
+  userRole?: string;
 }
 
-export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 2026 }: RekapitulasiDataProps) {
+export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 2026, userRole }: RekapitulasiDataProps) {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   
   const year1 = assessmentYear - 2;
   const year2 = assessmentYear - 1;
@@ -216,6 +218,74 @@ export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 
     alert(`File Autofill JSON berhasil diunduh!\n\nUntuk menggunakan ini di web SIPANTAS Pusat, Anda perlu meng-install ekstensi Tampermonkey di Chrome, lalu memasukkan skrip bot yang telah kami sediakan.`);
   };
 
+  const handleImportAutofill = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const jsonStr = e.target?.result as string;
+        const autofillData = JSON.parse(jsonStr);
+        
+        if (!autofillData.data || !Array.isArray(autofillData.data)) {
+          alert("Format file tidak valid! Pastikan Anda memasukkan file Autofill JSON yang benar.");
+          return;
+        }
+
+        if (!window.confirm(`Ditemukan ${autofillData.data.length} data indikator di dalam file ini.\n\nApakah Anda yakin ingin memulihkan dan menimpa data yang ada dengan data dari file backup ini?`)) {
+          if (fileInputRef.current) fileInputRef.current.value = '';
+          return;
+        }
+
+        const updated = { ...proposal };
+        let updatedCount = 0;
+
+        autofillData.data.forEach((item: any) => {
+          const tIndex = updated.tatanan.findIndex(t => t.id === item.tatananId);
+          if (tIndex === -1) return;
+          const iIndex = updated.tatanan[tIndex].indicators.findIndex(i => i.id === item.indicatorId);
+          if (iIndex === -1) return;
+
+          const ind = updated.tatanan[tIndex].indicators[iIndex];
+          if (!ind.score) ind.score = { capaian: 0, evidenceLink: '', capaian2024: '', capaian2025: '', evidenceLink2024: '', penjelasan: '', statusProvinsi: 'Draft', penjelasanProvinsi: '' };
+
+          ind.score.capaian = item.nilaiMandiri || 0;
+          ind.score.capaian2024 = item.capaian2024 || "";
+          ind.score.capaian2025 = item.capaian2025 || "";
+          ind.score.evidenceLink2024 = item.evidence2024 || "";
+          ind.score.evidenceLink = item.evidence2025 || "";
+          ind.score.penjelasan = item.penjelasan || "";
+          
+          ind.score.capaianTahun = {
+            "2024": item.capaian2024 || "",
+            "2025": item.capaian2025 || ""
+          };
+          ind.score.evidenceTahun = {
+            "2024": item.evidence2024 || "",
+            "2025": item.evidence2025 || ""
+          };
+
+          updatedCount++;
+        });
+
+        if (updatedCount > 0) {
+          updated.lastUpdated = new Date().toISOString();
+          onUpdateProposal(updated);
+          alert(`✅ BERHASIL! Sebanyak ${updatedCount} data indikator telah dipulihkan ke server.`);
+        } else {
+          alert("⚠️ Tidak ada data yang cocok untuk dipulihkan dari file ini.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("❌ Gagal membaca file JSON. Pastikan file tidak rusak.");
+      }
+      
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+    reader.readAsText(file);
+  };
+
   const startEdit = (row: any) => {
     setEditingRow(row);
     setCapaianYear1(row.capaianYear1 || '');
@@ -349,6 +419,24 @@ export function RekapitulasiData({ proposal, onUpdateProposal, assessmentYear = 
           >
             <Code className="w-4 h-4" /> Data Autofill (JSON)
           </button>
+          {userRole === 'superadmin' && (
+            <>
+              <input 
+                type="file" 
+                accept=".json" 
+                ref={fileInputRef}
+                style={{ display: 'none' }} 
+                onChange={handleImportAutofill}
+              />
+              <button 
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center gap-2 px-3 py-2 bg-amber-500 text-white hover:bg-amber-600 rounded-lg text-xs font-semibold transition shadow-sm ml-2"
+                title="Pulihkan data indikator menggunakan file Autofill (JSON) yang pernah diunduh"
+              >
+                <RefreshCw className="w-4 h-4" /> Restore Data (JSON)
+              </button>
+            </>
+          )}
         </div>
       </div>
 

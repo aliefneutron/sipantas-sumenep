@@ -600,6 +600,7 @@ export default function App() {
                       proposal={userProposal}
                       onUpdateProposal={updateSingleProposal}
                       assessmentYear={systemConfig.assessmentYear || 2026}
+                      userRole={userSession?.role}
                     />
                   ) : activeMenu === 'user-opd' && userSession?.role === 'superadmin' ? (
                     <UserManagement />
