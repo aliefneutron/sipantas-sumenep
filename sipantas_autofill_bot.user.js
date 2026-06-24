@@ -38,11 +38,14 @@
     container.style.bottom = '20px';
     container.style.right = '20px';
     container.style.zIndex = '999999';
-    container.style.backgroundColor = '#166534';
+    container.style.backgroundColor = 'rgba(22, 101, 52, 0.75)';
+    container.style.backdropFilter = 'blur(12px)';
+    container.style.WebkitBackdropFilter = 'blur(12px)';
+    container.style.border = '1px solid rgba(255, 255, 255, 0.2)';
     container.style.color = 'white';
     container.style.padding = '15px';
-    container.style.borderRadius = '10px';
-    container.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+    container.style.borderRadius = '12px';
+    container.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2)';
     container.style.fontFamily = 'sans-serif';
     container.style.width = '250px';
 
@@ -57,18 +60,45 @@
     }
 
     const title = document.createElement('div');
-    title.innerText = '🤖 SIPANTAS Auto-Bot (Drag me)';
+    title.innerText = '🤖 SIPANTAS AUTOFILL';
     title.style.fontWeight = 'bold';
     title.style.marginBottom = '10px';
     container.appendChild(title);
 
+    const fileContainer = document.createElement('div');
+    fileContainer.style.display = 'flex';
+    fileContainer.style.alignItems = 'center';
+    fileContainer.style.marginBottom = '10px';
+    fileContainer.style.gap = '8px';
+
+    const fileLabel = document.createElement('label');
+    fileLabel.innerText = 'Pilih File';
+    fileLabel.style.backgroundColor = '#e5e7eb';
+    fileLabel.style.color = '#374151';
+    fileLabel.style.padding = '4px 8px';
+    fileLabel.style.borderRadius = '4px';
+    fileLabel.style.fontSize = '11px';
+    fileLabel.style.cursor = 'pointer';
+
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = '.json';
-    fileInput.style.display = 'block';
-    fileInput.style.marginBottom = '10px';
-    fileInput.style.fontSize = '12px';
-    container.appendChild(fileInput);
+    fileInput.style.display = 'none';
+    
+    fileLabel.appendChild(fileInput);
+
+    const fileNameDisplay = document.createElement('span');
+    fileNameDisplay.innerText = 'tidak ada file';
+    fileNameDisplay.style.fontSize = '11px';
+    fileNameDisplay.style.color = '#e2e8f0';
+    fileNameDisplay.style.whiteSpace = 'nowrap';
+    fileNameDisplay.style.overflow = 'hidden';
+    fileNameDisplay.style.textOverflow = 'ellipsis';
+    fileNameDisplay.style.maxWidth = '130px';
+
+    fileContainer.appendChild(fileLabel);
+    fileContainer.appendChild(fileNameDisplay);
+    container.appendChild(fileContainer);
 
     const runBtn = document.createElement('button');
     runBtn.innerText = 'Jalankan Autofill';
@@ -160,10 +190,13 @@
         console.error("Gagal membaca data tersimpan dari localStorage:", e);
     }
 
-    // 2. Baca file JSON
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
-        if (!file) return;
+        if (!file) {
+            fileNameDisplay.innerText = 'tidak ada file';
+            return;
+        }
+        fileNameDisplay.innerText = file.name;
         const reader = new FileReader();
         reader.onload = (ev) => {
             try {
@@ -193,6 +226,7 @@
             importedData = null;
             lastFilledIndicator = null;
             fileInput.value = '';
+            fileNameDisplay.innerText = 'tidak ada file';
             statusText.innerText = '🤖 Silakan upload file JSON';
             statusText.style.color = '#facc15';
             alert("Data bot berhasil dihapus!");

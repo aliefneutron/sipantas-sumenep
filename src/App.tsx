@@ -98,35 +98,42 @@ export default function App() {
 
         // Prevent overwriting local data if local data is newer
         const localDataStr = localStorage.getItem('sipantas_proposals_v1');
+        let merged = [...loaded];
+
         if (localDataStr) {
           try {
             const localData = JSON.parse(localDataStr) as KabupatenProposal[];
-            let merged = [...loaded];
-            let hasNewerLocalData = false;
+            const mergedMap = new Map<string, KabupatenProposal>();
             
-            merged = merged.map(serverP => {
-              const localP = localData.find(lp => lp.id === serverP.id);
-              if (localP && localP.lastUpdated && serverP.lastUpdated) {
-                if (new Date(localP.lastUpdated) > new Date(serverP.lastUpdated)) {
-                  hasNewerLocalData = true;
-                  return localP; // Keep local data if newer
-                }
-              }
-              return serverP;
+            // Add server data first
+            loaded.forEach(serverP => {
+              mergedMap.set(serverP.id, serverP);
             });
             
-            if (hasNewerLocalData) {
-              setProposals(merged);
-              localStorage.setItem('sipantas_proposals_v1', JSON.stringify(merged));
-              return;
-            }
+            // Merge with local data
+            localData.forEach(localP => {
+              const serverP = mergedMap.get(localP.id);
+              if (!serverP) {
+                // Local exists but server doesn't (e.g. not synced yet), keep local
+                mergedMap.set(localP.id, localP);
+              } else if (localP.lastUpdated && serverP.lastUpdated) {
+                // Keep whichever is newer
+                if (new Date(localP.lastUpdated) > new Date(serverP.lastUpdated)) {
+                  mergedMap.set(localP.id, localP);
+                }
+              } else if (localP.lastUpdated && !serverP.lastUpdated) {
+                mergedMap.set(localP.id, localP);
+              }
+            });
+            
+            merged = Array.from(mergedMap.values());
           } catch (e) {
             console.error("Failed to parse local proposals", e);
           }
         }
 
-        setProposals(loaded);
-        localStorage.setItem('sipantas_proposals_v1', JSON.stringify(loaded));
+        setProposals(merged);
+        localStorage.setItem('sipantas_proposals_v1', JSON.stringify(merged));
       }
     }, (error) => {
       console.error("Firebase proposals snapshot error:", error);
@@ -195,6 +202,7 @@ export default function App() {
   // Persist alterations
   const updateSingleProposal = async (updated: KabupatenProposal) => {
     // Update local state optimistically
+    updated.lastUpdated = new Date().toISOString();
     let updatedList = [...proposals];
     const existingIndex = updatedList.findIndex(p => p.id === updated.id);
     if (existingIndex >= 0) {
